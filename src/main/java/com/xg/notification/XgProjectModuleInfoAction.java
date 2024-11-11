@@ -44,11 +44,11 @@ public class XgProjectModuleInfoAction extends AnAction {
                 }
                 Notification notification = groupManager.getNotificationGroup("NotificationXg")
                         .createNotification(jsonArray.toJSONString(), MessageType.INFO).setTitle("项目模块信息");
-                Notifications.Bus.notify(notification);
+                Notifications.Bus.notify(notification, project);
             } else {
                 Notification notification = groupManager.getNotificationGroup("NotificationXg")
                         .createNotification("暂不支持非Maven项目", MessageType.INFO).setTitle("项目模块信息");
-                Notifications.Bus.notify(notification);
+                Notifications.Bus.notify(notification, project);
             }
         }
     }

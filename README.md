@@ -1,10 +1,8 @@
-# XGenerator
+## 项目介绍
 
-#### 项目介绍
+X代码生成器，支持ERStudio导出的xml文件，自动识别项目结构，生成Java的Controller, Service, ServiceImpl, Entity, Mapper, Mappper.xml 通用代码
 
-X代码生成器，支持ERStudio导出的xml文件，自动生成代码
-
-#### 开发计划日志
+## 开发计划日志
 
 - 打印maven项目信息 ✅
 - 消息提醒功能 Alert、Banner、ToolWindowsTip、Banllons

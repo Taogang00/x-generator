@@ -1,4 +1,4 @@
-package com.xg;
+package com.xg.notification;
 
 import cn.hutool.core.collection.CollUtil;
 import com.alibaba.fastjson2.JSONArray;
@@ -16,7 +16,7 @@ import org.jetbrains.idea.maven.project.MavenProjectsManager;
 import java.util.List;
 
 @SuppressWarnings("DialogTitleCapitalization")
-public class MavenProjectInfoAction extends AnAction {
+public class XgProjectModuleInfoAction extends AnAction {
 
     @Override
     public void actionPerformed(AnActionEvent e) {

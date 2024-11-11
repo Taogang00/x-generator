@@ -5,4 +5,4 @@ pluginManagement {
     }
 }
 
-rootProject.name = "xg"
+rootProject.name = "x-generator"

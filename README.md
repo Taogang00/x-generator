@@ -9,6 +9,7 @@ X代码生成器，支持ERStudio导出的xml文件，自动生成代码
 - 打印maven项目信息 ✅
 - 消息提醒功能 Alert、Banner、ToolWindowsTip、Banllons
 - 左右侧菜单工具栏
+- 二级菜单
 - 自定义的ICON
 - 工具栏弹出编辑页面
 - 导入读取文件

@@ -27,7 +27,7 @@
     </extensions>
 
     <actions>
-        <action id="MavenProjectInfo" class="com.xg.MavenProjectInfoAction" text="MavenProjectInfo" description="MavenProjectInfo">
+        <action id="XGenerator" class="com.xg.MavenProjectInfoAction" text="XGenerator" description="XGenerator">
             <add-to-group group-id="ToolsMenu" anchor="first"/>
         </action>
     </actions>

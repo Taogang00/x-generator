@@ -22,6 +22,12 @@ intellij {
     plugins.set(listOf("org.jetbrains.idea.maven"))
 }
 
+dependencies {
+    implementation("com.alibaba.fastjson2:fastjson2:2.0.53")
+    implementation("cn.hutool:hutool-core:5.8.32")
+    implementation("cn.hutool:hutool-http:5.8.32")
+}
+
 tasks {
     // Set the JVM compatibility versions
     withType<JavaCompile> {

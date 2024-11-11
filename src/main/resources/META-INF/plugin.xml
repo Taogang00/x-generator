@@ -27,7 +27,11 @@
     </extensions>
 
     <actions>
-        <action id="XGenerator" class="com.xg.notification.XgProjectModuleInfoAction" text="XGenerator" description="XGenerator">
+        <action id="XGenerator"
+                class="com.xg.notification.XgProjectModuleInfoAction"
+                text="X Generator"
+                description="XGenerator"
+                icon="AllIcons.FileTypes.JavaOutsideSource">
             <add-to-group group-id="ToolsMenu" anchor="first"/>
         </action>
     </actions>

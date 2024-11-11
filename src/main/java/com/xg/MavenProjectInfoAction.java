@@ -1,5 +1,6 @@
 package com.xg;
 
+import cn.hutool.core.collection.CollUtil;
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import com.intellij.notification.Notification;
@@ -23,11 +24,10 @@ public class MavenProjectInfoAction extends AnAction {
         if (project != null) {
             // 获取Maven项目管理器
             MavenProjectsManager manager = MavenProjectsManager.getInstance(project);
+            List<MavenProject> projects = manager.getProjects();
             NotificationGroupManager groupManager = NotificationGroupManager.getInstance();
 
-            if (manager != null) {
-                // 获取所有Maven项目并提取模块名称
-                List<MavenProject> projects = manager.getProjects();
+            if (CollUtil.isNotEmpty(projects)) {
                 JSONArray jsonArray = new JSONArray();
                 for (MavenProject mavenProject : projects) {
                     JSONObject jsonObject = new JSONObject();

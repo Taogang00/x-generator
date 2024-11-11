@@ -23,8 +23,9 @@
     <!-- Extension points defined by the plugin.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
     <extensions defaultExtensionNs="com.intellij">
-        <notificationGroup id="Custom Notification Group" displayType="BALLOON"/>
+        <notificationGroup id="NotificationXg" displayType="BALLOON"/>
     </extensions>
+
     <actions>
         <action id="MavenProjectInfo" class="com.xg.MavenProjectInfoAction" text="MavenProjectInfo" description="MavenProjectInfo">
             <add-to-group group-id="ToolsMenu" anchor="first"/>

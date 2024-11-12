@@ -33,7 +33,7 @@
                 description="XGenerator"
                 icon="AllIcons.FileTypes.JavaOutsideSource">
             <add-to-group group-id="ToolsMenu" anchor="first"/>
-            <keyboard-shortcut keymap="$default" first-keystroke="ctrl shift g"/>
+            <keyboard-shortcut keymap="$default" first-keystroke="alt x"/>
         </action>
     </actions>
 </idea-plugin>

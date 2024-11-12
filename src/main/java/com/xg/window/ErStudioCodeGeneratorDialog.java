@@ -21,7 +21,6 @@ public class ErStudioCodeGeneratorDialog extends JDialog {
 
     public ErStudioCodeGeneratorDialog(AnActionEvent actionEvent) {
         textProjectInfo.setLineWrap(true); // 启用自动换行
-        textProjectInfo.setWrapStyleWord(true); // 在单词边界换行
 
         Project project = actionEvent.getProject();
         if (project != null) {

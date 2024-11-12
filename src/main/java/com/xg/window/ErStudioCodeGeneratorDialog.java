@@ -32,13 +32,9 @@ public class ErStudioCodeGeneratorDialog extends JDialog {
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("GroupId", mavenProject.getMavenId().getGroupId());
                     jsonObject.put("ArtifactId", mavenProject.getMavenId().getArtifactId());
-                    jsonObject.put("Version", mavenProject.getMavenId().getVersion());
                     jsonObject.put("MavenProject.SourcePath", mavenProject.getSources().get(0));
                     jsonObject.put("MavenProject.ResourcesPath", mavenProject.getResources().get(0).getDirectory());
-                    jsonObject.put("MavenProject.DisplayName", mavenProject.getDisplayName());
                     jsonObject.put("MavenProject.Name", mavenProject.getName());
-                    jsonObject.put("MavenProject.Directory", mavenProject.getDirectory());
-                    jsonObject.put("MavenProject.BuildDirectory", mavenProject.getBuildDirectory());
                     jsonArray.add(jsonObject);
                 }
                 textProjectInfo.append(jsonArray.toJSONString());

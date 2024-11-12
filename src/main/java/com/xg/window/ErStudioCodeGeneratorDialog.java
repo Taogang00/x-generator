@@ -1,8 +1,8 @@
 package com.xg.window;
 
 import cn.hutool.core.collection.CollUtil;
-import com.alibaba.fastjson2.JSONArray;
-import com.alibaba.fastjson2.JSONObject;
+import cn.hutool.json.JSONArray;
+import cn.hutool.json.JSONObject;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 import com.xg.utils.DialogUtil;
@@ -30,14 +30,14 @@ public class ErStudioCodeGeneratorDialog extends JDialog {
                 JSONArray jsonArray = new JSONArray();
                 for (MavenProject mavenProject : projects) {
                     JSONObject jsonObject = new JSONObject();
-                    jsonObject.put("GroupId", mavenProject.getMavenId().getGroupId());
-                    jsonObject.put("ArtifactId", mavenProject.getMavenId().getArtifactId());
-                    jsonObject.put("MavenProject.SourcePath", mavenProject.getSources().get(0));
-                    jsonObject.put("MavenProject.ResourcesPath", mavenProject.getResources().get(0).getDirectory());
-                    jsonObject.put("MavenProject.Name", mavenProject.getName());
+                    jsonObject.set("GroupId", mavenProject.getMavenId().getGroupId());
+                    jsonObject.set("ArtifactId", mavenProject.getMavenId().getArtifactId());
+                    jsonObject.set("MavenProject.SourcePath", mavenProject.getSources().get(0));
+                    jsonObject.set("MavenProject.ResourcesPath", mavenProject.getResources().get(0).getDirectory());
+                    jsonObject.set("MavenProject.Name", mavenProject.getName());
                     jsonArray.add(jsonObject);
                 }
-                textProjectInfo.append(jsonArray.toJSONString());
+                textProjectInfo.append(jsonArray.toStringPretty());
             }
         }
 
@@ -49,17 +49,9 @@ public class ErStudioCodeGeneratorDialog extends JDialog {
         setSize(1000, 500);
         DialogUtil.centerShow(this);
 
-        buttonOK.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                onOK();
-            }
-        });
+        buttonOK.addActionListener(e -> onOK());
 
-        buttonCancel.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                onCancel();
-            }
-        });
+        buttonCancel.addActionListener(e -> onCancel());
 
         // call onCancel() when cross is clicked
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -70,11 +62,7 @@ public class ErStudioCodeGeneratorDialog extends JDialog {
         });
 
         // call onCancel() on ESCAPE
-        contentPane.registerKeyboardAction(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                onCancel();
-            }
-        }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        contentPane.registerKeyboardAction(e -> onCancel(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
     }
 
     private void onOK() {

@@ -23,8 +23,8 @@ intellij {
 }
 
 dependencies {
-    implementation("com.alibaba.fastjson2:fastjson2:2.0.53")
-    implementation("cn.hutool:hutool-core:5.8.32")
+    implementation("cn.hutool:hutool-core:5.8.33")
+    implementation("cn.hutool:hutool-json:5.8.33")
 }
 
 tasks {

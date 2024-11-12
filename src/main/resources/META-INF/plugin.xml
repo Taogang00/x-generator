@@ -28,11 +28,12 @@
 
     <actions>
         <action id="XGenerator"
-                class="com.xg.notification.XgProjectModuleInfoAction"
+                class="com.xg.action.XGeneratorAction"
                 text="X Generator"
                 description="XGenerator"
                 icon="AllIcons.FileTypes.JavaOutsideSource">
             <add-to-group group-id="ToolsMenu" anchor="first"/>
+            <keyboard-shortcut keymap="$default" first-keystroke="ctrl shift g"/>
         </action>
     </actions>
 </idea-plugin>

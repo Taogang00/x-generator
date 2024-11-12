@@ -5,7 +5,7 @@ import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
-import com.xg.utils.DialogUtil;
+import com.xg.utils.XGDialogUtil;
 import org.jetbrains.idea.maven.project.MavenProject;
 import org.jetbrains.idea.maven.project.MavenProjectsManager;
 
@@ -13,13 +13,13 @@ import javax.swing.*;
 import java.awt.event.*;
 import java.util.List;
 
-public class ErStudioCodeGeneratorDialog extends JDialog {
+public class XGErStudioCodeGeneratorDialog extends JDialog {
     private JPanel contentPane;
     private JButton buttonOK;
     private JButton buttonCancel;
     private JTextArea textProjectInfo;
 
-    public ErStudioCodeGeneratorDialog(AnActionEvent actionEvent) {
+    public XGErStudioCodeGeneratorDialog(AnActionEvent actionEvent) {
         textProjectInfo.setLineWrap(true); // 启用自动换行
 
         Project project = actionEvent.getProject();
@@ -47,7 +47,7 @@ public class ErStudioCodeGeneratorDialog extends JDialog {
 
         setTitle("X 代码生成器");
         setSize(1000, 500);
-        DialogUtil.centerShow(this);
+        XGDialogUtil.centerShow(this);
 
         buttonOK.addActionListener(e -> onOK());
 

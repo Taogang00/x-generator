@@ -8,7 +8,7 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.MessageType;
-import com.xg.window.ErStudioCodeGeneratorDialog;
+import com.xg.window.XGErStudioCodeGeneratorDialog;
 import org.jetbrains.idea.maven.project.MavenProjectsManager;
 
 import javax.swing.*;
@@ -23,7 +23,7 @@ public class XGeneratorAction extends AnAction {
             MavenProjectsManager manager = MavenProjectsManager.getInstance(project);
             if (CollUtil.isNotEmpty(manager.getProjects())) {
                 SwingUtilities.invokeLater(() -> {
-                    ErStudioCodeGeneratorDialog generateWin = new ErStudioCodeGeneratorDialog(e);
+                    XGErStudioCodeGeneratorDialog generateWin = new XGErStudioCodeGeneratorDialog(e);
                     generateWin.setVisible(true);
                 });
             } else {

@@ -3,7 +3,7 @@ package com.xg.utils;
 import javax.swing.*;
 import java.awt.*;
 
-public class DialogUtil {
+public class XGDialogUtil {
 
     /**
      * dialog 居中显示

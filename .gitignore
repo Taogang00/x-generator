@@ -1,12 +1,4 @@
 .gradle
 build/
 !/.idea/
-/.idea/.gitignore
-/.idea/.name
-/.idea/compiler.xml
-/.idea/gradle.xml
-/.idea/jarRepositories.xml
-/.idea/kotlinc.xml
-/.idea/misc.xml
-/.idea/uiDesigner.xml
-/.idea/vcs.xml
+/.idea/**

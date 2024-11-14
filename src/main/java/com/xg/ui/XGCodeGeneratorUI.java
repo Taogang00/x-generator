@@ -49,7 +49,6 @@ public class XGCodeGeneratorUI {
     private JTextField ignoreTablePrefixTextField;
     private JCheckBox allCheckBox;
     private JTextField searchTextField;
-    private JTextField ignoreColumnPrefixTextField;
     private JRadioButton ignoreRadioButton;
     private JRadioButton coverRadioButton;
     private JCheckBox controllerCheckBox;
@@ -61,7 +60,6 @@ public class XGCodeGeneratorUI {
     private JCheckBox mapStructCheckBox;
     private JTextField codeGeneratorPathTextField;
     private JButton importBtn;
-    private JTextField textField1;
     private JComboBox comboBox1;
     private JButton button1;
     private JList tableList;
@@ -93,6 +91,8 @@ public class XGCodeGeneratorUI {
                 return;
             }
             String path = virtualFile.getPath();
+            tableList.setListData(new String[0]); // 清空JList内容
+
             this.tableInfoList = importTableXml(path, project);
 
             if (tableInfoList != null) {

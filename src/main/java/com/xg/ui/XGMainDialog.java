@@ -1,8 +1,7 @@
-package com.xg.window;
+package com.xg.ui;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
-import com.xg.ui.XGCodeGeneratorUI;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
@@ -18,7 +17,7 @@ public class XGMainDialog extends DialogWrapper {
         super(true); // 使用当前窗口作为父窗口
         this.project = project;
 
-        this.setTitle("X 代码生成器");
+        this.setTitle("X-代码生成器 2024001");
         this.setSize(900, 400);
         this.setResizable(false);
         init();

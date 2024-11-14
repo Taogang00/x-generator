@@ -1,6 +1,5 @@
 package com.xg.render;
 
-
 import com.xg.model.TableInfo;
 
 import javax.swing.*;

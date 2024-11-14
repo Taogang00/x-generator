@@ -8,7 +8,7 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.MessageType;
-import com.xg.window.XGMainDialog;
+import com.xg.ui.XGMainDialog;
 import org.jetbrains.idea.maven.project.MavenProjectsManager;
 
 import javax.swing.*;
@@ -29,7 +29,7 @@ public class XGeneratorAction extends AnAction {
             } else {
                 NotificationGroupManager groupManager = NotificationGroupManager.getInstance();
                 Notification notification = groupManager.getNotificationGroup("NotificationXg")
-                        .createNotification("X暂不支持非Maven项目", MessageType.INFO).setTitle("X 项目模块信息");
+                        .createNotification("X暂不支持非Maven项目", MessageType.INFO).setTitle("X-Generator");
                 Notifications.Bus.notify(notification, project);
             }
         }

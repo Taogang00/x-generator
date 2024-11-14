@@ -19,8 +19,6 @@ public class XGCodeGeneratorUI {
     private JTextField searchTextField;
     private JTextField textField3;
     private JTextField ignoreColumnPrefixTextField;
-    private JComboBox configComboBox;
-    private JButton settingButton;
     private JRadioButton ignoreRadioButton;
     private JRadioButton coverRadioButton;
     private JCheckBox controllerCheckBox;
@@ -38,6 +36,10 @@ public class XGCodeGeneratorUI {
     private JTextField mapStructPathTextField;
     private JTextField codeGeneratorPathTextField;
     private JButton importBtn;
+    private JTextField textField1;
+    private JComboBox comboBox1;
+    private JButton settingBtn;
+    private JButton button1;
 
     private Project project;
 

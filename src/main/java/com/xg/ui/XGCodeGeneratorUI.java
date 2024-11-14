@@ -1,6 +1,5 @@
 package com.xg.ui;
 
-import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.XmlUtil;
 import com.intellij.icons.AllIcons;
@@ -17,16 +16,16 @@ import com.xg.model.ColumnInfo;
 import com.xg.model.TableInfo;
 import com.xg.render.TableListCellRenderer;
 import com.xg.utils.XGFileChooserUtil;
+import com.xg.utils.XGMavenUtil;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.idea.maven.project.MavenProject;
-import org.jetbrains.idea.maven.project.MavenProjectsManager;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
+import java.awt.event.ItemEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -40,7 +39,7 @@ public class XGCodeGeneratorUI {
     @Getter
     private JPanel rootJPanel;
 
-    private JComboBox projectModuleComboBox;
+    private JComboBox<String> projectModuleComboBox;
     private ExpandableTextField controllerPathTextField;
     private ExpandableTextField servicePathTextField;
     private ExpandableTextField mapperPathTextField;
@@ -62,26 +61,41 @@ public class XGCodeGeneratorUI {
     private JCheckBox mapStructCheckBox;
     private JTextField codeGeneratorPathTextField;
     private JButton importBtn;
-    private JComboBox comboBox1;
+    private JComboBox<String> comboBox1;
     private JButton button1;
-    private JList tableList;
+    private JList<String> tableList;
     private FixedSizeButton settingBtn;
-
-    private Project project;
+    private JTextField authorTextField;
 
     private List<TableInfo> tableInfoList;
 
     public XGCodeGeneratorUI(Project project) {
-        this.project = project;
         settingBtn.setIcon(AllIcons.General.Settings);
+        this.authorTextField.setText(System.getProperty("user.name"));
 
-        MavenProjectsManager manager = MavenProjectsManager.getInstance(project);
-        List<MavenProject> projects = manager.getProjects();
-        if (CollUtil.isNotEmpty(projects)) {
-            for (MavenProject mavenProject : projects) {
-                projectModuleComboBox.addItem(mavenProject.getMavenId().getArtifactId());
-            }
+        for (String s : XGMavenUtil.getMavenArtifactId(project)) {
+            projectModuleComboBox.addItem(s);
         }
+
+        // 选择项目时需要给代码生成的路径进行赋值
+        projectModuleComboBox.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                File sourcePath = XGMavenUtil.getMavenArtifactIdSourcePath(project, e.getItem().toString());
+                assert sourcePath != null;
+                File file = XGFileChooserUtil.walkFiles(sourcePath);
+                codeGeneratorPathTextField.setText(file.getAbsolutePath());
+                String modulePath = file.getAbsolutePath().replace(sourcePath.getAbsolutePath() + "\\", "");
+                modulePath = modulePath.replace("\\", ".");
+
+                controllerPathTextField.setText(modulePath + ".controller");
+                servicePathTextField.setText(modulePath + ".service");
+                mapperPathTextField.setText(modulePath + ".mapper");
+                entityPathTextField.setText(modulePath + ".entity");
+                dtoPathTextField.setText(modulePath + ".dto");
+                queryPathTextField.setText(modulePath + ".query");
+                mapStructPathTextField.setText(modulePath + ".mapstruct");
+            }
+        });
 
         searchTextField.getDocument().addDocumentListener(new DocumentAdapter() {
             @Override

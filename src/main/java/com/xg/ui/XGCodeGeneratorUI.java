@@ -1,18 +1,43 @@
 package com.xg.ui;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.json.JSONArray;
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.XmlUtil;
+import com.intellij.notification.Notification;
+import com.intellij.notification.NotificationGroupManager;
+import com.intellij.notification.Notifications;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.MessageType;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.ui.DocumentAdapter;
 import com.intellij.ui.components.fields.ExpandableTextField;
+import com.xg.model.ColumnInfo;
+import com.xg.model.TableInfo;
+import com.xg.render.TableListCellRenderer;
+import com.xg.utils.XGFileChooserUtil;
+import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.idea.maven.project.MavenProject;
 import org.jetbrains.idea.maven.project.MavenProjectsManager;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class XGCodeGeneratorUI {
 
-    private JPanel root;
+    @Getter
+    private JPanel rootJPanel;
+
     private JComboBox projectModuleComboBox;
     private ExpandableTextField controllerPathTextField;
     private ExpandableTextField servicePathTextField;
@@ -24,7 +49,6 @@ public class XGCodeGeneratorUI {
     private JTextField ignoreTablePrefixTextField;
     private JCheckBox allCheckBox;
     private JTextField searchTextField;
-    private JTextField textField3;
     private JTextField ignoreColumnPrefixTextField;
     private JRadioButton ignoreRadioButton;
     private JRadioButton coverRadioButton;
@@ -40,8 +64,11 @@ public class XGCodeGeneratorUI {
     private JTextField textField1;
     private JComboBox comboBox1;
     private JButton button1;
+    private JList tableList;
 
     private Project project;
+
+    private List<TableInfo> tableInfoList;
 
     public XGCodeGeneratorUI(Project project) {
         this.project = project;
@@ -49,21 +76,94 @@ public class XGCodeGeneratorUI {
         MavenProjectsManager manager = MavenProjectsManager.getInstance(project);
         List<MavenProject> projects = manager.getProjects();
         if (CollUtil.isNotEmpty(projects)) {
-            JSONArray jsonArray = new JSONArray();
             for (MavenProject mavenProject : projects) {
                 projectModuleComboBox.addItem(mavenProject.getMavenId().getArtifactId());
-//                JSONObject jsonObject = new JSONObject();
-//                jsonObject.set("GroupId", mavenProject.getMavenId().getGroupId());
-//                jsonObject.set("ArtifactId", mavenProject.getMavenId().getArtifactId());
-//                jsonObject.set("MavenProject.SourcePath", mavenProject.getSources().get(0));
-//                jsonObject.set("MavenProject.ResourcesPath", mavenProject.getResources().get(0).getDirectory());
-//                jsonObject.set("MavenProject.Name", mavenProject.getName());
-//                jsonArray.add(jsonObject);
             }
         }
+
+        searchTextField.getDocument().addDocumentListener(new DocumentAdapter() {
+            @Override
+            protected void textChanged(@NotNull DocumentEvent e) {
+            }
+        });
+
+        importBtn.addActionListener(e -> {
+            VirtualFile virtualFile = XGFileChooserUtil.chooseFileVirtual(project);
+            if (ObjectUtil.isNull(virtualFile)) {
+                return;
+            }
+            String path = virtualFile.getPath();
+            this.tableInfoList = importTableXml(path, project);
+
+            if (tableInfoList != null) {
+                Map<String, TableInfo> tableInfoMap = tableInfoList.stream().collect(Collectors.toMap(TableInfo::getName, Function.identity()));
+
+                DefaultListModel<String> model = new DefaultListModel<>();
+                // tableNameSet按照字母降序
+                List<String> tableNameList = new ArrayList<>(tableInfoMap.keySet());
+                Collections.sort(tableNameList);
+
+                model.addAll(tableNameList);
+                tableList.setModel(model);
+
+                TableListCellRenderer cellRenderer = new TableListCellRenderer(tableInfoMap);
+                tableList.setCellRenderer(cellRenderer);
+            }
+        });
     }
 
-    public JPanel getRoot() {
-        return root;
+    public static List<TableInfo> importTableXml(String path, Project project) {
+        NotificationGroupManager groupManager = NotificationGroupManager.getInstance();
+        List<TableInfo> list = new ArrayList<>();
+
+        File file = new File(path);
+        if (!file.exists()) {
+            Notification notification = groupManager.getNotificationGroup("NotificationXg")
+                    .createNotification("文件不存在", MessageType.INFO).setTitle("X-Generator");
+            Notifications.Bus.notify(notification, project);
+            return null;
+        }
+        Document document = XmlUtil.readXML(file);
+        NodeList tableNodes = document.getElementsByTagName("Table");
+
+        // 遍历 Table 元素并打印信息
+        for (int i = 0; i < tableNodes.getLength(); i++) {
+            // 获取 Table 元素
+            Element tableElement = (Element) tableNodes.item(i);
+
+            // 提取表名 (Name 属性)
+            TableInfo tableInfo = new TableInfo();
+            List<ColumnInfo> columnList = new ArrayList<>();
+            String tableName = tableElement.getAttribute("Name");
+            String tableText = tableElement.getAttribute("Text");
+            tableInfo.setName(tableName);
+            tableInfo.setComment(tableText);
+            tableInfo.setColumnList(columnList);
+
+            // 你可以根据需要提取更多的属性或子元素
+            // 例如，提取 Table 下的 Column 元素
+            NodeList columnNodes = tableElement.getElementsByTagName("Column");
+            for (int j = 0; j < columnNodes.getLength(); j++) {
+                Element columnElement = (Element) columnNodes.item(j);
+                String primaryKey = columnElement.getAttribute("PrimaryKey");
+                String columnName = columnElement.getAttribute("Name");
+                String columnText = columnElement.getAttribute("Text");
+                String dataType = columnElement.getAttribute("DataType");
+
+                ColumnInfo columnInfo = new ColumnInfo();
+                columnInfo.setName(columnText);
+                columnInfo.setFieldName(columnName);
+                columnInfo.setFieldType(dataType);
+                columnInfo.setPrimaryKey(Boolean.getBoolean(primaryKey));
+                tableInfo.getColumnList().add(columnInfo);
+            }
+            list.add(tableInfo);
+        }
+
+        Notification notification = groupManager.getNotificationGroup("NotificationXg")
+                .createNotification("导入成功", MessageType.INFO).setTitle("X-Generator");
+        Notifications.Bus.notify(notification, project);
+        return list;
     }
+
 }

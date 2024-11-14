@@ -26,7 +26,7 @@ public class XGMainDialog extends DialogWrapper {
 
     @Override
     protected @Nullable JComponent createCenterPanel() {
-        JPanel root = new XGCodeGeneratorUI(project).getRoot();
+        JPanel root = new XGCodeGeneratorUI(project).getRootJPanel();
         root.setMaximumSize(new Dimension(900, 400));
         return root;
     }

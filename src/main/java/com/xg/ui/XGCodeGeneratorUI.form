@@ -16,7 +16,7 @@
         <properties/>
         <border type="none"/>
         <children>
-          <grid id="466d0" layout-manager="GridLayoutManager" row-count="6" column-count="6" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+          <grid id="466d0" layout-manager="GridLayoutManager" row-count="6" column-count="7" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -42,7 +42,7 @@
               </component>
               <component id="1b0dc" class="javax.swing.JComboBox" binding="projectModuleComboBox">
                 <constraints>
-                  <grid row="1" column="1" row-span="1" col-span="5" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                  <grid row="1" column="1" row-span="1" col-span="6" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
                   <model/>
@@ -58,7 +58,7 @@
               </component>
               <component id="747ae" class="javax.swing.JTextField" binding="ignoreTablePrefixTextField">
                 <constraints>
-                  <grid row="4" column="1" row-span="1" col-span="3" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                  <grid row="4" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                     <preferred-size width="150" height="-1"/>
                   </grid>
                 </constraints>
@@ -66,7 +66,7 @@
               </component>
               <component id="571f8" class="javax.swing.JTextField" binding="ignoreColumnPrefixTextField">
                 <constraints>
-                  <grid row="4" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                  <grid row="4" column="5" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                     <preferred-size width="150" height="-1"/>
                   </grid>
                 </constraints>
@@ -90,7 +90,7 @@
               </component>
               <component id="37aa9" class="javax.swing.JTextField" binding="codeGeneratorPathTextField">
                 <constraints>
-                  <grid row="3" column="1" row-span="1" col-span="5" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                  <grid row="3" column="1" row-span="1" col-span="6" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                     <preferred-size width="150" height="-1"/>
                   </grid>
                 </constraints>
@@ -107,7 +107,7 @@
               <grid id="55600" layout-manager="GridLayoutManager" row-count="1" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                 <margin top="0" left="0" bottom="0" right="0"/>
                 <constraints>
-                  <grid row="5" column="1" row-span="1" col-span="5" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                  <grid row="5" column="1" row-span="1" col-span="6" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties/>
                 <border type="none"/>
@@ -139,7 +139,7 @@
               </grid>
               <component id="e8d03" class="javax.swing.JTextField" binding="textField1" default-binding="true">
                 <constraints>
-                  <grid row="2" column="1" row-span="1" col-span="5" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                  <grid row="2" column="1" row-span="1" col-span="6" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                     <preferred-size width="150" height="-1"/>
                   </grid>
                 </constraints>
@@ -147,20 +147,12 @@
               </component>
               <component id="74905" class="javax.swing.JComboBox" binding="comboBox1" default-binding="true">
                 <constraints>
-                  <grid row="0" column="1" row-span="1" col-span="4" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                  <grid row="0" column="1" row-span="1" col-span="5" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
                   <model>
                     <item value="默认(ErStudio+MybatisPlus)"/>
                   </model>
-                </properties>
-              </component>
-              <component id="21fe7" class="javax.swing.JButton" binding="settingBtn">
-                <constraints>
-                  <grid row="0" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <text value="设置"/>
                 </properties>
               </component>
               <component id="63d58" class="javax.swing.JLabel">
@@ -169,6 +161,18 @@
                 </constraints>
                 <properties>
                   <text value="包路径"/>
+                </properties>
+              </component>
+              <component id="f11b7" class="com.intellij.openapi.ui.FixedSizeButton" default-binding="true">
+                <constraints>
+                  <grid row="0" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <enabled value="true"/>
+                  <horizontalAlignment value="0"/>
+                  <horizontalTextPosition value="0"/>
+                  <icon value="icons/setting.png"/>
+                  <text value=""/>
                 </properties>
               </component>
             </children>
@@ -189,7 +193,7 @@
                 <properties/>
                 <border type="none"/>
                 <children>
-                  <component id="54d6" class="javax.swing.JTextField" binding="controllerPathTextField">
+                  <component id="54d6" class="com.intellij.ui.components.fields.ExpandableTextField" binding="controllerPathTextField">
                     <constraints>
                       <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                         <preferred-size width="311" height="34"/>
@@ -260,7 +264,7 @@
                       <text value="生成 MapStruct"/>
                     </properties>
                   </component>
-                  <component id="7dfb1" class="javax.swing.JTextField" binding="mapperPathTextField">
+                  <component id="7dfb1" class="com.intellij.ui.components.fields.ExpandableTextField" binding="mapperPathTextField">
                     <constraints>
                       <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                         <preferred-size width="311" height="34"/>
@@ -268,7 +272,7 @@
                     </constraints>
                     <properties/>
                   </component>
-                  <component id="28557" class="javax.swing.JTextField" binding="servicePathTextField">
+                  <component id="28557" class="com.intellij.ui.components.fields.ExpandableTextField" binding="servicePathTextField">
                     <constraints>
                       <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                         <preferred-size width="311" height="34"/>
@@ -276,7 +280,7 @@
                     </constraints>
                     <properties/>
                   </component>
-                  <component id="c2dd1" class="javax.swing.JTextField" binding="entityPathTextField">
+                  <component id="c2dd1" class="com.intellij.ui.components.fields.ExpandableTextField" binding="entityPathTextField">
                     <constraints>
                       <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                         <preferred-size width="311" height="34"/>
@@ -284,7 +288,7 @@
                     </constraints>
                     <properties/>
                   </component>
-                  <component id="91fa7" class="javax.swing.JTextField" binding="dtoPathTextField">
+                  <component id="91fa7" class="com.intellij.ui.components.fields.ExpandableTextField" binding="dtoPathTextField">
                     <constraints>
                       <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                         <preferred-size width="311" height="34"/>
@@ -292,7 +296,7 @@
                     </constraints>
                     <properties/>
                   </component>
-                  <component id="15987" class="javax.swing.JTextField" binding="queryPathTextField">
+                  <component id="15987" class="com.intellij.ui.components.fields.ExpandableTextField" binding="queryPathTextField">
                     <constraints>
                       <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                         <preferred-size width="311" height="34"/>
@@ -300,7 +304,7 @@
                     </constraints>
                     <properties/>
                   </component>
-                  <component id="4f01c" class="javax.swing.JTextField" binding="mapStructPathTextField">
+                  <component id="4f01c" class="com.intellij.ui.components.fields.ExpandableTextField" binding="mapStructPathTextField">
                     <constraints>
                       <grid row="6" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                         <preferred-size width="311" height="34"/>

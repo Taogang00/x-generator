@@ -3,6 +3,7 @@ package com.xg.ui;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.json.JSONArray;
 import com.intellij.openapi.project.Project;
+import com.intellij.ui.components.fields.ExpandableTextField;
 import org.jetbrains.idea.maven.project.MavenProject;
 import org.jetbrains.idea.maven.project.MavenProjectsManager;
 
@@ -13,7 +14,13 @@ public class XGCodeGeneratorUI {
 
     private JPanel root;
     private JComboBox projectModuleComboBox;
-    private JTextField controllerPathTextField;
+    private ExpandableTextField controllerPathTextField;
+    private ExpandableTextField servicePathTextField;
+    private ExpandableTextField mapperPathTextField;
+    private ExpandableTextField entityPathTextField;
+    private ExpandableTextField dtoPathTextField;
+    private ExpandableTextField queryPathTextField;
+    private ExpandableTextField mapStructPathTextField;
     private JTextField ignoreTablePrefixTextField;
     private JCheckBox allCheckBox;
     private JTextField searchTextField;
@@ -28,17 +35,10 @@ public class XGCodeGeneratorUI {
     private JCheckBox dtoCheckBox;
     private JCheckBox queryCheckBox;
     private JCheckBox mapStructCheckBox;
-    private JTextField servicePathTextField;
-    private JTextField mapperPathTextField;
-    private JTextField entityPathTextField;
-    private JTextField dtoPathTextField;
-    private JTextField queryPathTextField;
-    private JTextField mapStructPathTextField;
     private JTextField codeGeneratorPathTextField;
     private JButton importBtn;
     private JTextField textField1;
     private JComboBox comboBox1;
-    private JButton settingBtn;
     private JButton button1;
 
     private Project project;

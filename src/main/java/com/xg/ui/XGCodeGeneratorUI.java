@@ -3,10 +3,12 @@ package com.xg.ui;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.XmlUtil;
+import com.intellij.icons.AllIcons;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationGroupManager;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.FixedSizeButton;
 import com.intellij.openapi.ui.MessageType;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.DocumentAdapter;
@@ -63,6 +65,7 @@ public class XGCodeGeneratorUI {
     private JComboBox comboBox1;
     private JButton button1;
     private JList tableList;
+    private FixedSizeButton settingBtn;
 
     private Project project;
 
@@ -70,6 +73,7 @@ public class XGCodeGeneratorUI {
 
     public XGCodeGeneratorUI(Project project) {
         this.project = project;
+        settingBtn.setIcon(AllIcons.General.Settings);
 
         MavenProjectsManager manager = MavenProjectsManager.getInstance(project);
         List<MavenProject> projects = manager.getProjects();

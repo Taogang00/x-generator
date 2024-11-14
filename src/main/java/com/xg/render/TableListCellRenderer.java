@@ -1,12 +1,17 @@
 package com.xg.render;
 
+import com.intellij.icons.AllIcons;
+import com.intellij.ui.JBColor;
+import com.intellij.util.ui.JBUI;
 import com.xg.model.TableInfo;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 public class TableListCellRenderer extends JLabel implements ListCellRenderer<String> {
     private JLabel label;
     private JLabel rowEndLabel;
@@ -36,8 +41,13 @@ public class TableListCellRenderer extends JLabel implements ListCellRenderer<St
         setLayout(new BorderLayout());
         this.tableInfoMap = tableInfoMap;
         label = new JLabel();
+        label.setIcon(AllIcons.Javaee.PersistenceEntity);
+        // 设置内部边距（上、左、下、右的间距）
+        label.setBorder(JBUI.Borders.empty(5));
+
         rowEndLabel = new JLabel();
-        rowEndLabel.setForeground(Color.GRAY);
+        rowEndLabel.setForeground(JBColor.GRAY);
+        rowEndLabel.setBorder(JBUI.Borders.empty(5));
         add(label, BorderLayout.WEST);
         add(rowEndLabel, BorderLayout.EAST);
     }

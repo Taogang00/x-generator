@@ -8,6 +8,8 @@ group = "com.taogang"
 version = "1.0-SNAPSHOT"
 
 repositories {
+    // 阿里云公共仓库
+    maven { url = uri("https://maven.aliyun.com/repository/public") }
     mavenCentral()
 }
 
@@ -25,6 +27,7 @@ intellij {
 dependencies {
     implementation("cn.hutool:hutool-core:5.8.33")
     implementation("cn.hutool:hutool-json:5.8.33")
+    implementation("org.projectlombok:lombok:1.18.34")
 }
 
 tasks {

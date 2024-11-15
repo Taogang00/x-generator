@@ -3,7 +3,11 @@ package com.xg.ui;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.XmlUtil;
 import com.intellij.icons.AllIcons;
+import com.intellij.notification.Notification;
+import com.intellij.notification.NotificationGroupManager;
+import com.intellij.notification.Notifications;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.MessageType;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.components.fields.ExpandableTextField;
 import com.xg.config.XGPackageConfig;
@@ -190,5 +194,12 @@ public class XGCodeGeneratorUI {
         queryPathTextField.setText(XGPackageConfig.getQueryPackageName());
         mapStructPathTextField.setText(XGPackageConfig.getMapstructPackageName());
         mapperXmlPathTextField.setText(XGPackageConfig.getMapperXmlPackage());
+    }
+
+    public void generateCode(Project project){
+        NotificationGroupManager groupManager = NotificationGroupManager.getInstance();
+        Notification notification = groupManager.getNotificationGroup("NotificationXg")
+                .createNotification("生成代码！", MessageType.INFO).setTitle("X-Generator");
+        Notifications.Bus.notify(notification, project);
     }
 }

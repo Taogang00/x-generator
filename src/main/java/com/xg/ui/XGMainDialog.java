@@ -12,6 +12,8 @@ public class XGMainDialog extends DialogWrapper {
 
     private final Project project;
 
+    private XGCodeGeneratorUI codeGeneratorUI;
+
     public XGMainDialog(Project project) {
         super(true); // 使用当前窗口作为父窗口
         this.setOKButtonText("生成");
@@ -26,6 +28,15 @@ public class XGMainDialog extends DialogWrapper {
 
     @Override
     protected @Nullable JComponent createCenterPanel() {
-        return new XGCodeGeneratorUI(project).getRootJPanel();
+        codeGeneratorUI = new XGCodeGeneratorUI(project);
+        return codeGeneratorUI.getRootJPanel();
+    }
+
+    @Override
+    protected void doOKAction() {
+        // 在这里调用 XGCodeGeneratorUI 中的方法
+        if (codeGeneratorUI != null) {
+            codeGeneratorUI.generateCode(project);
+        }
     }
 }

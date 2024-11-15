@@ -59,7 +59,6 @@ public class XGCodeGeneratorUI {
     private JTextField ignoreTablePrefixTextField;
     private JTextField authorTextField;
     private JButton packageAllBtn;
-    private JButton packageNoAllBtn;
     private JButton packageInverseBtn;
     private JLabel runInfoLabel;
     private JBLabel qaLabel;

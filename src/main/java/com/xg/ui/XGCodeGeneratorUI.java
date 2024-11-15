@@ -76,21 +76,7 @@ public class XGCodeGeneratorUI {
         // 选择项目时需要给代码生成的路径进行赋值
         projectModuleComboBox.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.SELECTED) {
-                File sourcePath = XGMavenUtil.getMavenArtifactIdSourcePath(project, e.getItem().toString());
-                assert sourcePath != null;
-                File file = XGFileChooserUtil.walkFiles(sourcePath);
-                codeGeneratorPathTextField.setText(sourcePath.getAbsolutePath());
-                String modulePath = file.getAbsolutePath().replace(sourcePath.getAbsolutePath() + "\\", "");
-                modulePath = modulePath.replace("\\", ".");
-
-                controllerPathTextField.setText(modulePath + ".controller");
-                servicePathTextField.setText(modulePath + ".service");
-                mapperPathTextField.setText(modulePath + ".mapper");
-                entityPathTextField.setText(modulePath + ".entity");
-                dtoPathTextField.setText(modulePath + ".dto");
-                queryPathTextField.setText(modulePath + ".query");
-                mapStructPathTextField.setText(modulePath + ".mapstruct");
-                mapperXmlPathTextField.setText("mapper");
+                initProjectModuleComboBoxEvent(project, e.getItem().toString());
             }
         });
 
@@ -120,7 +106,10 @@ public class XGCodeGeneratorUI {
             }
         });
 
-        projectModuleComboBox.setSelectedIndex(0);  // 手动触发事件
+        //初始化包赋值操作
+        if (ObjectUtil.isNotNull(projectModuleComboBox.getSelectedItem())) {
+            initProjectModuleComboBoxEvent(project, projectModuleComboBox.getSelectedItem().toString());
+        }
     }
 
     public static List<TableInfo> importTableXml(String path, JLabel runInfoLabel) {
@@ -172,4 +161,21 @@ public class XGCodeGeneratorUI {
         return list;
     }
 
+    private void initProjectModuleComboBoxEvent(Project project, String selectedItem) {
+        File sourcePath = XGMavenUtil.getMavenArtifactIdSourcePath(project, selectedItem);
+        assert sourcePath != null;
+        File file = XGFileChooserUtil.walkFiles(sourcePath);
+        codeGeneratorPathTextField.setText(sourcePath.getAbsolutePath());
+        String modulePath = file.getAbsolutePath().replace(sourcePath.getAbsolutePath() + "\\", "");
+        modulePath = modulePath.replace("\\", ".");
+
+        controllerPathTextField.setText(modulePath + ".controller");
+        servicePathTextField.setText(modulePath + ".service");
+        mapperPathTextField.setText(modulePath + ".mapper");
+        entityPathTextField.setText(modulePath + ".entity");
+        dtoPathTextField.setText(modulePath + ".dto");
+        queryPathTextField.setText(modulePath + ".query");
+        mapStructPathTextField.setText(modulePath + ".mapstruct");
+        mapperXmlPathTextField.setText("mapper");
+    }
 }

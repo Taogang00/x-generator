@@ -7,7 +7,6 @@ import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationGroupManager;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.FixedSizeButton;
 import com.intellij.openapi.ui.MessageType;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.DocumentAdapter;
@@ -47,7 +46,6 @@ public class XGCodeGeneratorUI {
     private ExpandableTextField dtoPathTextField;
     private ExpandableTextField queryPathTextField;
     private ExpandableTextField mapStructPathTextField;
-    private JTextField ignoreTablePrefixTextField;
     private JCheckBox allCheckBox;
     private JTextField searchTextField;
     private JRadioButton ignoreRadioButton;
@@ -63,14 +61,16 @@ public class XGCodeGeneratorUI {
     private JButton importBtn;
     private JComboBox<String> comboBox1;
     private JList<String> tableList;
-    private FixedSizeButton settingBtn;
+    private JButton settingBtn;
+    private JTextField ignoreTablePrefixTextField;
     private JTextField authorTextField;
+    private ExpandableTextField mapperXmlPathTextField;
 
     private List<TableInfo> tableInfoList;
 
     public XGCodeGeneratorUI(Project project) {
         settingBtn.setIcon(AllIcons.General.Settings);
-        this.authorTextField.setText(System.getProperty("user.name"));
+        this.ignoreTablePrefixTextField.setText(System.getProperty("user.name"));
 
         for (String s : XGMavenUtil.getMavenArtifactId(project)) {
             projectModuleComboBox.addItem(s);
@@ -93,6 +93,7 @@ public class XGCodeGeneratorUI {
                 dtoPathTextField.setText(modulePath + ".dto");
                 queryPathTextField.setText(modulePath + ".query");
                 mapStructPathTextField.setText(modulePath + ".mapstruct");
+                mapperXmlPathTextField.setText("mapper");
             }
         });
 

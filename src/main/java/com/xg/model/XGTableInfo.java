@@ -11,7 +11,7 @@ import java.util.List;
  * @date 2024/11/14
  */
 @Data
-public class TableInfo {
+public class XGTableInfo {
 
     /**
      * 表名
@@ -26,5 +26,5 @@ public class TableInfo {
     /**
      * 列信息集合
      */
-    private List<ColumnInfo> columnList;
+    private List<XGColumnInfo> columnList;
 }

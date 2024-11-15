@@ -1,9 +1,9 @@
-package com.xg.config;
+package com.xg.model;
 
 import lombok.Data;
 
 @Data
-public class XGPackageConfig {
+public class XGPackageInfo {
 
     /**
      * 源码路径

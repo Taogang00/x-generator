@@ -10,10 +10,10 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.MessageType;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.components.fields.ExpandableTextField;
-import com.xg.config.XGPackageConfig;
-import com.xg.model.ColumnInfo;
-import com.xg.model.TableInfo;
-import com.xg.render.TableListCellRenderer;
+import com.xg.model.XGPackageInfo;
+import com.xg.model.XGColumnInfo;
+import com.xg.model.XGTableInfo;
+import com.xg.render.XGTableListCellRenderer;
 import com.xg.utils.XGFileChooserUtil;
 import com.xg.utils.XGMavenUtil;
 import lombok.Getter;
@@ -66,15 +66,15 @@ public class XGCodeGeneratorUI {
     private JButton packageInverseBtn;
     private JLabel runInfoLabel;
 
-    private List<TableInfo> tableInfoList;
+    private List<XGTableInfo> XGTableInfoList;
 
-    private final XGPackageConfig XGPackageConfig;
+    private final XGPackageInfo XGPackageInfo;
 
     public XGCodeGeneratorUI(Project project) {
         this.settingBtn.setIcon(AllIcons.General.Settings);
         this.importBtn.setIcon(AllIcons.ToolbarDecorator.Import);
         this.authorTextField.setText(System.getProperty("user.name"));
-        this.XGPackageConfig = new XGPackageConfig();
+        this.XGPackageInfo = new XGPackageInfo();
 
         for (String s : XGMavenUtil.getMavenArtifactId(project)) {
             projectModuleComboBox.addItem(s);
@@ -83,7 +83,7 @@ public class XGCodeGeneratorUI {
         // 选择项目时需要给代码生成的路径进行赋值
         projectModuleComboBox.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.SELECTED) {
-                initSelectedModulePackage(project, XGPackageConfig, e.getItem().toString());
+                initSelectedModulePackage(project, XGPackageInfo, e.getItem().toString());
             }
         });
 
@@ -95,10 +95,10 @@ public class XGCodeGeneratorUI {
             String path = virtualFile.getPath();
             tableList.setListData(new String[0]); // 清空JList内容
 
-            this.tableInfoList = importTableXml(path, runInfoLabel);
+            this.XGTableInfoList = importTableXml(path, runInfoLabel);
 
-            if (tableInfoList != null) {
-                Map<String, TableInfo> tableInfoMap = tableInfoList.stream().collect(Collectors.toMap(TableInfo::getName, Function.identity()));
+            if (XGTableInfoList != null) {
+                Map<String, XGTableInfo> tableInfoMap = XGTableInfoList.stream().collect(Collectors.toMap(XGTableInfo::getName, Function.identity()));
 
                 DefaultListModel<String> model = new DefaultListModel<>();
                 // tableNameSet按照字母降序
@@ -108,19 +108,19 @@ public class XGCodeGeneratorUI {
                 model.addAll(tableNameList);
                 tableList.setModel(model);
 
-                TableListCellRenderer cellRenderer = new TableListCellRenderer(tableInfoMap, runInfoLabel);
+                XGTableListCellRenderer cellRenderer = new XGTableListCellRenderer(tableInfoMap, runInfoLabel);
                 tableList.setCellRenderer(cellRenderer);
             }
         });
 
         //初始化包赋值操作
         if (ObjectUtil.isNotNull(projectModuleComboBox.getSelectedItem())) {
-            initSelectedModulePackage(project, XGPackageConfig, projectModuleComboBox.getSelectedItem().toString());
+            initSelectedModulePackage(project, XGPackageInfo, projectModuleComboBox.getSelectedItem().toString());
         }
     }
 
-    public static List<TableInfo> importTableXml(String path, JLabel runInfoLabel) {
-        List<TableInfo> list = new ArrayList<>();
+    public static List<XGTableInfo> importTableXml(String path, JLabel runInfoLabel) {
+        List<XGTableInfo> list = new ArrayList<>();
 
         File file = new File(path);
         if (!file.exists()) {
@@ -136,13 +136,13 @@ public class XGCodeGeneratorUI {
             Element tableElement = (Element) tableNodes.item(i);
 
             // 提取表名 (Name 属性)
-            TableInfo tableInfo = new TableInfo();
-            List<ColumnInfo> columnList = new ArrayList<>();
+            XGTableInfo XGTableInfo = new XGTableInfo();
+            List<XGColumnInfo> columnList = new ArrayList<>();
             String tableName = tableElement.getAttribute("Name");
             String tableText = tableElement.getAttribute("Text");
-            tableInfo.setName(tableName);
-            tableInfo.setComment(tableText);
-            tableInfo.setColumnList(columnList);
+            XGTableInfo.setName(tableName);
+            XGTableInfo.setComment(tableText);
+            XGTableInfo.setColumnList(columnList);
 
             // 你可以根据需要提取更多的属性或子元素
             // 例如，提取 Table 下的 Column 元素
@@ -154,46 +154,46 @@ public class XGCodeGeneratorUI {
                 String columnText = columnElement.getAttribute("Text");
                 String dataType = columnElement.getAttribute("DataType");
 
-                ColumnInfo columnInfo = new ColumnInfo();
-                columnInfo.setName(columnText);
-                columnInfo.setFieldName(columnName);
-                columnInfo.setFieldType(dataType);
-                columnInfo.setPrimaryKey(Boolean.getBoolean(primaryKey));
-                tableInfo.getColumnList().add(columnInfo);
+                XGColumnInfo XGColumnInfo = new XGColumnInfo();
+                XGColumnInfo.setName(columnText);
+                XGColumnInfo.setFieldName(columnName);
+                XGColumnInfo.setFieldType(dataType);
+                XGColumnInfo.setPrimaryKey(Boolean.getBoolean(primaryKey));
+                XGTableInfo.getColumnList().add(XGColumnInfo);
             }
-            list.add(tableInfo);
+            list.add(XGTableInfo);
         }
 
         runInfoLabel.setText("已导入" + list.size() + "张表");
         return list;
     }
 
-    private void initSelectedModulePackage(Project project, XGPackageConfig XGPackageConfig, String selectedItem) {
+    private void initSelectedModulePackage(Project project, XGPackageInfo XGPackageInfo, String selectedItem) {
         File sourcePath = XGMavenUtil.getMavenArtifactIdSourcePath(project, selectedItem);
         assert sourcePath != null;
         File file = XGFileChooserUtil.walkFiles(sourcePath);
         codeGeneratorPathTextField.setText(sourcePath.getAbsolutePath());
         String modulePath = file.getAbsolutePath().replace(sourcePath.getAbsolutePath() + "\\", "");
         modulePath = modulePath.replace("\\", ".");
-        XGPackageConfig.setModulePackageName(modulePath);
+        XGPackageInfo.setModulePackageName(modulePath);
 
-        XGPackageConfig.setControllerPackageName(modulePath + ".controller");
-        XGPackageConfig.setServicePackageName(modulePath + ".service");
-        XGPackageConfig.setMapperPackageName(modulePath + ".mapper");
-        XGPackageConfig.setEntityPackageName(modulePath + ".entity");
-        XGPackageConfig.setDtoPackageName(modulePath + ".dto");
-        XGPackageConfig.setQueryPackageName(modulePath + ".query");
-        XGPackageConfig.setMapstructPackageName(modulePath + ".mapstruct");
-        XGPackageConfig.setMapperXmlPackage("mapper");
+        XGPackageInfo.setControllerPackageName(modulePath + ".controller");
+        XGPackageInfo.setServicePackageName(modulePath + ".service");
+        XGPackageInfo.setMapperPackageName(modulePath + ".mapper");
+        XGPackageInfo.setEntityPackageName(modulePath + ".entity");
+        XGPackageInfo.setDtoPackageName(modulePath + ".dto");
+        XGPackageInfo.setQueryPackageName(modulePath + ".query");
+        XGPackageInfo.setMapstructPackageName(modulePath + ".mapstruct");
+        XGPackageInfo.setMapperXmlPackage("mapper");
 
-        controllerPathTextField.setText(XGPackageConfig.getControllerPackageName());
-        servicePathTextField.setText(XGPackageConfig.getServicePackageName());
-        mapperPathTextField.setText(XGPackageConfig.getMapperPackageName());
-        entityPathTextField.setText(XGPackageConfig.getEntityPackageName());
-        dtoPathTextField.setText(XGPackageConfig.getDtoPackageName());
-        queryPathTextField.setText(XGPackageConfig.getQueryPackageName());
-        mapStructPathTextField.setText(XGPackageConfig.getMapstructPackageName());
-        mapperXmlPathTextField.setText(XGPackageConfig.getMapperXmlPackage());
+        controllerPathTextField.setText(XGPackageInfo.getControllerPackageName());
+        servicePathTextField.setText(XGPackageInfo.getServicePackageName());
+        mapperPathTextField.setText(XGPackageInfo.getMapperPackageName());
+        entityPathTextField.setText(XGPackageInfo.getEntityPackageName());
+        dtoPathTextField.setText(XGPackageInfo.getDtoPackageName());
+        queryPathTextField.setText(XGPackageInfo.getQueryPackageName());
+        mapStructPathTextField.setText(XGPackageInfo.getMapstructPackageName());
+        mapperXmlPathTextField.setText(XGPackageInfo.getMapperXmlPackage());
     }
 
     public void generateCode(Project project){

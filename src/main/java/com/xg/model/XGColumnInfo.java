@@ -9,7 +9,7 @@ import lombok.Data;
  * @date 2024/11/14
  */
 @Data
-public class ColumnInfo {
+public class XGColumnInfo {
 
     /**
      * 列名

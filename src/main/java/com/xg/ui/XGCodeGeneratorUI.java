@@ -5,8 +5,8 @@ import cn.hutool.core.util.XmlUtil;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.fields.ExpandableTextField;
+import com.xg.config.XGPackageConfig;
 import com.xg.model.ColumnInfo;
 import com.xg.model.TableInfo;
 import com.xg.render.TableListCellRenderer;
@@ -61,15 +61,16 @@ public class XGCodeGeneratorUI {
     private JButton packageAllBtn;
     private JButton packageInverseBtn;
     private JLabel runInfoLabel;
-    private JBLabel qaLabel;
 
     private List<TableInfo> tableInfoList;
+
+    private final XGPackageConfig XGPackageConfig;
 
     public XGCodeGeneratorUI(Project project) {
         this.settingBtn.setIcon(AllIcons.General.Settings);
         this.importBtn.setIcon(AllIcons.ToolbarDecorator.Import);
-        this.qaLabel.setIcon(AllIcons.Windows.Help);
         this.authorTextField.setText(System.getProperty("user.name"));
+        this.XGPackageConfig = new XGPackageConfig();
 
         for (String s : XGMavenUtil.getMavenArtifactId(project)) {
             projectModuleComboBox.addItem(s);
@@ -78,7 +79,7 @@ public class XGCodeGeneratorUI {
         // 选择项目时需要给代码生成的路径进行赋值
         projectModuleComboBox.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.SELECTED) {
-                initProjectModuleComboBoxEvent(project, e.getItem().toString());
+                initSelectedModulePackage(project, XGPackageConfig, e.getItem().toString());
             }
         });
 
@@ -110,7 +111,7 @@ public class XGCodeGeneratorUI {
 
         //初始化包赋值操作
         if (ObjectUtil.isNotNull(projectModuleComboBox.getSelectedItem())) {
-            initProjectModuleComboBoxEvent(project, projectModuleComboBox.getSelectedItem().toString());
+            initSelectedModulePackage(project, XGPackageConfig, projectModuleComboBox.getSelectedItem().toString());
         }
     }
 
@@ -163,21 +164,31 @@ public class XGCodeGeneratorUI {
         return list;
     }
 
-    private void initProjectModuleComboBoxEvent(Project project, String selectedItem) {
+    private void initSelectedModulePackage(Project project, XGPackageConfig XGPackageConfig, String selectedItem) {
         File sourcePath = XGMavenUtil.getMavenArtifactIdSourcePath(project, selectedItem);
         assert sourcePath != null;
         File file = XGFileChooserUtil.walkFiles(sourcePath);
         codeGeneratorPathTextField.setText(sourcePath.getAbsolutePath());
         String modulePath = file.getAbsolutePath().replace(sourcePath.getAbsolutePath() + "\\", "");
         modulePath = modulePath.replace("\\", ".");
+        XGPackageConfig.setModulePackageName(modulePath);
 
-        controllerPathTextField.setText(modulePath + ".controller");
-        servicePathTextField.setText(modulePath + ".service");
-        mapperPathTextField.setText(modulePath + ".mapper");
-        entityPathTextField.setText(modulePath + ".entity");
-        dtoPathTextField.setText(modulePath + ".dto");
-        queryPathTextField.setText(modulePath + ".query");
-        mapStructPathTextField.setText(modulePath + ".mapstruct");
-        mapperXmlPathTextField.setText("mapper");
+        XGPackageConfig.setControllerPackageName(modulePath + ".controller");
+        XGPackageConfig.setServicePackageName(modulePath + ".service");
+        XGPackageConfig.setMapperPackageName(modulePath + ".mapper");
+        XGPackageConfig.setEntityPackageName(modulePath + ".entity");
+        XGPackageConfig.setDtoPackageName(modulePath + ".dto");
+        XGPackageConfig.setQueryPackageName(modulePath + ".query");
+        XGPackageConfig.setMapstructPackageName(modulePath + ".mapstruct");
+        XGPackageConfig.setMapperXmlPackage("mapper");
+
+        controllerPathTextField.setText(XGPackageConfig.getControllerPackageName());
+        servicePathTextField.setText(XGPackageConfig.getServicePackageName());
+        mapperPathTextField.setText(XGPackageConfig.getMapperPackageName());
+        entityPathTextField.setText(XGPackageConfig.getEntityPackageName());
+        dtoPathTextField.setText(XGPackageConfig.getDtoPackageName());
+        queryPathTextField.setText(XGPackageConfig.getQueryPackageName());
+        mapStructPathTextField.setText(XGPackageConfig.getMapstructPackageName());
+        mapperXmlPathTextField.setText(XGPackageConfig.getMapperXmlPackage());
     }
 }

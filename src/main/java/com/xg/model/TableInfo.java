@@ -1,5 +1,7 @@
 package com.xg.model;
 
+import lombok.Data;
+
 import java.util.List;
 
 /**
@@ -8,6 +10,7 @@ import java.util.List;
  * @author taogang
  * @date 2024/11/14
  */
+@Data
 public class TableInfo {
 
     /**
@@ -24,28 +27,4 @@ public class TableInfo {
      * 列信息集合
      */
     private List<ColumnInfo> columnList;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
-
-    public List<ColumnInfo> getColumnList() {
-        return columnList;
-    }
-
-    public void setColumnList(List<ColumnInfo> columnList) {
-        this.columnList = columnList;
-    }
 }

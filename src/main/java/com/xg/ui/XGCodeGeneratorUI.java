@@ -9,7 +9,6 @@ import com.intellij.notification.Notifications;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.MessageType;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.ui.DocumentAdapter;
 import com.intellij.ui.components.fields.ExpandableTextField;
 import com.xg.model.ColumnInfo;
 import com.xg.model.TableInfo;
@@ -17,13 +16,11 @@ import com.xg.render.TableListCellRenderer;
 import com.xg.utils.XGFileChooserUtil;
 import com.xg.utils.XGMavenUtil;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
 import java.awt.event.ItemEvent;
 import java.io.File;
 import java.util.ArrayList;
@@ -46,8 +43,6 @@ public class XGCodeGeneratorUI {
     private ExpandableTextField dtoPathTextField;
     private ExpandableTextField queryPathTextField;
     private ExpandableTextField mapStructPathTextField;
-    private JCheckBox allCheckBox;
-    private JTextField searchTextField;
     private JRadioButton ignoreRadioButton;
     private JRadioButton coverRadioButton;
     private JCheckBox controllerCheckBox;
@@ -94,12 +89,6 @@ public class XGCodeGeneratorUI {
                 queryPathTextField.setText(modulePath + ".query");
                 mapStructPathTextField.setText(modulePath + ".mapstruct");
                 mapperXmlPathTextField.setText("mapper");
-            }
-        });
-
-        searchTextField.getDocument().addDocumentListener(new DocumentAdapter() {
-            @Override
-            protected void textChanged(@NotNull DocumentEvent e) {
             }
         });
 

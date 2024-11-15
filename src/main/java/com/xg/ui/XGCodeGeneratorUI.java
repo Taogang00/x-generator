@@ -61,6 +61,9 @@ public class XGCodeGeneratorUI {
     private JButton settingBtn;
     private JTextField ignoreTablePrefixTextField;
     private JTextField authorTextField;
+    private JButton packageAllBtn;
+    private JButton packageNoAllBtn;
+    private JButton packageInverseBtn;
 
     private List<TableInfo> tableInfoList;
 

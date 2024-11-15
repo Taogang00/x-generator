@@ -14,6 +14,8 @@ public class XGMainDialog extends DialogWrapper {
 
     public XGMainDialog(Project project) {
         super(true); // 使用当前窗口作为父窗口
+        this.setOKButtonText("生成");
+        this.setCancelButtonText("取消");
         this.project = project;
 
         this.setTitle("X-代码生成器 0.0.1");

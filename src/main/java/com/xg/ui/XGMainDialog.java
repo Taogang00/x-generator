@@ -19,7 +19,7 @@ public class XGMainDialog extends DialogWrapper {
         this.project = project;
 
         this.setTitle("X-代码生成器 0.0.1");
-        this.setSize(900, 400);
+        this.setSize(999, 450);
         this.setResizable(false);
         init();
     }

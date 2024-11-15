@@ -3,11 +3,7 @@ package com.xg.ui;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.XmlUtil;
 import com.intellij.icons.AllIcons;
-import com.intellij.notification.Notification;
-import com.intellij.notification.NotificationGroupManager;
-import com.intellij.notification.Notifications;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.MessageType;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.components.fields.ExpandableTextField;
 import com.xg.model.ColumnInfo;
@@ -64,6 +60,7 @@ public class XGCodeGeneratorUI {
     private JButton packageAllBtn;
     private JButton packageNoAllBtn;
     private JButton packageInverseBtn;
+    private JLabel runInfoLabel;
 
     private List<TableInfo> tableInfoList;
 
@@ -82,7 +79,7 @@ public class XGCodeGeneratorUI {
                 File sourcePath = XGMavenUtil.getMavenArtifactIdSourcePath(project, e.getItem().toString());
                 assert sourcePath != null;
                 File file = XGFileChooserUtil.walkFiles(sourcePath);
-                codeGeneratorPathTextField.setText(file.getAbsolutePath());
+                codeGeneratorPathTextField.setText(sourcePath.getAbsolutePath());
                 String modulePath = file.getAbsolutePath().replace(sourcePath.getAbsolutePath() + "\\", "");
                 modulePath = modulePath.replace("\\", ".");
 
@@ -105,7 +102,7 @@ public class XGCodeGeneratorUI {
             String path = virtualFile.getPath();
             tableList.setListData(new String[0]); // 清空JList内容
 
-            this.tableInfoList = importTableXml(path, project);
+            this.tableInfoList = importTableXml(path, runInfoLabel);
 
             if (tableInfoList != null) {
                 Map<String, TableInfo> tableInfoMap = tableInfoList.stream().collect(Collectors.toMap(TableInfo::getName, Function.identity()));
@@ -118,7 +115,7 @@ public class XGCodeGeneratorUI {
                 model.addAll(tableNameList);
                 tableList.setModel(model);
 
-                TableListCellRenderer cellRenderer = new TableListCellRenderer(tableInfoMap);
+                TableListCellRenderer cellRenderer = new TableListCellRenderer(tableInfoMap, runInfoLabel);
                 tableList.setCellRenderer(cellRenderer);
             }
         });
@@ -126,15 +123,12 @@ public class XGCodeGeneratorUI {
         projectModuleComboBox.setSelectedIndex(0);  // 手动触发事件
     }
 
-    public static List<TableInfo> importTableXml(String path, Project project) {
-        NotificationGroupManager groupManager = NotificationGroupManager.getInstance();
+    public static List<TableInfo> importTableXml(String path, JLabel runInfoLabel) {
         List<TableInfo> list = new ArrayList<>();
 
         File file = new File(path);
         if (!file.exists()) {
-            Notification notification = groupManager.getNotificationGroup("NotificationXg")
-                    .createNotification("文件不存在", MessageType.INFO).setTitle("X-Generator");
-            Notifications.Bus.notify(notification, project);
+            runInfoLabel.setText("文件不存在");
             return null;
         }
         Document document = XmlUtil.readXML(file);
@@ -174,9 +168,7 @@ public class XGCodeGeneratorUI {
             list.add(tableInfo);
         }
 
-        Notification notification = groupManager.getNotificationGroup("NotificationXg")
-                .createNotification("导入成功", MessageType.INFO).setTitle("X-Generator");
-        Notifications.Bus.notify(notification, project);
+        runInfoLabel.setText("已导入" + list.size() + "张表");
         return list;
     }
 

@@ -66,15 +66,15 @@ public class XGCodeGeneratorUI {
     private JButton packageInverseBtn;
     private JLabel runInfoLabel;
 
-    private List<XGTableInfo> XGTableInfoList;
+    private List<XGTableInfo> xgTableInfoList;
 
-    private final XGPackageInfo XGPackageInfo;
+    private final XGPackageInfo xgPackageInfo;
 
     public XGCodeGeneratorUI(Project project) {
         this.settingBtn.setIcon(AllIcons.General.Settings);
         this.importBtn.setIcon(AllIcons.ToolbarDecorator.Import);
         this.authorTextField.setText(System.getProperty("user.name"));
-        this.XGPackageInfo = new XGPackageInfo();
+        this.xgPackageInfo = new XGPackageInfo();
 
         for (String s : XGMavenUtil.getMavenArtifactId(project)) {
             projectModuleComboBox.addItem(s);
@@ -83,7 +83,7 @@ public class XGCodeGeneratorUI {
         // 选择项目时需要给代码生成的路径进行赋值
         projectModuleComboBox.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.SELECTED) {
-                initSelectedModulePackage(project, XGPackageInfo, e.getItem().toString());
+                initSelectedModulePackage(project, xgPackageInfo, e.getItem().toString());
             }
         });
 
@@ -95,10 +95,10 @@ public class XGCodeGeneratorUI {
             String path = virtualFile.getPath();
             tableList.setListData(new String[0]); // 清空JList内容
 
-            this.XGTableInfoList = importTableXml(path, runInfoLabel);
+            this.xgTableInfoList = importTableXml(path, runInfoLabel);
 
-            if (XGTableInfoList != null) {
-                Map<String, XGTableInfo> tableInfoMap = XGTableInfoList.stream().collect(Collectors.toMap(XGTableInfo::getName, Function.identity()));
+            if (xgTableInfoList != null) {
+                Map<String, XGTableInfo> tableInfoMap = xgTableInfoList.stream().collect(Collectors.toMap(XGTableInfo::getName, Function.identity()));
 
                 DefaultListModel<String> model = new DefaultListModel<>();
                 // tableNameSet按照字母降序
@@ -115,7 +115,7 @@ public class XGCodeGeneratorUI {
 
         //初始化包赋值操作
         if (ObjectUtil.isNotNull(projectModuleComboBox.getSelectedItem())) {
-            initSelectedModulePackage(project, XGPackageInfo, projectModuleComboBox.getSelectedItem().toString());
+            initSelectedModulePackage(project, xgPackageInfo, projectModuleComboBox.getSelectedItem().toString());
         }
     }
 
@@ -168,38 +168,36 @@ public class XGCodeGeneratorUI {
         return list;
     }
 
-    private void initSelectedModulePackage(Project project, XGPackageInfo XGPackageInfo, String selectedItem) {
+    private void initSelectedModulePackage(Project project, XGPackageInfo xgPackageInfo, String selectedItem) {
         File sourcePath = XGMavenUtil.getMavenArtifactIdSourcePath(project, selectedItem);
         assert sourcePath != null;
         File file = XGFileChooserUtil.walkFiles(sourcePath);
         codeGeneratorPathTextField.setText(sourcePath.getAbsolutePath());
         String modulePath = file.getAbsolutePath().replace(sourcePath.getAbsolutePath() + "\\", "");
         modulePath = modulePath.replace("\\", ".");
-        XGPackageInfo.setModulePackageName(modulePath);
+        xgPackageInfo.setModulePackageName(modulePath);
 
-        XGPackageInfo.setControllerPackageName(modulePath + ".controller");
-        XGPackageInfo.setServicePackageName(modulePath + ".service");
-        XGPackageInfo.setMapperPackageName(modulePath + ".mapper");
-        XGPackageInfo.setEntityPackageName(modulePath + ".entity");
-        XGPackageInfo.setDtoPackageName(modulePath + ".dto");
-        XGPackageInfo.setQueryPackageName(modulePath + ".query");
-        XGPackageInfo.setMapstructPackageName(modulePath + ".mapstruct");
-        XGPackageInfo.setMapperXmlPackage("mapper");
+        xgPackageInfo.setControllerPackageName(modulePath + ".controller");
+        xgPackageInfo.setServicePackageName(modulePath + ".service");
+        xgPackageInfo.setMapperPackageName(modulePath + ".mapper");
+        xgPackageInfo.setEntityPackageName(modulePath + ".entity");
+        xgPackageInfo.setDtoPackageName(modulePath + ".dto");
+        xgPackageInfo.setQueryPackageName(modulePath + ".query");
+        xgPackageInfo.setMapstructPackageName(modulePath + ".mapstruct");
+        xgPackageInfo.setMapperXmlPackage("mapper");
 
-        controllerPathTextField.setText(XGPackageInfo.getControllerPackageName());
-        servicePathTextField.setText(XGPackageInfo.getServicePackageName());
-        mapperPathTextField.setText(XGPackageInfo.getMapperPackageName());
-        entityPathTextField.setText(XGPackageInfo.getEntityPackageName());
-        dtoPathTextField.setText(XGPackageInfo.getDtoPackageName());
-        queryPathTextField.setText(XGPackageInfo.getQueryPackageName());
-        mapStructPathTextField.setText(XGPackageInfo.getMapstructPackageName());
-        mapperXmlPathTextField.setText(XGPackageInfo.getMapperXmlPackage());
+        controllerPathTextField.setText(xgPackageInfo.getControllerPackageName());
+        servicePathTextField.setText(xgPackageInfo.getServicePackageName());
+        mapperPathTextField.setText(xgPackageInfo.getMapperPackageName());
+        entityPathTextField.setText(xgPackageInfo.getEntityPackageName());
+        dtoPathTextField.setText(xgPackageInfo.getDtoPackageName());
+        queryPathTextField.setText(xgPackageInfo.getQueryPackageName());
+        mapStructPathTextField.setText(xgPackageInfo.getMapstructPackageName());
+        mapperXmlPathTextField.setText(xgPackageInfo.getMapperXmlPackage());
     }
 
     public void generateCode(Project project){
-        NotificationGroupManager groupManager = NotificationGroupManager.getInstance();
-        Notification notification = groupManager.getNotificationGroup("NotificationXg")
-                .createNotification("生成代码！", MessageType.INFO).setTitle("X-Generator");
-        Notifications.Bus.notify(notification, project);
+        System.out.println(this.xgPackageInfo);
+        System.out.println(this.xgTableInfoList);
     }
 }

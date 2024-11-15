@@ -22,9 +22,14 @@ public class XGColumnInfo {
     private String fieldName;
 
     /**
-     * 数据类型
+     * 数据类型-数据库
      */
     private String fieldType;
+
+    /**
+     * 数据类型-java
+     */
+    private String fieldJavaType;
 
     /**
      * 列注释

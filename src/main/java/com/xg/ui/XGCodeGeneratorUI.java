@@ -70,7 +70,7 @@ public class XGCodeGeneratorUI {
 
     public XGCodeGeneratorUI(Project project) {
         settingBtn.setIcon(AllIcons.General.Settings);
-        this.ignoreTablePrefixTextField.setText(System.getProperty("user.name"));
+        this.authorTextField.setText(System.getProperty("user.name"));
 
         for (String s : XGMavenUtil.getMavenArtifactId(project)) {
             projectModuleComboBox.addItem(s);

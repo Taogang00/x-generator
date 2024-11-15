@@ -62,7 +62,6 @@ public class XGCodeGeneratorUI {
     private JTextField codeGeneratorPathTextField;
     private JButton importBtn;
     private JComboBox<String> comboBox1;
-    private JButton button1;
     private JList<String> tableList;
     private FixedSizeButton settingBtn;
     private JTextField authorTextField;

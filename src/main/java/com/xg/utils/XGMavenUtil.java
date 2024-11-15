@@ -30,7 +30,7 @@ public class XGMavenUtil {
     }
 
     /**
-     * 获取项目所有的Maven ArtifactId
+     * 获取项目所有的Maven(非pom汇总模块) ArtifactId
      *
      * @param project 项目
      * @return {@link List }<{@link String }>
@@ -38,7 +38,7 @@ public class XGMavenUtil {
     public static List<String> getMavenArtifactId(Project project) {
         MavenProjectsManager manager = MavenProjectsManager.getInstance(project);
         List<MavenProject> projects = manager.getProjects();
-        List<MavenId> mavenIdList = projects.stream().map(MavenProject::getMavenId).toList();
+        List<MavenId> mavenIdList = projects.stream().filter(x -> !x.getPackaging().equals("pom")).map(MavenProject::getMavenId).toList();
         return mavenIdList.stream().map(MavenId::getArtifactId).collect(Collectors.toList());
     }
 

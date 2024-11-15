@@ -123,22 +123,12 @@
               </grid>
               <component id="74905" class="javax.swing.JComboBox" binding="comboBox1" default-binding="true">
                 <constraints>
-                  <grid row="0" column="1" row-span="1" col-span="5" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                  <grid row="0" column="1" row-span="1" col-span="6" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
                   <model>
                     <item value="默认(ErStudio+MybatisPlus)"/>
                   </model>
-                </properties>
-              </component>
-              <component id="4b056" class="com.intellij.openapi.ui.FixedSizeButton" binding="settingBtn">
-                <constraints>
-                  <grid row="0" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <enabled value="true"/>
-                  <horizontalAlignment value="0"/>
-                  <text value="..."/>
                 </properties>
               </component>
               <component id="a2c6" class="javax.swing.JLabel">
@@ -167,7 +157,7 @@
             <properties/>
             <border type="none"/>
             <children>
-              <grid id="4f7e9" layout-manager="GridLayoutManager" row-count="7" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+              <grid id="4f7e9" layout-manager="GridLayoutManager" row-count="7" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                 <margin top="0" left="0" bottom="0" right="0"/>
                 <constraints>
                   <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -181,7 +171,11 @@
                         <preferred-size width="311" height="34"/>
                       </grid>
                     </constraints>
-                    <properties/>
+                    <properties>
+                      <columns value="20"/>
+                      <title value=""/>
+                      <toolTipText value=""/>
+                    </properties>
                   </component>
                   <component id="2d0f9" class="javax.swing.JCheckBox" binding="controllerCheckBox">
                     <constraints>
@@ -293,76 +287,6 @@
                       </grid>
                     </constraints>
                     <properties/>
-                  </component>
-                  <component id="a3223" class="com.intellij.openapi.ui.FixedSizeButton" binding="button1" default-binding="true">
-                    <constraints>
-                      <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                    </constraints>
-                    <properties>
-                      <enabled value="true"/>
-                      <horizontalAlignment value="0"/>
-                      <text value="..."/>
-                    </properties>
-                  </component>
-                  <component id="81f53" class="com.intellij.openapi.ui.FixedSizeButton" default-binding="true">
-                    <constraints>
-                      <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                    </constraints>
-                    <properties>
-                      <enabled value="true"/>
-                      <horizontalAlignment value="0"/>
-                      <text value="..."/>
-                    </properties>
-                  </component>
-                  <component id="2bcd0" class="com.intellij.openapi.ui.FixedSizeButton" default-binding="true">
-                    <constraints>
-                      <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                    </constraints>
-                    <properties>
-                      <enabled value="true"/>
-                      <horizontalAlignment value="0"/>
-                      <text value="..."/>
-                    </properties>
-                  </component>
-                  <component id="f91b4" class="com.intellij.openapi.ui.FixedSizeButton" default-binding="true">
-                    <constraints>
-                      <grid row="3" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                    </constraints>
-                    <properties>
-                      <enabled value="true"/>
-                      <horizontalAlignment value="0"/>
-                      <text value="..."/>
-                    </properties>
-                  </component>
-                  <component id="7c0c6" class="com.intellij.openapi.ui.FixedSizeButton" default-binding="true">
-                    <constraints>
-                      <grid row="4" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                    </constraints>
-                    <properties>
-                      <enabled value="true"/>
-                      <horizontalAlignment value="0"/>
-                      <text value="..."/>
-                    </properties>
-                  </component>
-                  <component id="3943c" class="com.intellij.openapi.ui.FixedSizeButton" default-binding="true">
-                    <constraints>
-                      <grid row="5" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                    </constraints>
-                    <properties>
-                      <enabled value="true"/>
-                      <horizontalAlignment value="0"/>
-                      <text value="..."/>
-                    </properties>
-                  </component>
-                  <component id="73fde" class="com.intellij.openapi.ui.FixedSizeButton" default-binding="true">
-                    <constraints>
-                      <grid row="6" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                    </constraints>
-                    <properties>
-                      <enabled value="true"/>
-                      <horizontalAlignment value="0"/>
-                      <text value="..."/>
-                    </properties>
                   </component>
                 </children>
               </grid>

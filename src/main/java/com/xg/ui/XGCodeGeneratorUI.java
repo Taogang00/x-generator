@@ -43,6 +43,9 @@ public class XGCodeGeneratorUI {
     private ExpandableTextField dtoPathTextField;
     private ExpandableTextField queryPathTextField;
     private ExpandableTextField mapStructPathTextField;
+    private ExpandableTextField mapperXmlPathTextField;
+    private ExpandableTextField codeGeneratorPathTextField;
+
     private JRadioButton ignoreRadioButton;
     private JRadioButton coverRadioButton;
     private JCheckBox controllerCheckBox;
@@ -52,19 +55,18 @@ public class XGCodeGeneratorUI {
     private JCheckBox dtoCheckBox;
     private JCheckBox queryCheckBox;
     private JCheckBox mapStructCheckBox;
-    private JTextField codeGeneratorPathTextField;
     private JButton importBtn;
     private JComboBox<String> comboBox1;
     private JList<String> tableList;
     private JButton settingBtn;
     private JTextField ignoreTablePrefixTextField;
     private JTextField authorTextField;
-    private ExpandableTextField mapperXmlPathTextField;
 
     private List<TableInfo> tableInfoList;
 
     public XGCodeGeneratorUI(Project project) {
-        settingBtn.setIcon(AllIcons.General.Settings);
+        this.settingBtn.setIcon(AllIcons.General.Settings);
+        this.importBtn.setIcon(AllIcons.ToolbarDecorator.Import);
         this.authorTextField.setText(System.getProperty("user.name"));
 
         for (String s : XGMavenUtil.getMavenArtifactId(project)) {
@@ -117,6 +119,8 @@ public class XGCodeGeneratorUI {
                 tableList.setCellRenderer(cellRenderer);
             }
         });
+
+        projectModuleComboBox.setSelectedIndex(0);  // 手动触发事件
     }
 
     public static List<TableInfo> importTableXml(String path, Project project) {

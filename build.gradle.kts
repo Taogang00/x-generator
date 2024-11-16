@@ -27,6 +27,8 @@ intellij {
 dependencies {
     implementation("cn.hutool:hutool-core:5.8.33")
     implementation("cn.hutool:hutool-json:5.8.33")
+    implementation("org.freemarker:freemarker:2.3.33")
+
     compileOnly("org.projectlombok:lombok:1.18.34")
     annotationProcessor("org.projectlombok:lombok:1.18.34")  // 注解处理器依赖
 }

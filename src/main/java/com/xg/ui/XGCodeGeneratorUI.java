@@ -12,6 +12,7 @@ import com.xg.model.XGTableInfo;
 import com.xg.render.XGTableListCellRenderer;
 import com.xg.utils.XGFileChooserUtil;
 import com.xg.utils.XGMavenUtil;
+import freemarker.template.Configuration;
 import lombok.Getter;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -20,6 +21,7 @@ import org.w3c.dom.NodeList;
 import javax.swing.*;
 import java.awt.event.ItemEvent;
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -52,8 +54,9 @@ public class XGCodeGeneratorUI {
     private JCheckBox dtoCheckBox;
     private JCheckBox queryCheckBox;
     private JCheckBox mapStructCheckBox;
+    private JCheckBox mapXmlCheckBox;
     private JButton importBtn;
-    private JComboBox<String> comboBox1;
+    private JComboBox<String> configComboBox;
     private JList<String> tableList;
     private JButton settingBtn;
     private JTextField ignoreTablePrefixTextField;
@@ -72,6 +75,85 @@ public class XGCodeGeneratorUI {
         for (String s : XGMavenUtil.getMavenArtifactId(project)) {
             projectModuleComboBox.addItem(s);
         }
+
+        packageAllBtn.addActionListener(e -> {
+            if (!this.controllerCheckBox.isSelected()
+                    || !this.serviceCheckBox.isSelected()
+                    || !this.dtoCheckBox.isSelected()
+                    || !this.queryCheckBox.isSelected()
+                    || !this.mapperCheckBox.isSelected()
+                    || !this.entityCheckBox.isSelected()
+                    || !this.mapXmlCheckBox.isSelected()) {
+                this.packageAllBtn.setText("全不选");
+                this.controllerCheckBox.setSelected(true);
+                this.entityCheckBox.setSelected(true);
+                this.serviceCheckBox.setSelected(true);
+                this.dtoCheckBox.setSelected(true);
+                this.queryCheckBox.setSelected(true);
+                this.mapperCheckBox.setSelected(true);
+                this.mapStructCheckBox.setSelected(true);
+                this.mapXmlCheckBox.setSelected(true);
+            } else {
+                this.packageAllBtn.setText("全选");
+                this.controllerCheckBox.setSelected(false);
+                this.entityCheckBox.setSelected(false);
+                this.serviceCheckBox.setSelected(false);
+                this.dtoCheckBox.setSelected(false);
+                this.queryCheckBox.setSelected(false);
+                this.mapStructCheckBox.setSelected(false);
+                this.mapperCheckBox.setSelected(false);
+                this.mapXmlCheckBox.setSelected(false);
+            }
+        });
+
+        // 生成
+        controllerCheckBox.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                this.entityCheckBox.setSelected(true);
+                this.serviceCheckBox.setSelected(true);
+                this.dtoCheckBox.setSelected(true);
+                this.queryCheckBox.setSelected(true);
+                this.mapStructCheckBox.setSelected(true);
+                this.mapperCheckBox.setSelected(true);
+                this.mapXmlCheckBox.setSelected(true);
+            }
+            this.xgGlobalInfo.setGenerateController(e.getStateChange() == ItemEvent.SELECTED);
+        });
+        serviceCheckBox.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                this.mapperCheckBox.setSelected(true);
+                this.mapXmlCheckBox.setSelected(true);
+            }
+            this.xgGlobalInfo.setGenerateService(e.getStateChange() == ItemEvent.SELECTED);
+        });
+        entityCheckBox.addItemListener(e -> {
+            this.xgGlobalInfo.setGenerateEntity(e.getStateChange() == ItemEvent.SELECTED);
+        });
+        dtoCheckBox.addItemListener(e -> {
+            this.xgGlobalInfo.setGenerateDTO(e.getStateChange() == ItemEvent.SELECTED);
+        });
+        queryCheckBox.addItemListener(e -> {
+            this.xgGlobalInfo.setGenerateQuery(e.getStateChange() == ItemEvent.SELECTED);
+        });
+        mapStructCheckBox.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                this.entityCheckBox.setSelected(true);
+                this.dtoCheckBox.setSelected(true);
+            }
+            this.xgGlobalInfo.setGenerateMapStruct(e.getStateChange() == ItemEvent.SELECTED);
+        });
+        mapperCheckBox.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                this.mapXmlCheckBox.setSelected(true);
+            }
+            this.xgGlobalInfo.setGenerateMapper(e.getStateChange() == ItemEvent.SELECTED);
+        });
+        mapXmlCheckBox.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                this.mapperCheckBox.setSelected(true);
+            }
+            this.xgGlobalInfo.setGenerateMapperXml(e.getStateChange() == ItemEvent.SELECTED);
+        });
 
         // 选择项目时需要给代码生成的路径进行赋值
         projectModuleComboBox.addItemListener(e -> {
@@ -191,6 +273,10 @@ public class XGCodeGeneratorUI {
     }
 
     public void generateCode(Project project) {
+        Configuration configuration = new Configuration(Configuration.VERSION_2_3_33);
+        configuration.setDefaultEncoding(StandardCharsets.UTF_8.displayName());
+        configuration.setClassForTemplateLoading(this.getClass(), "/");
+
         System.out.println(this.xgGlobalInfo);
     }
 }

@@ -48,6 +48,7 @@ public class XGGlobalInfo {
     private Boolean generateEntity;
     private Boolean generateService;
     private Boolean generateQuery;
+    private Boolean generateMapStruct;
     private Boolean generateMapper;
     private Boolean generateMapperXml;
     private Boolean generateDTO;

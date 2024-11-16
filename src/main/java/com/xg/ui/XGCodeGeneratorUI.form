@@ -82,7 +82,7 @@
                   <horizontalAlignment value="2"/>
                 </properties>
               </component>
-              <component id="74905" class="javax.swing.JComboBox" binding="comboBox1" default-binding="true">
+              <component id="74905" class="javax.swing.JComboBox" binding="configComboBox">
                 <constraints>
                   <grid row="0" column="1" row-span="1" col-span="5" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
@@ -286,7 +286,7 @@
                     </constraints>
                     <properties/>
                   </component>
-                  <component id="ba5c8" class="javax.swing.JCheckBox">
+                  <component id="ba5c8" class="javax.swing.JCheckBox" binding="mapXmlCheckBox">
                     <constraints>
                       <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>

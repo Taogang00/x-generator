@@ -2,15 +2,31 @@ package com.xg.model;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class XGGlobalInfo {
+
+    private final String sourcePath = "src.main.java";
+    private final String resourcePath = "src.main.resources";
 
     private String author;
     private String dateTime;
     private String tablePrefix;
+    private Boolean ignoreTablePrefix;
     private String codeGeneratorPath;
     private Boolean fileOverride;
-    private Boolean ignoreTablePrefix;
+
+    private String modulePackageName;
+    private String controllerPackageName;
+    private String entityPackageName;
+    private String dtoPackageName;
+    private String queryPackageName;
+    private String mapstructPackageName;
+    private String servicePackageName;
+    private String serviceImplPackageName;
+    private String mapperPackageName;
+    private String mapperXmlPackage = "mapper";
 
     private String superControllerClass;
     private String superServiceClass;
@@ -27,4 +43,14 @@ public class XGGlobalInfo {
     private String superMapperClassPackageName;
     private String superQueryClassPackageName;
     private String superDTOClassPackageName;
+
+    private Boolean generateController;
+    private Boolean generateEntity;
+    private Boolean generateService;
+    private Boolean generateQuery;
+    private Boolean generateMapper;
+    private Boolean generateMapperXml;
+    private Boolean generateDTO;
+
+    private List<XGTableInfo> tableInfoList;
 }

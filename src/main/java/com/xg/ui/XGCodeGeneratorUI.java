@@ -65,11 +65,13 @@ public class XGCodeGeneratorUI {
     private JLabel runInfoLabel;
 
     private final XGGlobalInfo xgGlobalInfo;
+    private List<XGTableInfo> tableInfoList;
 
     public XGCodeGeneratorUI(Project project) {
         this.settingBtn.setIcon(AllIcons.General.Settings);
         this.importBtn.setIcon(AllIcons.ToolbarDecorator.Import);
         this.authorTextField.setText(System.getProperty("user.name"));
+        this.packageAllBtn.setText("全不选");
         this.xgGlobalInfo = new XGGlobalInfo();
 
         for (String s : XGMavenUtil.getMavenArtifactId(project)) {
@@ -146,11 +148,9 @@ public class XGCodeGeneratorUI {
             }
             String path = virtualFile.getPath();
             tableList.setListData(new String[0]); // 清空JList内容
-
-            List<XGTableInfo> tableInfoList = importTableXml(path, runInfoLabel);
+            this.tableInfoList = importTableXml(path, runInfoLabel);
 
             if (tableInfoList != null) {
-                this.xgGlobalInfo.setTableInfoList(tableInfoList);
                 Map<String, XGTableInfo> tableInfoMap = tableInfoList.stream().collect(Collectors.toMap(XGTableInfo::getName, Function.identity()));
 
                 DefaultListModel<String> model = new DefaultListModel<>();

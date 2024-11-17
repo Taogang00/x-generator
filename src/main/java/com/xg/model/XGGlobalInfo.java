@@ -2,8 +2,6 @@ package com.xg.model;
 
 import lombok.Data;
 
-import java.util.List;
-
 @Data
 public class XGGlobalInfo {
 
@@ -52,6 +50,4 @@ public class XGGlobalInfo {
     private Boolean generateMapper;
     private Boolean generateMapperXml;
     private Boolean generateDTO;
-
-    private List<XGTableInfo> tableInfoList;
 }

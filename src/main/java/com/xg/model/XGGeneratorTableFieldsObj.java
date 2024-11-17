@@ -22,6 +22,11 @@ public class XGGeneratorTableFieldsObj {
     private String propertyType;
 
     /**
+     * 数据类路径
+     */
+    private String propertyClassPath;
+
+    /**
      * 列注释
      */
     private String comment;

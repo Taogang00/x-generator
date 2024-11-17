@@ -40,5 +40,5 @@ public class XGXmlElementColumnInfo {
     /**
      * 是主键
      */
-    private boolean primaryKey;
+    private Boolean primaryKey;
 }

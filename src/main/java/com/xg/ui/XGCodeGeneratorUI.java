@@ -1,9 +1,9 @@
 package com.xg.ui;
 
-import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.XmlUtil;
+import cn.hutool.json.JSONUtil;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -17,16 +17,16 @@ import com.xg.utils.XGFileChooserUtil;
 import com.xg.utils.XGMavenUtil;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
-import freemarker.template.TemplateException;
 import lombok.Getter;
-import org.apache.commons.io.IOUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import javax.swing.*;
 import java.awt.event.ItemEvent;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.Function;
@@ -74,10 +74,12 @@ public class XGCodeGeneratorUI {
     private JTextField authorTextField;
     private JLabel runInfoLabel;
 
-    private final XGGlobalInfo xgGlobalInfo;
     private List<XGXmlElementTable> tableInfoList;
+    private final XGGlobalInfo xgGlobalInfo;
+    private final Map<String, XgGeneratorTableObj> xgGeneratorTableObjMap;
 
     public XGCodeGeneratorUI(Project project) {
+        this.xgGeneratorTableObjMap = new HashMap<>();
         this.settingBtn.setIcon(AllIcons.General.Settings);
         this.importBtn.setIcon(AllIcons.ToolbarDecorator.Import);
         this.authorTextField.setText(System.getProperty("user.name"));
@@ -177,7 +179,7 @@ public class XGCodeGeneratorUI {
                 model.addAll(tableNameList);
                 tableList.setModel(model);
 
-                XGTableListCellRenderer cellRenderer = new XGTableListCellRenderer(tableInfoMap, runInfoLabel);
+                XGTableListCellRenderer cellRenderer = new XGTableListCellRenderer(tableInfoMap, runInfoLabel, xgGeneratorTableObjMap);
                 tableList.setCellRenderer(cellRenderer);
             }
         });
@@ -280,17 +282,18 @@ public class XGCodeGeneratorUI {
     }
 
     public void generateCode(Project project) throws IOException {
-        try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("template/entity.java.ftl");
-             FileOutputStream fileOutputStream = new FileOutputStream(this.xgGlobalInfo.getOutputEntityPath())) {
-            assert resourceAsStream != null;
-
-            Map<String, Object> xgGlobalInfoMap = BeanUtil.beanToMap(this.xgGlobalInfo);
-            String templateContent = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
-            Template template = getTemplateFromString(templateContent, "entity");
-            template.process(xgGlobalInfoMap, new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8));
-        } catch (TemplateException e) {
-            throw new RuntimeException(e);
-        }
+        System.out.println(JSONUtil.toJsonPrettyStr(xgGeneratorTableObjMap.values()));
+//        try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("template/entity.java.ftl");
+//             FileOutputStream fileOutputStream = new FileOutputStream(this.xgGlobalInfo.getOutputEntityPath())) {
+//            assert resourceAsStream != null;
+//
+//            Map<String, Object> xgGlobalInfoMap = BeanUtil.beanToMap(this.xgGlobalInfo);
+//            String templateContent = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
+//            Template template = getTemplateFromString(templateContent, "entity");
+//            template.process(xgGlobalInfoMap, new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8));
+//        } catch (TemplateException e) {
+//            throw new RuntimeException(e);
+//        }
     }
 
     public void generateEntityCode(Project project, XGGlobalInfo xgGlobalInfo, XgGeneratorTableObj xgGeneratorTableObj) {

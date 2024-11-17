@@ -15,16 +15,16 @@ public class XGGlobalInfo {
     private String codeGeneratorPath;
     private Boolean fileOverride;
 
-    private String modulePackageName;
-    private String controllerPackageName;
-    private String entityPackageName;
-    private String dtoPackageName;
-    private String queryPackageName;
-    private String mapstructPackageName;
-    private String servicePackageName;
-    private String serviceImplPackageName;
-    private String mapperPackageName;
-    private String mapperXmlPackage;
+    private String modulePackagePath;
+    private String controllerPackagePath;
+    private String entityPackagePath;
+    private String dtoPackagePath;
+    private String queryPackagePath;
+    private String mapstructPackagePath;
+    private String servicePackagePath;
+    private String serviceImplPackagePath;
+    private String mapperPackagePath;
+    private String mapperXmlPackagePath;
 
     private String superControllerClass;
     private String superServiceClass;

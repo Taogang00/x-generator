@@ -51,6 +51,7 @@ public class XGCodeGeneratorUI {
 
     private JRadioButton ignoreRadioButton;
     private JRadioButton coverRadioButton;
+
     private JCheckBox controllerCheckBox;
     private JCheckBox serviceCheckBox;
     private JCheckBox mapperCheckBox;
@@ -59,13 +60,16 @@ public class XGCodeGeneratorUI {
     private JCheckBox queryCheckBox;
     private JCheckBox mapStructCheckBox;
     private JCheckBox mapXmlCheckBox;
+
     private JButton importBtn;
-    private JComboBox<String> configComboBox;
-    private JList<String> tableList;
+    private JButton packageAllBtn;
     private JButton settingBtn;
+
+    private JComboBox<String> configComboBox;
+
+    private JList<String> tableList;
     private JTextField ignoreTablePrefixTextField;
     private JTextField authorTextField;
-    private JButton packageAllBtn;
     private JLabel runInfoLabel;
 
     private final XGGlobalInfo xgGlobalInfo;
@@ -232,25 +236,25 @@ public class XGCodeGeneratorUI {
         codeGeneratorPathTextField.setText(sourcePath.getAbsolutePath());
         String modulePath = file.getAbsolutePath().replace(sourcePath.getAbsolutePath() + "\\", "");
         modulePath = modulePath.replace("\\", ".");
-        xgPackageInfo.setModulePackageName(modulePath);
+        xgPackageInfo.setModulePackagePath(modulePath);
 
-        xgPackageInfo.setControllerPackageName(modulePath + ".controller");
-        xgPackageInfo.setServicePackageName(modulePath + ".service");
-        xgPackageInfo.setMapperPackageName(modulePath + ".mapper");
-        xgPackageInfo.setEntityPackageName(modulePath + ".entity");
-        xgPackageInfo.setDtoPackageName(modulePath + ".dto");
-        xgPackageInfo.setQueryPackageName(modulePath + ".query");
-        xgPackageInfo.setMapstructPackageName(modulePath + ".mapstruct");
-        xgPackageInfo.setMapperXmlPackage("mapper");
+        xgPackageInfo.setControllerPackagePath(modulePath + ".controller");
+        xgPackageInfo.setServicePackagePath(modulePath + ".service");
+        xgPackageInfo.setMapperPackagePath(modulePath + ".mapper");
+        xgPackageInfo.setEntityPackagePath(modulePath + ".entity");
+        xgPackageInfo.setDtoPackagePath(modulePath + ".dto");
+        xgPackageInfo.setQueryPackagePath(modulePath + ".query");
+        xgPackageInfo.setMapstructPackagePath(modulePath + ".mapstruct");
+        xgPackageInfo.setMapperXmlPackagePath("mapper");
 
-        controllerPathTextField.setText(xgPackageInfo.getControllerPackageName());
-        servicePathTextField.setText(xgPackageInfo.getServicePackageName());
-        mapperPathTextField.setText(xgPackageInfo.getMapperPackageName());
-        entityPathTextField.setText(xgPackageInfo.getEntityPackageName());
-        dtoPathTextField.setText(xgPackageInfo.getDtoPackageName());
-        queryPathTextField.setText(xgPackageInfo.getQueryPackageName());
-        mapStructPathTextField.setText(xgPackageInfo.getMapstructPackageName());
-        mapperXmlPathTextField.setText(xgPackageInfo.getMapperXmlPackage());
+        controllerPathTextField.setText(xgPackageInfo.getControllerPackagePath());
+        servicePathTextField.setText(xgPackageInfo.getServicePackagePath());
+        mapperPathTextField.setText(xgPackageInfo.getMapperPackagePath());
+        entityPathTextField.setText(xgPackageInfo.getEntityPackagePath());
+        dtoPathTextField.setText(xgPackageInfo.getDtoPackagePath());
+        queryPathTextField.setText(xgPackageInfo.getQueryPackagePath());
+        mapStructPathTextField.setText(xgPackageInfo.getMapstructPackagePath());
+        mapperXmlPathTextField.setText(xgPackageInfo.getMapperXmlPackagePath());
     }
 
     public void generateCode(Project project) {

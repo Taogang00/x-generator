@@ -61,6 +61,7 @@ public class XGTableListCellRenderer extends JLabel implements ListCellRenderer<
                 XgGeneratorTableObj xgGeneratorTableObj = new XgGeneratorTableObj();
                 xgGeneratorTableObj.setTableName(xgXmlElementTable.getName());
                 xgGeneratorTableObj.setTableComment(xgXmlElementTable.getComment());
+                xgGeneratorTableObj.setEntityClassName(xgXmlElementTable.getName());
 
                 List<XGGeneratorTableFieldsObj> fields = new ArrayList<>();
                 for (XGXmlElementColumnInfo columnInfo : xgXmlElementTable.getColumnList()) {

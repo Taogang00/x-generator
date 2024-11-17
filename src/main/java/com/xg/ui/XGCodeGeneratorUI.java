@@ -108,22 +108,9 @@ public class XGCodeGeneratorUI {
 
         // 生成
         controllerCheckBox.addItemListener(e -> {
-            if (e.getStateChange() == ItemEvent.SELECTED) {
-                this.entityCheckBox.setSelected(true);
-                this.serviceCheckBox.setSelected(true);
-                this.dtoCheckBox.setSelected(true);
-                this.queryCheckBox.setSelected(true);
-                this.mapStructCheckBox.setSelected(true);
-                this.mapperCheckBox.setSelected(true);
-                this.mapXmlCheckBox.setSelected(true);
-            }
             this.xgGlobalInfo.setGenerateController(e.getStateChange() == ItemEvent.SELECTED);
         });
         serviceCheckBox.addItemListener(e -> {
-            if (e.getStateChange() == ItemEvent.SELECTED) {
-                this.mapperCheckBox.setSelected(true);
-                this.mapXmlCheckBox.setSelected(true);
-            }
             this.xgGlobalInfo.setGenerateService(e.getStateChange() == ItemEvent.SELECTED);
         });
         entityCheckBox.addItemListener(e -> {
@@ -136,22 +123,12 @@ public class XGCodeGeneratorUI {
             this.xgGlobalInfo.setGenerateQuery(e.getStateChange() == ItemEvent.SELECTED);
         });
         mapStructCheckBox.addItemListener(e -> {
-            if (e.getStateChange() == ItemEvent.SELECTED) {
-                this.entityCheckBox.setSelected(true);
-                this.dtoCheckBox.setSelected(true);
-            }
             this.xgGlobalInfo.setGenerateMapStruct(e.getStateChange() == ItemEvent.SELECTED);
         });
         mapperCheckBox.addItemListener(e -> {
-            if (e.getStateChange() == ItemEvent.SELECTED) {
-                this.mapXmlCheckBox.setSelected(true);
-            }
             this.xgGlobalInfo.setGenerateMapper(e.getStateChange() == ItemEvent.SELECTED);
         });
         mapXmlCheckBox.addItemListener(e -> {
-            if (e.getStateChange() == ItemEvent.SELECTED) {
-                this.mapperCheckBox.setSelected(true);
-            }
             this.xgGlobalInfo.setGenerateMapperXml(e.getStateChange() == ItemEvent.SELECTED);
         });
 

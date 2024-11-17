@@ -9,22 +9,17 @@ import lombok.Data;
  * @date 2024/11/14
  */
 @Data
-public class XGColumnInfo {
-
-    /**
-     * 列名
-     */
-    private String name;
+public class XGTableFieldsGeneratorObj {
 
     /**
      * 字段名
      */
-    private String fieldName;
+    private String propertyName;
 
     /**
-     * 数据类型-数据库
+     * 数据类型-java
      */
-    private String fieldType;
+    private String propertyType;
 
     /**
      * 列注释
@@ -34,5 +29,5 @@ public class XGColumnInfo {
     /**
      * 是主键
      */
-    private boolean primaryKey;
+    private Boolean primaryKey;
 }

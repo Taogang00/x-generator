@@ -24,7 +24,7 @@ public class XGGlobalInfo {
     private String servicePackageName;
     private String serviceImplPackageName;
     private String mapperPackageName;
-    private String mapperXmlPackage = "mapper";
+    private String mapperXmlPackage;
 
     private String superControllerClass;
     private String superServiceClass;
@@ -34,13 +34,13 @@ public class XGGlobalInfo {
     private String superQueryClass;
     private String superDTOClass;
 
-    private String superControllerClassPackageName;
-    private String superServiceClassPackageName;
-    private String superServiceImplClassPackageName;
-    private String superEntityClassPackageName;
-    private String superMapperClassPackageName;
-    private String superQueryClassPackageName;
-    private String superDTOClassPackageName;
+    private String superControllerClassPackagePath;
+    private String superServiceClassPackagePath;
+    private String superServiceImplClassPackagePath;
+    private String superEntityClassPackagePath;
+    private String superMapperClassPackagePath;
+    private String superQueryClassPackagePath;
+    private String superDTOClassPackagePath;
 
     private Boolean generateController;
     private Boolean generateEntity;

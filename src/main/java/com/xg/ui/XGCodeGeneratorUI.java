@@ -6,9 +6,9 @@ import com.intellij.icons.AllIcons;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.components.fields.ExpandableTextField;
-import com.xg.model.XGColumnInfo;
+import com.xg.model.XGXmlElementColumnInfo;
 import com.xg.model.XGGlobalInfo;
-import com.xg.model.XGTableInfo;
+import com.xg.model.XGXmlElementTable;
 import com.xg.render.XGTableListCellRenderer;
 import com.xg.utils.XGFileChooserUtil;
 import com.xg.utils.XGMavenUtil;
@@ -28,6 +28,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static com.xg.model.XGXmlElementColumnInfo.*;
+import static com.xg.model.XGXmlElementTable.*;
 
 public class XGCodeGeneratorUI {
 
@@ -65,7 +68,7 @@ public class XGCodeGeneratorUI {
     private JLabel runInfoLabel;
 
     private final XGGlobalInfo xgGlobalInfo;
-    private List<XGTableInfo> tableInfoList;
+    private List<XGXmlElementTable> tableInfoList;
 
     public XGCodeGeneratorUI(Project project) {
         this.settingBtn.setIcon(AllIcons.General.Settings);
@@ -151,7 +154,7 @@ public class XGCodeGeneratorUI {
             this.tableInfoList = importTableXml(path, runInfoLabel);
 
             if (tableInfoList != null) {
-                Map<String, XGTableInfo> tableInfoMap = tableInfoList.stream().collect(Collectors.toMap(XGTableInfo::getName, Function.identity()));
+                Map<String, XGXmlElementTable> tableInfoMap = tableInfoList.stream().collect(Collectors.toMap(XGXmlElementTable::getName, Function.identity()));
 
                 DefaultListModel<String> model = new DefaultListModel<>();
                 // tableNameSet按照字母降序
@@ -172,8 +175,8 @@ public class XGCodeGeneratorUI {
         }
     }
 
-    public static List<XGTableInfo> importTableXml(String path, JLabel runInfoLabel) {
-        List<XGTableInfo> list = new ArrayList<>();
+    public static List<XGXmlElementTable> importTableXml(String path, JLabel runInfoLabel) {
+        List<XGXmlElementTable> list = new ArrayList<>();
 
         File file = new File(path);
         if (!file.exists()) {
@@ -181,7 +184,7 @@ public class XGCodeGeneratorUI {
             return null;
         }
         Document document = XmlUtil.readXML(file);
-        NodeList tableNodes = document.getElementsByTagName("Table");
+        NodeList tableNodes = document.getElementsByTagName(XML_ELEMENT_TABLE_NAME);
 
         // 遍历 Table 元素并打印信息
         for (int i = 0; i < tableNodes.getLength(); i++) {
@@ -189,32 +192,32 @@ public class XGCodeGeneratorUI {
             Element tableElement = (Element) tableNodes.item(i);
 
             // 提取表名 (Name 属性)
-            XGTableInfo XGTableInfo = new XGTableInfo();
-            List<XGColumnInfo> columnList = new ArrayList<>();
-            String tableName = tableElement.getAttribute("Name");
-            String tableText = tableElement.getAttribute("Text");
-            XGTableInfo.setName(tableName);
-            XGTableInfo.setComment(tableText);
-            XGTableInfo.setColumnList(columnList);
+            XGXmlElementTable XGXmlElementTable = new XGXmlElementTable();
+            List<XGXmlElementColumnInfo> columnList = new ArrayList<>();
+            String tableName = tableElement.getAttribute(XML_ELEMENT_TABLE_ATTRIBUTE_NAME);
+            String tableText = tableElement.getAttribute(XML_ELEMENT_TABLE_ATTRIBUTE_TEXT);
+            XGXmlElementTable.setName(tableName);
+            XGXmlElementTable.setComment(tableText);
+            XGXmlElementTable.setColumnList(columnList);
 
             // 你可以根据需要提取更多的属性或子元素
             // 例如，提取 Table 下的 Column 元素
-            NodeList columnNodes = tableElement.getElementsByTagName("Column");
+            NodeList columnNodes = tableElement.getElementsByTagName(XML_ELEMENT_COLUMN_NAME);
             for (int j = 0; j < columnNodes.getLength(); j++) {
                 Element columnElement = (Element) columnNodes.item(j);
-                String primaryKey = columnElement.getAttribute("PrimaryKey");
-                String columnName = columnElement.getAttribute("Name");
-                String columnText = columnElement.getAttribute("Text");
-                String dataType = columnElement.getAttribute("DataType");
+                String primaryKey = columnElement.getAttribute(XML_ELEMENT_COLUMN_ATTRIBUTE_PRIMARY_KEY);
+                String columnName = columnElement.getAttribute(XML_ELEMENT_COLUMN_ATTRIBUTE_NAME);
+                String columnText = columnElement.getAttribute(XML_ELEMENT_COLUMN_ATTRIBUTE_TEXT);
+                String dataType = columnElement.getAttribute(XML_ELEMENT_COLUMN_ATTRIBUTE_DATATYPE);
 
-                XGColumnInfo XGColumnInfo = new XGColumnInfo();
-                XGColumnInfo.setName(columnText);
-                XGColumnInfo.setFieldName(columnName);
-                XGColumnInfo.setFieldType(dataType);
-                XGColumnInfo.setPrimaryKey(Boolean.getBoolean(primaryKey));
-                XGTableInfo.getColumnList().add(XGColumnInfo);
+                XGXmlElementColumnInfo XGXmlElementColumnInfo = new XGXmlElementColumnInfo();
+                XGXmlElementColumnInfo.setName(columnText);
+                XGXmlElementColumnInfo.setFieldName(columnName);
+                XGXmlElementColumnInfo.setFieldType(dataType);
+                XGXmlElementColumnInfo.setPrimaryKey(Boolean.getBoolean(primaryKey));
+                XGXmlElementTable.getColumnList().add(XGXmlElementColumnInfo);
             }
-            list.add(XGTableInfo);
+            list.add(XGXmlElementTable);
         }
 
         runInfoLabel.setText("已导入" + list.size() + "张表");

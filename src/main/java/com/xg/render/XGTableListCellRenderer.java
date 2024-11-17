@@ -3,7 +3,7 @@ package com.xg.render;
 import com.intellij.icons.AllIcons;
 import com.intellij.ui.JBColor;
 import com.intellij.util.ui.JBUI;
-import com.xg.model.XGTableInfo;
+import com.xg.model.XGXmlElementTable;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
@@ -21,9 +21,9 @@ public class XGTableListCellRenderer extends JLabel implements ListCellRenderer<
     private final JLabel runInfoLabel;
     private final JLabel rowStartLabel;
     private final JLabel rowEndLabel;
-    private final Map<String, XGTableInfo> tableInfoMap;
+    private final Map<String, XGXmlElementTable> tableInfoMap;
 
-    public XGTableListCellRenderer(Map<String, XGTableInfo> tableInfoMap, JLabel runInfoLabel) {
+    public XGTableListCellRenderer(Map<String, XGXmlElementTable> tableInfoMap, JLabel runInfoLabel) {
         setOpaque(true);
         setLayout(new BorderLayout());
         this.runInfoLabel = runInfoLabel;
@@ -44,9 +44,9 @@ public class XGTableListCellRenderer extends JLabel implements ListCellRenderer<
     @Override
     public Component getListCellRendererComponent(JList<? extends String> list, String value, int index,
                                                   boolean isSelected, boolean cellHasFocus) {
-        XGTableInfo XGTableInfo = tableInfoMap.get(value);
+        XGXmlElementTable XGXmlElementTable = tableInfoMap.get(value);
         rowStartLabel.setText(value);
-        rowEndLabel.setText(XGTableInfo.getComment());
+        rowEndLabel.setText(XGXmlElementTable.getComment());
         if (isSelected) {
             runInfoLabel.setText("已选择" + list.getSelectedIndices().length + "张表");
             setBackground(list.getSelectionBackground());

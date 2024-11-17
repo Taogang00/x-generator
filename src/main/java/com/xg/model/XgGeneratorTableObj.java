@@ -5,63 +5,65 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class XgTableGeneratorObj {
+public class XgGeneratorTableObj {
 
     private String tableName;
 
+    private String tableComment;
+
     private String entityClassName;
 
-    private String entityPackageName;
+    private String entityPackagePath;
 
     private String entityPath;
 
     private String mapperClassName;
 
-    private String mapperPackageName;
+    private String mapperPackagePath;
 
     private String mapperPath;
 
     private String mapXml;
 
-    private String mapXmlPackageName;
+    private String mapXmlPackagePath;
 
     private String mapXmlPath;
 
     private String serviceClassName;
 
-    private String servicePackageName;
+    private String servicePackagePath;
 
     private String servicePath;
 
     private String serviceImplClassName;
 
-    private String serviceImplPackageName;
+    private String serviceImplPackagePath;
 
     private String serviceImplPath;
 
     private String controllerClassName;
 
-    private String controllerPackageName;
+    private String controllerPackagePath;
 
     private String controllerPath;
 
     private String dtoClassName;
 
-    private String dtoPackageName;
+    private String dtoPackagePath;
 
     private String dtoPath;
 
     private String queryClassName;
 
-    private String queryPackageName;
+    private String queryPackagePath;
 
     private String queryPath;
 
     private String mapstructClassName;
 
-    private String mapstructPackageName;
+    private String mapstructPackagePath;
 
     private String mapstructPath;
 
-    private List<XGTableFieldsGeneratorObj> fields;
+    private List<XGGeneratorTableFieldsObj> fields;
 }

@@ -8,10 +8,7 @@ import com.intellij.icons.AllIcons;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.components.fields.ExpandableTextField;
-import com.xg.model.XGGlobalInfo;
-import com.xg.model.XGXmlElementColumnInfo;
-import com.xg.model.XGXmlElementTable;
-import com.xg.model.XgGeneratorTableObj;
+import com.xg.model.*;
 import com.xg.render.XGTableListCellRenderer;
 import com.xg.utils.XGFileChooserUtil;
 import com.xg.utils.XGMavenUtil;
@@ -72,19 +69,22 @@ public class XGCodeGeneratorUI {
     private JList<String> tableList;
     private JTextField ignoreTablePrefixTextField;
     private JTextField authorTextField;
+    @Getter
     private JLabel runInfoLabel;
 
     private List<XGXmlElementTable> tableInfoList;
+    private final List<XgGeneratorTableObj> xgGeneratorTableObjList;
     private final XGGlobalInfo xgGlobalInfo;
-    private final Map<String, XgGeneratorTableObj> xgGeneratorTableObjMap;
+    @Getter
+    private Map<String, XGXmlElementTable> tableInfoMap;
 
     public XGCodeGeneratorUI(Project project) {
-        this.xgGeneratorTableObjMap = new HashMap<>();
         this.settingBtn.setIcon(AllIcons.General.Settings);
         this.importBtn.setIcon(AllIcons.ToolbarDecorator.Import);
         this.authorTextField.setText(System.getProperty("user.name"));
         this.packageAllBtn.setText("全不选");
         this.xgGlobalInfo = new XGGlobalInfo();
+        this.xgGeneratorTableObjList = new ArrayList<>();
         this.xgGlobalInfo.setDateTime(DateUtil.formatDateTime(new Date()));
         this.xgGlobalInfo.setAuthor(authorTextField.getText());
 
@@ -169,7 +169,7 @@ public class XGCodeGeneratorUI {
             this.tableInfoList = importTableXml(path, runInfoLabel);
 
             if (tableInfoList != null) {
-                Map<String, XGXmlElementTable> tableInfoMap = tableInfoList.stream().collect(Collectors.toMap(XGXmlElementTable::getName, Function.identity()));
+                tableInfoMap = tableInfoList.stream().collect(Collectors.toMap(XGXmlElementTable::getName, Function.identity()));
 
                 DefaultListModel<String> model = new DefaultListModel<>();
                 // tableNameSet按照字母降序
@@ -179,7 +179,7 @@ public class XGCodeGeneratorUI {
                 model.addAll(tableNameList);
                 tableList.setModel(model);
 
-                XGTableListCellRenderer cellRenderer = new XGTableListCellRenderer(tableInfoMap, runInfoLabel, xgGeneratorTableObjMap);
+                XGTableListCellRenderer cellRenderer = new XGTableListCellRenderer(this);
                 tableList.setCellRenderer(cellRenderer);
             }
         });
@@ -282,7 +282,7 @@ public class XGCodeGeneratorUI {
     }
 
     public void generateCode(Project project) throws IOException {
-        System.out.println(JSONUtil.toJsonPrettyStr(xgGeneratorTableObjMap.values()));
+        System.out.println(JSONUtil.toJsonStr(xgGeneratorTableObjList));
 //        try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("template/entity.java.ftl");
 //             FileOutputStream fileOutputStream = new FileOutputStream(this.xgGlobalInfo.getOutputEntityPath())) {
 //            assert resourceAsStream != null;
@@ -312,5 +312,29 @@ public class XGCodeGeneratorUI {
 
         // 创建模板并加载\ templateName 是模板的名称，可以任意指定
         return new Template(templateName, stringReader, cfg);
+    }
+
+    public void initSelectXgGeneratorTableObj(List<? extends String> selectedValuesList) {
+        xgGeneratorTableObjList.clear();
+        for (String s : selectedValuesList) {
+            XGXmlElementTable xgXmlElementTable = tableInfoMap.get(s);
+            XgGeneratorTableObj xgGeneratorTableObj = new XgGeneratorTableObj();
+            xgGeneratorTableObj.setTableName(xgXmlElementTable.getName());
+            xgGeneratorTableObj.setTableComment(xgXmlElementTable.getComment());
+            xgGeneratorTableObj.setEntityClassName(xgXmlElementTable.getName());
+
+            List<XGGeneratorTableFieldsObj> fields = new ArrayList<>();
+            for (XGXmlElementColumnInfo columnInfo : xgXmlElementTable.getColumnList()) {
+                XGGeneratorTableFieldsObj xgGeneratorTableFieldsObj = new XGGeneratorTableFieldsObj();
+                xgGeneratorTableFieldsObj.setComment(columnInfo.getComment());
+                xgGeneratorTableFieldsObj.setPrimaryKey(columnInfo.getPrimaryKey());
+                xgGeneratorTableFieldsObj.setPropertyName(columnInfo.getFieldName());
+                //TODO转换
+                xgGeneratorTableFieldsObj.setPropertyType(columnInfo.getFieldType());
+                fields.add(xgGeneratorTableFieldsObj);
+            }
+            xgGeneratorTableObj.setFields(fields);
+            xgGeneratorTableObjList.add(xgGeneratorTableObj);
+        }
     }
 }

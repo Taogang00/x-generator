@@ -5,6 +5,7 @@ import com.intellij.openapi.ui.DialogWrapper;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import java.io.IOException;
 
 public class XGMainDialog extends DialogWrapper {
 
@@ -36,7 +37,11 @@ public class XGMainDialog extends DialogWrapper {
     protected void doOKAction() {
         // 在这里调用 XGCodeGeneratorUI 中的方法
         if (codeGeneratorUI != null) {
-            codeGeneratorUI.generateCode(project);
+            try {
+                codeGeneratorUI.generateCode(project);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 }

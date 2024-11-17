@@ -1,5 +1,7 @@
 package com.xg.ui;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.XmlUtil;
 import com.intellij.icons.AllIcons;
@@ -14,19 +16,19 @@ import com.xg.render.XGTableListCellRenderer;
 import com.xg.utils.XGFileChooserUtil;
 import com.xg.utils.XGMavenUtil;
 import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
 import lombok.Getter;
+import org.apache.commons.io.IOUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import javax.swing.*;
 import java.awt.event.ItemEvent;
-import java.io.File;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -81,10 +83,16 @@ public class XGCodeGeneratorUI {
         this.authorTextField.setText(System.getProperty("user.name"));
         this.packageAllBtn.setText("全不选");
         this.xgGlobalInfo = new XGGlobalInfo();
+        this.xgGlobalInfo.setDateTime(DateUtil.formatDateTime(new Date()));
+        this.xgGlobalInfo.setAuthor(authorTextField.getText());
 
         for (String s : XGMavenUtil.getMavenArtifactId(project)) {
             projectModuleComboBox.addItem(s);
         }
+
+        authorTextField.addActionListener(e -> {
+            this.xgGlobalInfo.setAuthor(authorTextField.getText());
+        });
 
         packageAllBtn.addActionListener(e -> {
             if (!this.controllerCheckBox.isSelected()
@@ -145,7 +153,7 @@ public class XGCodeGeneratorUI {
         // 选择项目时需要给代码生成的路径进行赋值
         projectModuleComboBox.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.SELECTED) {
-                initSelectedModulePackage(project, xgGlobalInfo, e.getItem().toString());
+                initSelectedModulePackage(project, e.getItem().toString());
             }
         });
 
@@ -176,7 +184,7 @@ public class XGCodeGeneratorUI {
 
         //初始化包赋值操作
         if (ObjectUtil.isNotNull(projectModuleComboBox.getSelectedItem())) {
-            initSelectedModulePackage(project, xgGlobalInfo, projectModuleComboBox.getSelectedItem().toString());
+            initSelectedModulePackage(project, projectModuleComboBox.getSelectedItem().toString());
         }
     }
 
@@ -229,45 +237,77 @@ public class XGCodeGeneratorUI {
         return list;
     }
 
-    private void initSelectedModulePackage(Project project, XGGlobalInfo xgPackageInfo, String selectedItem) {
+    private void initSelectedModulePackage(Project project, String selectedItem) {
         File sourcePath = XGMavenUtil.getMavenArtifactIdSourcePath(project, selectedItem);
+        File resourcePath = XGMavenUtil.getMavenArtifactIdResourcePath(project, selectedItem);
         assert sourcePath != null;
-        File file = XGFileChooserUtil.walkFiles(sourcePath);
+        assert resourcePath != null;
+
         codeGeneratorPathTextField.setText(sourcePath.getAbsolutePath());
-        String modulePath = file.getAbsolutePath().replace(sourcePath.getAbsolutePath() + "\\", "");
-        modulePath = modulePath.replace("\\", ".");
-        xgPackageInfo.setModulePackagePath(modulePath);
+        File file = XGFileChooserUtil.walkFiles(sourcePath);
+        String absolutePath = file.getAbsolutePath();
 
-        xgPackageInfo.setControllerPackagePath(modulePath + ".controller");
-        xgPackageInfo.setServicePackagePath(modulePath + ".service");
-        xgPackageInfo.setMapperPackagePath(modulePath + ".mapper");
-        xgPackageInfo.setEntityPackagePath(modulePath + ".entity");
-        xgPackageInfo.setDtoPackagePath(modulePath + ".dto");
-        xgPackageInfo.setQueryPackagePath(modulePath + ".query");
-        xgPackageInfo.setMapstructPackagePath(modulePath + ".mapstruct");
-        xgPackageInfo.setMapperXmlPackagePath("mapper");
+        this.xgGlobalInfo.setOutputControllerPath(absolutePath + File.separator + "controller");
+        this.xgGlobalInfo.setOutputEntityPath(absolutePath + File.separator + "entity");
+        this.xgGlobalInfo.setOutputServicePath(absolutePath + File.separator + "service");
+        this.xgGlobalInfo.setOutputQueryPath(absolutePath + File.separator + "query");
+        this.xgGlobalInfo.setOutputDTOPath(absolutePath + File.separator + "dto");
+        this.xgGlobalInfo.setOutputMapperPath(absolutePath + File.separator + "mapper");
+        this.xgGlobalInfo.setOutputMapStructPath(absolutePath + File.separator + "mapstruct");
+        this.xgGlobalInfo.setOutputMapperXmlPath(resourcePath + File.separator + "mapper");
 
-        controllerPathTextField.setText(xgPackageInfo.getControllerPackagePath());
-        servicePathTextField.setText(xgPackageInfo.getServicePackagePath());
-        mapperPathTextField.setText(xgPackageInfo.getMapperPackagePath());
-        entityPathTextField.setText(xgPackageInfo.getEntityPackagePath());
-        dtoPathTextField.setText(xgPackageInfo.getDtoPackagePath());
-        queryPathTextField.setText(xgPackageInfo.getQueryPackagePath());
-        mapStructPathTextField.setText(xgPackageInfo.getMapstructPackagePath());
-        mapperXmlPathTextField.setText(xgPackageInfo.getMapperXmlPackagePath());
+        String modulePath = absolutePath.replace(sourcePath.getAbsolutePath() + File.separator, "");
+        modulePath = modulePath.replace(File.separator, ".");
+        this.xgGlobalInfo.setModulePackagePath(modulePath);
+
+        this.xgGlobalInfo.setControllerPackagePath(modulePath + "." + "controller");
+        this.xgGlobalInfo.setServicePackagePath(modulePath + "." + "service");
+        this.xgGlobalInfo.setMapperPackagePath(modulePath + "." + "mapper");
+        this.xgGlobalInfo.setEntityPackagePath(modulePath + "." + "entity");
+        this.xgGlobalInfo.setDtoPackagePath(modulePath + "." + "dto");
+        this.xgGlobalInfo.setQueryPackagePath(modulePath + "." + "query");
+        this.xgGlobalInfo.setMapstructPackagePath(modulePath + "." + "mapstruct");
+        this.xgGlobalInfo.setMapperXmlPackagePath("mapper");
+
+        controllerPathTextField.setText(this.xgGlobalInfo.getControllerPackagePath());
+        servicePathTextField.setText(this.xgGlobalInfo.getServicePackagePath());
+        mapperPathTextField.setText(this.xgGlobalInfo.getMapperPackagePath());
+        entityPathTextField.setText(this.xgGlobalInfo.getEntityPackagePath());
+        dtoPathTextField.setText(this.xgGlobalInfo.getDtoPackagePath());
+        queryPathTextField.setText(this.xgGlobalInfo.getQueryPackagePath());
+        mapStructPathTextField.setText(this.xgGlobalInfo.getMapstructPackagePath());
+        mapperXmlPathTextField.setText(this.xgGlobalInfo.getMapperXmlPackagePath());
     }
 
-    public void generateCode(Project project) {
-        Configuration configuration = new Configuration(Configuration.VERSION_2_3_33);
-        configuration.setDefaultEncoding(StandardCharsets.UTF_8.displayName());
-        configuration.setClassForTemplateLoading(this.getClass(), "/");
+    public void generateCode(Project project) throws IOException {
+        try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("template/entity.java.ftl");
+             FileOutputStream fileOutputStream = new FileOutputStream(this.xgGlobalInfo.getOutputEntityPath())) {
+            assert resourceAsStream != null;
 
-        System.out.println(this.xgGlobalInfo);
+            Map<String, Object> xgGlobalInfoMap = BeanUtil.beanToMap(this.xgGlobalInfo);
+            String templateContent = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
+            Template template = getTemplateFromString(templateContent, "entity");
+            template.process(xgGlobalInfoMap, new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8));
+        } catch (TemplateException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void generateEntityCode(Project project, XGGlobalInfo xgGlobalInfo, XgGeneratorTableObj xgGeneratorTableObj) {
         System.out.println(project);
         System.out.println(xgGlobalInfo);
         System.out.println(xgGeneratorTableObj);
+    }
+
+    public Template getTemplateFromString(String templateContent, String templateName) throws IOException {
+        // 创建 FreeMarker 配置对象
+        Configuration cfg = new Configuration(Configuration.VERSION_2_3_33);
+        cfg.setDefaultEncoding(StandardCharsets.UTF_8.displayName());
+
+        // 使用 StringReader 将字符串内容转换为 Reader
+        StringReader stringReader = new StringReader(templateContent);
+
+        // 创建模板并加载\ templateName 是模板的名称，可以任意指定
+        return new Template(templateName, stringReader, cfg);
     }
 }

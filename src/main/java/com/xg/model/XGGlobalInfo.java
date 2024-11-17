@@ -42,12 +42,21 @@ public class XGGlobalInfo {
     private String superQueryClassPackagePath;
     private String superDTOClassPackagePath;
 
-    private Boolean generateController;
-    private Boolean generateEntity;
-    private Boolean generateService;
-    private Boolean generateQuery;
-    private Boolean generateMapStruct;
-    private Boolean generateMapper;
-    private Boolean generateMapperXml;
-    private Boolean generateDTO;
+    private Boolean generateController = true;
+    private Boolean generateEntity = true;
+    private Boolean generateService = true;
+    private Boolean generateQuery = true;
+    private Boolean generateMapStruct = true;
+    private Boolean generateMapper = true;
+    private Boolean generateMapperXml = true;
+    private Boolean generateDTO = true;
+
+    private String outputControllerPath;
+    private String outputEntityPath;
+    private String outputServicePath;
+    private String outputQueryPath;
+    private String outputMapStructPath;
+    private String outputMapperPath;
+    private String outputMapperXmlPath;
+    private String outputDTOPath;
 }

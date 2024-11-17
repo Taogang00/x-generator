@@ -6,9 +6,10 @@ import com.intellij.icons.AllIcons;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.components.fields.ExpandableTextField;
-import com.xg.model.XGXmlElementColumnInfo;
 import com.xg.model.XGGlobalInfo;
+import com.xg.model.XGXmlElementColumnInfo;
 import com.xg.model.XGXmlElementTable;
+import com.xg.model.XgGeneratorTableObj;
 import com.xg.render.XGTableListCellRenderer;
 import com.xg.utils.XGFileChooserUtil;
 import com.xg.utils.XGMavenUtil;
@@ -258,5 +259,11 @@ public class XGCodeGeneratorUI {
         configuration.setClassForTemplateLoading(this.getClass(), "/");
 
         System.out.println(this.xgGlobalInfo);
+    }
+
+    public void generateEntityCode(Project project, XGGlobalInfo xgGlobalInfo, XgGeneratorTableObj xgGeneratorTableObj) {
+        System.out.println(project);
+        System.out.println(xgGlobalInfo);
+        System.out.println(xgGeneratorTableObj);
     }
 }

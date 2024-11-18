@@ -23,11 +23,11 @@ public class XgGeneratorTableObj {
 
     private String mapperPath;
 
-    private String mapXml;
+    private String mapperXml;
 
-    private String mapXmlPackagePath;
+    private String mapperXmlPackagePath;
 
-    private String mapXmlPath;
+    private String mapperXmlPath;
 
     private String serviceClassName;
 

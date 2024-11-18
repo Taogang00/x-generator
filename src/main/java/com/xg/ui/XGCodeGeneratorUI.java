@@ -74,7 +74,7 @@ public class XGCodeGeneratorUI {
     private JCheckBox dtoCheckBox;
     private JCheckBox queryCheckBox;
     private JCheckBox mapStructCheckBox;
-    private JCheckBox mapXmlCheckBox;
+    private JCheckBox mapperXmlCheckBox;
     private JButton importBtn;
     private JButton packageAllBtn;
     private JButton settingBtn;
@@ -87,9 +87,11 @@ public class XGCodeGeneratorUI {
     private final XGGeneratorGlobalObj xgGeneratorGlobalObj;
 
     public XGCodeGeneratorUI(Project project) {
+        this.xgGeneratorGlobalObj = new XGGeneratorGlobalObj();
+        this.ignoreTablePrefixTextField.setText("_");
+        this.xgGeneratorGlobalObj.setIgnoreTablePrefix("_");
         this.skipRadioButton.setActionCommand("0");
         this.overrideRadioButton.setActionCommand("1");
-        this.xgGeneratorGlobalObj = new XGGeneratorGlobalObj();
 
         this.settingBtn.setIcon(AllIcons.General.Settings);
         this.importBtn.setIcon(AllIcons.ToolbarDecorator.Import);
@@ -122,7 +124,7 @@ public class XGCodeGeneratorUI {
                     || !this.queryCheckBox.isSelected()
                     || !this.mapperCheckBox.isSelected()
                     || !this.entityCheckBox.isSelected()
-                    || !this.mapXmlCheckBox.isSelected()) {
+                    || !this.mapperXmlCheckBox.isSelected()) {
                 this.packageAllBtn.setText("全不选");
                 this.controllerCheckBox.setSelected(true);
                 this.entityCheckBox.setSelected(true);
@@ -131,7 +133,7 @@ public class XGCodeGeneratorUI {
                 this.queryCheckBox.setSelected(true);
                 this.mapperCheckBox.setSelected(true);
                 this.mapStructCheckBox.setSelected(true);
-                this.mapXmlCheckBox.setSelected(true);
+                this.mapperXmlCheckBox.setSelected(true);
             } else {
                 this.packageAllBtn.setText("全选");
                 this.controllerCheckBox.setSelected(false);
@@ -141,7 +143,7 @@ public class XGCodeGeneratorUI {
                 this.queryCheckBox.setSelected(false);
                 this.mapStructCheckBox.setSelected(false);
                 this.mapperCheckBox.setSelected(false);
-                this.mapXmlCheckBox.setSelected(false);
+                this.mapperXmlCheckBox.setSelected(false);
             }
         });
 
@@ -153,7 +155,7 @@ public class XGCodeGeneratorUI {
         queryCheckBox.addItemListener(e -> this.xgGeneratorGlobalObj.setGenerateQuery(e.getStateChange() == ItemEvent.SELECTED));
         mapStructCheckBox.addItemListener(e -> this.xgGeneratorGlobalObj.setGenerateMapStruct(e.getStateChange() == ItemEvent.SELECTED));
         mapperCheckBox.addItemListener(e -> this.xgGeneratorGlobalObj.setGenerateMapper(e.getStateChange() == ItemEvent.SELECTED));
-        mapXmlCheckBox.addItemListener(e -> this.xgGeneratorGlobalObj.setGenerateMapperXml(e.getStateChange() == ItemEvent.SELECTED));
+        mapperXmlCheckBox.addItemListener(e -> this.xgGeneratorGlobalObj.setGenerateMapperXml(e.getStateChange() == ItemEvent.SELECTED));
 
         // 5.添加ActionListener来监听文件冲突时按钮的状态变化
         ActionListener actionListener = e -> {
@@ -344,10 +346,10 @@ public class XGCodeGeneratorUI {
             xgGeneratorTableObj.setMapperPackagePath(xgGeneratorGlobalObj.getMapperPackagePath());
             xgGeneratorTableObj.setMapperPath(xgGeneratorGlobalObj.getOutputEntityPath() + File.separator + xgGeneratorTableObj.getMapstructClassName() + ".java");
             //mapper-xml
-            xgGeneratorTableObj.setMapXml(elementTableName + "Mapper");
+            xgGeneratorTableObj.setMapperXml(elementTableName + "Mapper");
             //TODO 不用赋值
-            xgGeneratorTableObj.setMapXmlPackagePath(xgGeneratorGlobalObj.getOutputMapperXmlPath());
-            xgGeneratorTableObj.setMapXmlPath(xgGeneratorGlobalObj.getOutputMapperXmlPath() + File.separator + xgGeneratorTableObj.getMapXml() + ".xml");
+            xgGeneratorTableObj.setMapperXmlPackagePath(xgGeneratorGlobalObj.getOutputMapperXmlPath());
+            xgGeneratorTableObj.setMapperXmlPath(xgGeneratorGlobalObj.getOutputMapperXmlPath() + File.separator + xgGeneratorTableObj.getMapperXml() + ".xml");
             //service
             xgGeneratorTableObj.setServiceClassName(elementTableName + "Service");
             xgGeneratorTableObj.setServicePackagePath(xgGeneratorGlobalObj.getServicePackagePath());
@@ -426,7 +428,7 @@ public class XGCodeGeneratorUI {
             return;
         }
         if (!controllerCheckBox.isSelected() && !entityCheckBox.isSelected()
-                && !mapStructCheckBox.isSelected() && !queryCheckBox.isSelected() && !mapXmlCheckBox.isSelected()
+                && !mapStructCheckBox.isSelected() && !queryCheckBox.isSelected() && !mapperXmlCheckBox.isSelected()
                 && !mapperCheckBox.isSelected() && !serviceCheckBox.isSelected() && !dtoCheckBox.isSelected()) {
             Messages.showDialog("请先选择要生成的代码对象！", "操作提示", new String[]{"确定"}, -1, Messages.getInformationIcon());
             return;
@@ -458,8 +460,8 @@ public class XGCodeGeneratorUI {
             xgGeneratorTableObj.setMapstructClassName(StrUtil.replaceIgnoreCase(xgGeneratorTableObj.getMapstructClassName(), this.xgGeneratorGlobalObj.getIgnoreTablePrefix(), ""));
             xgGeneratorTableObj.setMapstructPath(xgGeneratorGlobalObj.getOutputMapStructPath() + File.separator + xgGeneratorTableObj.getMapstructClassName() + ".java");
 
-            xgGeneratorTableObj.setMapXml(StrUtil.replaceIgnoreCase(xgGeneratorTableObj.getMapXml(), this.xgGeneratorGlobalObj.getIgnoreTablePrefix(), ""));
-            xgGeneratorTableObj.setMapXmlPath(xgGeneratorGlobalObj.getOutputMapperXmlPath() + File.separator + xgGeneratorTableObj.getMapXml() + ".xml");
+            xgGeneratorTableObj.setMapperXml(StrUtil.replaceIgnoreCase(xgGeneratorTableObj.getMapperXml(), this.xgGeneratorGlobalObj.getIgnoreTablePrefix(), ""));
+            xgGeneratorTableObj.setMapperXmlPath(xgGeneratorGlobalObj.getOutputMapperXmlPath() + File.separator + xgGeneratorTableObj.getMapperXml() + ".xml");
         }
 
         Map<String, Object> map = new HashMap<>();
@@ -777,11 +779,11 @@ public class XGCodeGeneratorUI {
             Files.createDirectories(path);
 
             for (XgGeneratorTableObj xgGeneratorTableObj : xgGeneratorSelectedTableObjList) {
-                Path filePath = Paths.get(xgGeneratorTableObj.getMapXmlPath());
+                Path filePath = Paths.get(xgGeneratorTableObj.getMapperXmlPath());
                 // 检查文件是否存在并且是否允许覆盖
                 boolean shouldProcess = Files.exists(filePath) && this.xgGeneratorGlobalObj.getFileOverride() || !Files.exists(filePath);
                 if (shouldProcess) {
-                    try (FileOutputStream fileOutputStream = new FileOutputStream(xgGeneratorTableObj.getMapXmlPath())) {
+                    try (FileOutputStream fileOutputStream = new FileOutputStream(xgGeneratorTableObj.getMapperXmlPath())) {
                         Map<String, Object> stringObjectMap = BeanUtil.beanToMap(xgGeneratorTableObj);
                         map.put("table", stringObjectMap);
                         template.process(map, new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8));

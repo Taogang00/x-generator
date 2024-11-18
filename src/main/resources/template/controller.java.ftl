@@ -15,19 +15,19 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * ${table.controllerName} 控制器
+ * ${table.controllerClassName} 控制器
  *
  * @author ${global.author}
  * @date ${global.dateTime}
  */
 @RestController
-@RequestMapping("/v1/${table.lowerEntityName}")
+@RequestMapping("/v1/${table.entityClassName}")
 @RequiredArgsConstructor
-public class ${table.controllerName} {
+public class ${table.controllerClassName} {
 
-    private final ${table.serviceClassName} ${table.serviceClassName};
+    private final ${table.serviceClassName} ${table.serviceClassName?uncap_first};
 
-    private final ${table.mapstructClassName} ${table.mapstructClassName};
+    private final ${table.mapstructClassName} ${table.mapstructClassName?uncap_first};
 
     /**
     * 获取一条记录
@@ -37,7 +37,7 @@ public class ${table.controllerName} {
     */
     @GetMapping("/{id}")
     public R<${table.dtoClassName}> get(@PathVariable String id) {
-        ${table.dtoClassName} dto = ${table.mapstructClassName}.toTarget(${table.serviceClassName}.getOne(id));
+        ${table.dtoClassName} dto = ${table.mapstructClassName?uncap_first}.toTarget(${table.serviceClassName?uncap_first}.getOne(id));
         return R.OK(dto);
     }
 
@@ -49,7 +49,7 @@ public class ${table.controllerName} {
 	 */
 	@GetMapping("/list")
 	public R<?> list(${table.queryClassName} query) {
-        List<${table.dtoClassName}> list = ${table.serviceClassName}.get${table.entityClassName}List(query);
+        List<${table.dtoClassName}> list = ${table.serviceClassName?uncap_first}.get${table.entityClassName}List(query);
 		return R.OK(list);
 	}
 
@@ -61,8 +61,8 @@ public class ${table.controllerName} {
      */
     @PostMapping
     public R<Boolean> add(@Validated @RequestBody ${table.dtoClassName} dto) {
-        ${table.entityClassName} entity = ${table.mapstructClassName}.toSource(dto);
-        boolean save = ${table.serviceClassName}.save(entity);
+        ${table.entityClassName} entity = ${table.mapstructClassName?uncap_first}.toSource(dto);
+        boolean save = ${table.serviceClassName?uncap_first}.save(entity);
         return R.OK(save);
     }
 
@@ -76,8 +76,8 @@ public class ${table.controllerName} {
     @PostMapping("/edit/{id}")
     public R<?> update(@PathVariable String id, @Validated @RequestBody ${table.dtoClassName} dto) {
         Assert.notNull(id, "主键标识不能为空！");
-        ${table.entityClassName} entity = ${table.mapstructClassName}.toSource(dto);
-        ${table.serviceClassName}.update(entity);
+        ${table.entityClassName} entity = ${table.mapstructClassName?uncap_first}.toSource(dto);
+        ${table.serviceClassName?uncap_first}.update(entity);
         return R.OK();
     }
 
@@ -89,7 +89,6 @@ public class ${table.controllerName} {
      */
     @PostMapping("/delete/{id}")
     public R<Boolean> delete(@PathVariable String id) {
-        return R.OK(${table.serviceClassName}.removeById(id));
+        return R.OK(${table.serviceClassName?uncap_first}.removeById(id));
     }
 }
-</#if>

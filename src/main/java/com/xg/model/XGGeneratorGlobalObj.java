@@ -3,7 +3,7 @@ package com.xg.model;
 import lombok.Data;
 
 @Data
-public class XGGlobalInfo {
+public class XGGeneratorGlobalObj {
 
     private final String sourcePath = "src.main.java";
     private final String resourcePath = "src.main.resources";

@@ -4,7 +4,7 @@
 <mapper namespace="${table.mapperPackagePath}.${table.mapperClassName}">
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="${table.entityPackagePath}.${table.entityClassName}">
-    <#list table.fields as field>
+    <#list table.tableFields as field>
         <#if field.primaryKey><#--生成主键排在第一位-->
         <id column="${field.propertyName}" property="${field.propertyName}"/>
         </#if>

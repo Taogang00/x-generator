@@ -19,11 +19,7 @@
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
     <#list table.tableFields as field>
-        <#if field_index = 0>
-            ${field.propertyName}
-        <#else>
-            ,${field.propertyName}
-        </#if>
+        <#if field_index = 0>${field.propertyName}<#else>,${field.propertyName}</#if>
     </#list>
     </sql>
 

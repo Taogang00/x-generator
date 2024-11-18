@@ -27,18 +27,18 @@ public class XGGlobalInfo {
     private String mapperXmlPackagePath;
 
     private String superControllerClass;
-    private String superServiceClass;
-    private String superServiceImplClass;
+    private String superServiceClass = "MBaseService";
+    private String superServiceImplClass = "MBaseServiceImpl";
     private String superEntityClass;
-    private String superMapperClass;
+    private String superMapperClass = "MBaseMapper";
     private String superQueryClass;
     private String superDTOClass;
 
     private String superControllerClassPackagePath;
-    private String superServiceClassPackagePath;
-    private String superServiceImplClassPackagePath;
+    private String superServiceClassPackagePath = "com.guanwei.mybatis.base.service";
+    private String superServiceImplClassPackagePath = "com.guanwei.mybatis.base.service";
     private String superEntityClassPackagePath;
-    private String superMapperClassPackagePath;
+    private String superMapperClassPackagePath = "com.guanwei.mybatis.base.mapper";
     private String superQueryClassPackagePath;
     private String superDTOClassPackagePath;
 

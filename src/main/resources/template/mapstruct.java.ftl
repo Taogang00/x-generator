@@ -1,9 +1,8 @@
 <#--@formatter:off-->
-package ${package.MapStruct};
+package ${table.mapstructPackagePath};
 
-
-import ${package.DTO}.${entity}DTO;
-import ${package.Entity}.${entity};
+import ${table.dtoPackagePath}.${table.dtoClassName};
+import ${table.entityPackagePath}.${table.entityClassName};
 import com.guanwei.mybatis.mapstruct.MybatisPageBaseConvertMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -11,13 +10,13 @@ import org.mapstruct.MappingConstants;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
 /**
- * ${entity}DTO 与 ${entity}之间通过mapStruct转化
+ * ${table.dtoClassName} 与 ${table.entityClassName}之间通过mapStruct转化
  *
- * @author ${author}
- * @date ${date}
+ * @author ${global.author}
+ * @date ${global.dateTime}
  */
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-public interface ${mapper} extends MybatisPageBaseConvertMapper<${entity}DTO, ${entity}>{
+public interface ${table.mapstructClassName} extends MybatisPageBaseConvertMapper<${table.dtoClassName}, ${table.entityClassName}>{
 
 }
 <#--@formatter:on-->

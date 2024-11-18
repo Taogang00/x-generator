@@ -1,28 +1,28 @@
 <#--@formatter:off-->
-package ${package.Mapper};
+package ${table.mapperPackagePath};
 
-import ${package.DTO}.${entity}DTO;
-import ${package.Entity}.${entity};
-import ${package.Query}.${entity}Query;
-import ${superMapperClassPackage};
+import ${table.dtoPackagePath}.${table.dtoClassName};
+import ${table.entityPackagePath}.${table.entityClassName};
+import ${table.queryPackagePath}.${table.queryClassName};
+import ${global.superMapperClassPackagePath}.${global.superMapperClass};
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
 /**
- * ${table.mapperName} Mapper 接口
- * @author ${author}
- * @date ${date}
+ * ${table.mapperClassName} Mapper 接口
+ * @author ${global.author}
+ * @date ${global.dateTime}
  */
 @Mapper
-public interface ${table.mapperName} extends ${superMapperClass}<${entity}> {
+public interface ${table.mapperClassName} extends ${global.superMapperClass}<${table.entityClassName}> {
 
   /**
    * 获取记录
    *
    * @param query 查询条件对象
-   * @return {@link List}<{@link ${entity}}>
+   * @return {@link List}<{@link ${table.entityClassName}}>
    */
-   List<${entity}DTO> get${entity}List(${entity}Query query);
+   List<${table.dtoClassName}> get${table.entityClassName}List(${table.queryClassName} query);
 }
 <#--@formatter:off-->

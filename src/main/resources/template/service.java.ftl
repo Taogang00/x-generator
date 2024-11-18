@@ -1,28 +1,28 @@
 <#--@formatter:off-->
-package ${package.Service};
+package ${global.servicePackagePath};
 
-import ${package.DTO}.${entity}DTO;
-import ${package.Entity}.${entity};
-import ${package.Query}.${entity}Query;
-import ${superServiceClassPackage};
+import ${table.dtoPackagePath}.${table.dtoClassName};
+import ${table.entityPackagePath}.${table.entityClassName};
+import ${table.queryPackagePath}.${table.queryClassName};
+import ${global.superServiceClassPackagePath}.${global.superServiceClass};
 
 import java.util.List;
 
 /**
- * ${table.serviceName} 服务接口
+ * ${table.serviceClassName} 服务接口
  *
- * @author ${author}
- * @date ${date}
+ * @author ${global.author}
+ * @date ${global.dateTime}
  */
-public interface ${table.serviceName} extends ${superServiceClass}<${entity}> {
+public interface ${table.serviceClassName} extends ${global.superServiceClass}<${table.entityClassName}> {
 
     /**
      * 获取记录
      *
      * @param query 查询条件对象
-     * @return {@link List}<{@link ${entity}}>
+     * @return {@link List}<{@link ${table.entityClassName}}>
      */
-    List<${entity}DTO> get${entity}List(${entity}Query query);
+    List<${table.dtoClassName}> get${table.entityClassName}List(${table.queryClassName} query);
 
 }
 <#--@formatter:on-->

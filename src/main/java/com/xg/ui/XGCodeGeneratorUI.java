@@ -347,6 +347,26 @@ public class XGCodeGeneratorUI {
     }
 
     /**
+     * 从字符串获取模板
+     *
+     * @param templateContent 模板内容
+     * @param templateName    模板名称
+     * @return {@link Template }
+     * @throws IOException io异常
+     */
+    public Template getTemplateFromString(String templateContent, String templateName) throws IOException {
+        // 创建 FreeMarker 配置对象
+        Configuration cfg = new Configuration(Configuration.VERSION_2_3_33);
+        cfg.setDefaultEncoding(StandardCharsets.UTF_8.displayName());
+
+        // 使用 StringReader 将字符串内容转换为 Reader
+        StringReader stringReader = new StringReader(templateContent);
+
+        // 创建模板并加载\ templateName 是模板的名称，可以任意指定
+        return new Template(templateName, stringReader, cfg);
+    }
+
+    /**
      * 生成代码-点击生成按钮事件
      *
      * @param project 项目
@@ -374,6 +394,54 @@ public class XGCodeGeneratorUI {
             String templateContent = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
             Template template = getTemplateFromString(templateContent, "dto");
             generateDTOCode(template, map);
+        }
+
+        //默认-生成query
+        try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("template/query.java.ftl")) {
+            assert resourceAsStream != null;
+            String templateContent = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
+            Template template = getTemplateFromString(templateContent, "query");
+            generateQueryCode(template, map);
+        }
+
+        //默认-生成service
+        try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("template/service.java.ftl")) {
+            assert resourceAsStream != null;
+            String templateContent = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
+            Template template = getTemplateFromString(templateContent, "service");
+            generateServiceCode(template, map);
+        }
+
+        //默认-生成serviceImpl
+        try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("template/serviceImpl.java.ftl")) {
+            assert resourceAsStream != null;
+            String templateContent = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
+            Template template = getTemplateFromString(templateContent, "serviceImpl");
+            generateServiceImplCode(template, map);
+        }
+
+        //默认-生成mapper
+        try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("template/mapper.java.ftl")) {
+            assert resourceAsStream != null;
+            String templateContent = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
+            Template template = getTemplateFromString(templateContent, "mapper");
+            generateMapperCode(template, map);
+        }
+
+        //默认-生成mapper-xml
+        try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("template/mapper.xml.ftl")) {
+            assert resourceAsStream != null;
+            String templateContent = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
+            Template template = getTemplateFromString(templateContent, "mapper-xml");
+            generateMapperXmlCode(template, map);
+        }
+
+        //默认-生成mapstruct
+        try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("template/mapstruct.java.ftl")) {
+            assert resourceAsStream != null;
+            String templateContent = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
+            Template template = getTemplateFromString(templateContent, "mapstruct");
+            generateMapStructCode(template, map);
         }
     }
 
@@ -430,22 +498,155 @@ public class XGCodeGeneratorUI {
     }
 
     /**
-     * 从字符串获取模板
+     * 生成Query代码
      *
-     * @param templateContent 模板内容
-     * @param templateName    模板名称
-     * @return {@link Template }
-     * @throws IOException io异常
+     * @param template 模板
+     * @param map      地图
      */
-    public Template getTemplateFromString(String templateContent, String templateName) throws IOException {
-        // 创建 FreeMarker 配置对象
-        Configuration cfg = new Configuration(Configuration.VERSION_2_3_33);
-        cfg.setDefaultEncoding(StandardCharsets.UTF_8.displayName());
+    public void generateQueryCode(Template template, Map<String, Object> map) {
+        if (xgGlobalInfo.getGenerateQuery()) {
+            File file = new File(xgGlobalInfo.getOutputQueryPath());
+            if (!file.exists()) {
+                //noinspection ResultOfMethodCallIgnored
+                file.mkdir();
+            }
 
-        // 使用 StringReader 将字符串内容转换为 Reader
-        StringReader stringReader = new StringReader(templateContent);
+            for (XgGeneratorTableObj xgGeneratorTableObj : xgGeneratorTableObjList) {
+                try (FileOutputStream fileOutputStream = new FileOutputStream(xgGeneratorTableObj.getQueryPath())) {
+                    Map<String, Object> stringObjectMap = BeanUtil.beanToMap(xgGeneratorTableObj);
+                    map.put("table", stringObjectMap);
+                    template.process(map, new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8));
+                } catch (IOException | TemplateException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+    }
 
-        // 创建模板并加载\ templateName 是模板的名称，可以任意指定
-        return new Template(templateName, stringReader, cfg);
+    /**
+     * 生成Service代码
+     *
+     * @param template 模板
+     * @param map      地图
+     */
+    public void generateServiceCode(Template template, Map<String, Object> map) {
+        if (xgGlobalInfo.getGenerateService()) {
+            File file = new File(xgGlobalInfo.getOutputServicePath());
+            if (!file.exists()) {
+                //noinspection ResultOfMethodCallIgnored
+                file.mkdir();
+            }
+
+            for (XgGeneratorTableObj xgGeneratorTableObj : xgGeneratorTableObjList) {
+                try (FileOutputStream fileOutputStream = new FileOutputStream(xgGeneratorTableObj.getServicePath())) {
+                    Map<String, Object> stringObjectMap = BeanUtil.beanToMap(xgGeneratorTableObj);
+                    map.put("table", stringObjectMap);
+                    template.process(map, new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8));
+                } catch (IOException | TemplateException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+    }
+
+    /**
+     * 生成ServiceImpl代码
+     *
+     * @param template 模板
+     * @param map      地图
+     */
+    public void generateServiceImplCode(Template template, Map<String, Object> map) {
+        if (xgGlobalInfo.getGenerateService()) {
+            File file = new File(xgGlobalInfo.getOutputServiceImplPath());
+            if (!file.exists()) {
+                //noinspection ResultOfMethodCallIgnored
+                file.mkdir();
+            }
+
+            for (XgGeneratorTableObj xgGeneratorTableObj : xgGeneratorTableObjList) {
+                try (FileOutputStream fileOutputStream = new FileOutputStream(xgGeneratorTableObj.getServiceImplPath())) {
+                    Map<String, Object> stringObjectMap = BeanUtil.beanToMap(xgGeneratorTableObj);
+                    map.put("table", stringObjectMap);
+                    template.process(map, new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8));
+                } catch (IOException | TemplateException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+    }
+
+    /**
+     * 生成Mapper代码
+     *
+     * @param template 模板
+     * @param map      地图
+     */
+    public void generateMapperCode(Template template, Map<String, Object> map) {
+        if (xgGlobalInfo.getGenerateMapper()) {
+            File file = new File(xgGlobalInfo.getOutputMapperPath());
+            if (!file.exists()) {
+                file.mkdir();
+            }
+
+            for (XgGeneratorTableObj xgGeneratorTableObj : xgGeneratorTableObjList) {
+                try (FileOutputStream fileOutputStream = new FileOutputStream(xgGeneratorTableObj.getMapperPath())) {
+                    Map<String, Object> stringObjectMap = BeanUtil.beanToMap(xgGeneratorTableObj);
+                    map.put("table", stringObjectMap);
+                    template.process(map, new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8));
+                } catch (IOException | TemplateException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+    }
+
+    /**
+     * 生成MapperXml代码
+     *
+     * @param template 模板
+     * @param map      地图
+     */
+    public void generateMapperXmlCode(Template template, Map<String, Object> map) {
+        if (xgGlobalInfo.getGenerateMapperXml()) {
+            File file = new File(xgGlobalInfo.getOutputMapperXmlPath());
+            if (!file.exists()) {
+                file.mkdir();
+            }
+
+            for (XgGeneratorTableObj xgGeneratorTableObj : xgGeneratorTableObjList) {
+                try (FileOutputStream fileOutputStream = new FileOutputStream(xgGeneratorTableObj.getMapXmlPath())) {
+                    Map<String, Object> stringObjectMap = BeanUtil.beanToMap(xgGeneratorTableObj);
+                    map.put("table", stringObjectMap);
+                    template.process(map, new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8));
+                } catch (IOException | TemplateException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+    }
+
+    /**
+     * 生成MapStruct代码
+     *
+     * @param template 模板
+     * @param map      地图
+     */
+    public void generateMapStructCode(Template template, Map<String, Object> map) {
+        if (xgGlobalInfo.getGenerateMapStruct()) {
+            File file = new File(xgGlobalInfo.getOutputMapStructPath());
+            if (!file.exists()) {
+                file.mkdir();
+            }
+
+            for (XgGeneratorTableObj xgGeneratorTableObj : xgGeneratorTableObjList) {
+                try (FileOutputStream fileOutputStream = new FileOutputStream(xgGeneratorTableObj.getMapstructPath())) {
+                    Map<String, Object> stringObjectMap = BeanUtil.beanToMap(xgGeneratorTableObj);
+                    map.put("table", stringObjectMap);
+                    template.process(map, new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8));
+                } catch (IOException | TemplateException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
     }
 }

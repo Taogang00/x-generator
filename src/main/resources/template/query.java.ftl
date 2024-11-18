@@ -1,5 +1,5 @@
 <#--@formatter:off-->
-package ${package.Query};
+package ${global.queryPackagePath};
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -9,23 +9,20 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 /**
- * ${entity} 查询对象
+ * ${table.entityClassName} 查询对象
  *
- * @author ${author}
- * @date ${date}
+ * @author ${global.author}
+ * @date ${global.dateTime}
  */
-<#if entityLombokModel>
-@EqualsAndHashCode(callSuper = true)
 @Data
-</#if>
-public class ${entity}Query extends PageQuery {
+public class ${table.queryClassName} extends PageQuery {
 
 <#list table.tableFields as field>
-    <#if field.comment!?length gt 0>
-        /**
-        * ${field.comment}
-        */
-    </#if>
+<#if field.comment!?length gt 0>
+    /**
+    * ${field.comment}
+    */
+</#if>
     private ${field.propertyType} ${field.propertyName};
 
 </#list>

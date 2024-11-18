@@ -1,15 +1,12 @@
 <#--@formatter:off-->
-package ${package.Controller};
+package ${global.controllerPackagePath};
 
 import com.guanwei.core.utils.result.R;
-<#if superControllerClassPackage??>
-import ${superControllerClassPackage};
-</#if>
-import ${package.DTO}.${entity}DTO;
-import ${package.Query}.${entity}Query;
-import ${package.Entity}.${entity};
-import ${package.MapStruct}.${table.mapstructName};
-import ${package.Service}.${table.serviceName};
+import ${table.dtoPackagePath}.${table.dtoClassName};
+import ${table.queryPackagePath}.${table.queryClassName};
+import ${table.entityPackagePath}.${table.entityClassName};
+import ${table.mapstructPackagePath}.${table.mapstructClassName};
+import ${table.servicePackagePath}.${table.serviceClassName};
 import lombok.RequiredArgsConstructor;
 import org.springframework.util.Assert;
 import org.springframework.validation.annotation.Validated;
@@ -20,38 +17,27 @@ import java.util.List;
 /**
  * ${table.controllerName} 控制器
  *
- * @author ${author}
- * @date ${date}
+ * @author ${global.author}
+ * @date ${global.dateTime}
  */
-<#if restControllerStyle>
 @RestController
-<#else>
-@Controller
-</#if>
-@RequestMapping("/v1/${table.lowerEntityName}<#if controllerMappingHyphenStyle??>/${controllerMappingHyphen}</#if>")
-<#if kotlin>
-class ${table.controllerName}<#if superControllerClass??> : ${superControllerClass}()</#if>
-<#else>
+@RequestMapping("/v1/${table.lowerEntityName}")
 @RequiredArgsConstructor
-<#if superControllerClass??>
-public class ${table.controllerName} extends ${superControllerClass} {
-<#else>
 public class ${table.controllerName} {
-</#if>
 
-    private final ${table.serviceName} ${table.lowerServiceName};
+    private final ${table.serviceClassName} ${table.serviceClassName};
 
-    private final ${table.mapstructName} ${table.lowerMapstructName};
+    private final ${table.mapstructClassName} ${table.mapstructClassName};
 
     /**
     * 获取一条记录
     *
     * @param id 数据标识
-    * @return {@link R}<{@link ${entity}DTO}> 通用返回对象
+    * @return {@link R}<{@link ${table.dtoClassName}}> 通用返回对象
     */
     @GetMapping("/{id}")
-    public R<${entity}DTO> get(@PathVariable String id) {
-        ${entity}DTO dto = ${table.lowerMapstructName}.toTarget(${table.lowerServiceName}.getOne(id));
+    public R<${table.dtoClassName}> get(@PathVariable String id) {
+        ${table.dtoClassName} dto = ${table.mapstructClassName}.toTarget(${table.serviceClassName}.getOne(id));
         return R.OK(dto);
     }
 
@@ -62,8 +48,8 @@ public class ${table.controllerName} {
      * @return {@link R}<{@link ?}> 通用返回对象
 	 */
 	@GetMapping("/list")
-	public R<?> list(${entity}Query query) {
-        List<${entity}DTO> list = ${table.lowerServiceName}.get${entity}List(query);
+	public R<?> list(${table.queryClassName} query) {
+        List<${table.dtoClassName}> list = ${table.serviceClassName}.get${table.entityClassName}List(query);
 		return R.OK(list);
 	}
 
@@ -74,9 +60,9 @@ public class ${table.controllerName} {
      * @return {@link R}<{@link Boolean}> 通用返回对象
      */
     @PostMapping
-    public R<Boolean> add(@Validated @RequestBody ${entity}DTO dto) {
-        ${entity} entity = ${table.lowerMapstructName}.toSource(dto);
-        boolean save = ${table.lowerServiceName}.save(entity);
+    public R<Boolean> add(@Validated @RequestBody ${table.dtoClassName} dto) {
+        ${table.entityClassName} entity = ${table.mapstructClassName}.toSource(dto);
+        boolean save = ${table.serviceClassName}.save(entity);
         return R.OK(save);
     }
 
@@ -88,10 +74,10 @@ public class ${table.controllerName} {
      * @return {@link R}<{@link ?}> 通用返回对象
      */
     @PostMapping("/edit/{id}")
-    public R<?> update(@PathVariable String id, @Validated @RequestBody ${entity}DTO dto) {
+    public R<?> update(@PathVariable String id, @Validated @RequestBody ${table.dtoClassName} dto) {
         Assert.notNull(id, "主键标识不能为空！");
-        ${entity} entity = ${table.lowerMapstructName}.toSource(dto);
-        ${table.lowerServiceName}.update(entity);
+        ${table.entityClassName} entity = ${table.mapstructClassName}.toSource(dto);
+        ${table.serviceClassName}.update(entity);
         return R.OK();
     }
 
@@ -103,7 +89,7 @@ public class ${table.controllerName} {
      */
     @PostMapping("/delete/{id}")
     public R<Boolean> delete(@PathVariable String id) {
-        return R.OK(${table.lowerServiceName}.removeById(id));
+        return R.OK(${table.serviceClassName}.removeById(id));
     }
 }
 </#if>

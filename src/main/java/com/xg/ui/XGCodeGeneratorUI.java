@@ -31,6 +31,7 @@ import org.w3c.dom.NodeList;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -64,8 +65,8 @@ public class XGCodeGeneratorUI {
     private ExpandableTextField mapperXmlPathTextField;
     private ExpandableTextField codeGeneratorPathTextField;
 
-    private JRadioButton ignoreRadioButton;
-    private JRadioButton coverRadioButton;
+    private JRadioButton skipRadioButton;
+    private JRadioButton overrideRadioButton;
     private JCheckBox controllerCheckBox;
     private JCheckBox serviceCheckBox;
     private JCheckBox mapperCheckBox;
@@ -82,25 +83,30 @@ public class XGCodeGeneratorUI {
     private JTextField ignoreTablePrefixTextField;
     private JTextField authorTextField;
     private List<XGXmlElementTable> tableInfoList;
-    private final List<XgGeneratorTableObj> xgGeneratorTableObjList;
+    private final List<XgGeneratorTableObj> xgGeneratorSelectedTableObjList;
     private final XGGeneratorGlobalObj xgGeneratorGlobalObj;
 
     public XGCodeGeneratorUI(Project project) {
+        this.skipRadioButton.setActionCommand("0");
+        this.overrideRadioButton.setActionCommand("1");
         this.xgGeneratorGlobalObj = new XGGeneratorGlobalObj();
 
         this.settingBtn.setIcon(AllIcons.General.Settings);
         this.importBtn.setIcon(AllIcons.ToolbarDecorator.Import);
         this.authorTextField.setText(System.getProperty("user.name"));
         this.packageAllBtn.setText("全不选");
-        this.xgGeneratorTableObjList = new ArrayList<>();
+        this.xgGeneratorSelectedTableObjList = new ArrayList<>();
         this.xgGeneratorGlobalObj.setDateTime(DateUtil.formatDateTime(new Date()));
         this.xgGeneratorGlobalObj.setAuthor(authorTextField.getText());
+        this.xgGeneratorGlobalObj.setFileOverride(false);
 
-        for (String s : XGMavenUtil.getMavenArtifactId(project)) {
-            projectModuleComboBox.addItem(s);
+        // 1.项目模块加载
+        List<String> mavenArtifactIds = XGMavenUtil.getMavenArtifactId(project);
+        for (String item : mavenArtifactIds) {
+            projectModuleComboBox.addItem(item);
         }
 
-        // 作者
+        // 2.代码作者-默认是加载当前操作系统用户名称
         authorTextField.getDocument().addDocumentListener(new DocumentAdapter() {
             @Override
             protected void textChanged(@NotNull DocumentEvent e) {
@@ -108,7 +114,7 @@ public class XGCodeGeneratorUI {
             }
         });
 
-        // 生成对象
+        // 3.生成Java对象【全选】、【全不选】按钮事件
         packageAllBtn.addActionListener(e -> {
             if (!this.controllerCheckBox.isSelected()
                     || !this.serviceCheckBox.isSelected()
@@ -139,7 +145,7 @@ public class XGCodeGeneratorUI {
             }
         });
 
-        // 生成与否
+        // 4.生成Java对象生成与否的单选事件
         controllerCheckBox.addItemListener(e -> this.xgGeneratorGlobalObj.setGenerateController(e.getStateChange() == ItemEvent.SELECTED));
         serviceCheckBox.addItemListener(e -> this.xgGeneratorGlobalObj.setGenerateService(e.getStateChange() == ItemEvent.SELECTED));
         entityCheckBox.addItemListener(e -> this.xgGeneratorGlobalObj.setGenerateEntity(e.getStateChange() == ItemEvent.SELECTED));
@@ -149,14 +155,27 @@ public class XGCodeGeneratorUI {
         mapperCheckBox.addItemListener(e -> this.xgGeneratorGlobalObj.setGenerateMapper(e.getStateChange() == ItemEvent.SELECTED));
         mapXmlCheckBox.addItemListener(e -> this.xgGeneratorGlobalObj.setGenerateMapperXml(e.getStateChange() == ItemEvent.SELECTED));
 
-        // 选择项目时需要给代码生成的路径进行赋值
+        // 5.添加ActionListener来监听文件冲突时按钮的状态变化
+        ActionListener actionListener = e -> {
+            // 获取选中的 JRadioButton
+            JRadioButton selectedButton = (JRadioButton) e.getSource();
+            if ("1".equals(selectedButton.getActionCommand())) {
+                this.xgGeneratorGlobalObj.setFileOverride(true);
+            } else if ("0".equals(selectedButton.getActionCommand())) {
+                this.xgGeneratorGlobalObj.setFileOverride(false);
+            }
+        };
+        skipRadioButton.addActionListener(actionListener);
+        overrideRadioButton.addActionListener(actionListener);
+
+        // 6.选择项目时需要给代码生成的路径进行赋值
         projectModuleComboBox.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 initSelectedModulePackage(project, e.getItem().toString());
             }
         });
 
-        // 导入xml按钮事件
+        // 10.导入xml按钮事件
         importBtn.addActionListener(e -> {
             VirtualFile virtualFile = XGFileChooserUtil.chooseFileVirtual(project);
             if (ObjectUtil.isNull(virtualFile)) {
@@ -182,7 +201,7 @@ public class XGCodeGeneratorUI {
             }
         });
 
-        // 初始化包赋值操作
+        // 11.初始化包赋值操作
         if (ObjectUtil.isNotNull(projectModuleComboBox.getSelectedItem())) {
             initSelectedModulePackage(project, projectModuleComboBox.getSelectedItem().toString());
         }
@@ -300,7 +319,7 @@ public class XGCodeGeneratorUI {
      * @param selectedValuesList Selected Values 列表
      */
     public void initSelectXgGeneratorTableObj(List<? extends String> selectedValuesList) {
-        xgGeneratorTableObjList.clear();
+        xgGeneratorSelectedTableObjList.clear();
         for (String s : selectedValuesList) {
             XGXmlElementTable xgXmlElementTable = tableInfoMap.get(s);
             String elementTableName = xgXmlElementTable.getName();
@@ -358,7 +377,7 @@ public class XGCodeGeneratorUI {
                 tableFields.add(xgGeneratorTableFieldsObj);
             }
             xgGeneratorTableObj.setTableFields(tableFields);
-            xgGeneratorTableObjList.add(xgGeneratorTableObj);
+            xgGeneratorSelectedTableObjList.add(xgGeneratorTableObj);
         }
     }
 
@@ -389,12 +408,13 @@ public class XGCodeGeneratorUI {
      * @param xgMainDialog 项目
      * @throws IOException io异常
      */
+    @SuppressWarnings("all")
     public void generateCode(Project project, XGMainDialog xgMainDialog) throws IOException {
         if (this.tableInfoList == null || this.tableInfoList.isEmpty()) {
             Messages.showDialog("请先导入表实体数据！", "操作提示", new String[]{"确定"}, -1, Messages.getInformationIcon());
             return;
         }
-        if (this.xgGeneratorTableObjList.isEmpty()) {
+        if (this.xgGeneratorSelectedTableObjList.isEmpty()) {
             Messages.showDialog("请先选择要生成的表实体！", "操作提示", new String[]{"确定"}, -1, Messages.getInformationIcon());
             return;
         }
@@ -409,12 +429,13 @@ public class XGCodeGeneratorUI {
         Map<String, Object> xgGlobalInfoMap = BeanUtil.beanToMap(this.xgGeneratorGlobalObj);
         map.put("global", xgGlobalInfoMap);
 
+        int count = 0;
         //默认-生成controller
         try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("template/controller.java.ftl")) {
             assert resourceAsStream != null;
             String templateContent = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
             Template template = getTemplateFromString(templateContent, "controller");
-            generateControllerCode(template, map);
+            count += generateControllerCode(template, map);
         }
 
         //默认-生成entity
@@ -422,7 +443,7 @@ public class XGCodeGeneratorUI {
             assert resourceAsStream != null;
             String templateContent = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
             Template template = getTemplateFromString(templateContent, "entity");
-            generateEntityCode(template, map);
+            count += generateEntityCode(template, map);
         }
 
         //默认-生成dto
@@ -430,7 +451,7 @@ public class XGCodeGeneratorUI {
             assert resourceAsStream != null;
             String templateContent = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
             Template template = getTemplateFromString(templateContent, "dto");
-            generateDTOCode(template, map);
+            count += generateDTOCode(template, map);
         }
 
         //默认-生成query
@@ -438,7 +459,7 @@ public class XGCodeGeneratorUI {
             assert resourceAsStream != null;
             String templateContent = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
             Template template = getTemplateFromString(templateContent, "query");
-            generateQueryCode(template, map);
+            count += generateQueryCode(template, map);
         }
 
         //默认-生成service
@@ -446,7 +467,7 @@ public class XGCodeGeneratorUI {
             assert resourceAsStream != null;
             String templateContent = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
             Template template = getTemplateFromString(templateContent, "service");
-            generateServiceCode(template, map);
+            count += generateServiceCode(template, map);
         }
 
         //默认-生成serviceImpl
@@ -454,7 +475,7 @@ public class XGCodeGeneratorUI {
             assert resourceAsStream != null;
             String templateContent = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
             Template template = getTemplateFromString(templateContent, "serviceImpl");
-            generateServiceImplCode(template, map);
+            count += generateServiceImplCode(template, map);
         }
 
         //默认-生成mapper
@@ -462,7 +483,7 @@ public class XGCodeGeneratorUI {
             assert resourceAsStream != null;
             String templateContent = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
             Template template = getTemplateFromString(templateContent, "mapper");
-            generateMapperCode(template, map);
+            count += generateMapperCode(template, map);
         }
 
         //默认-生成mapper-xml
@@ -470,7 +491,7 @@ public class XGCodeGeneratorUI {
             assert resourceAsStream != null;
             String templateContent = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
             Template template = getTemplateFromString(templateContent, "mapper-xml");
-            generateMapperXmlCode(template, map);
+            count += generateMapperXmlCode(template, map);
         }
 
         //默认-生成mapstruct
@@ -478,12 +499,12 @@ public class XGCodeGeneratorUI {
             assert resourceAsStream != null;
             String templateContent = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
             Template template = getTemplateFromString(templateContent, "mapstruct");
-            generateMapStructCode(template, map);
+            count += generateMapStructCode(template, map);
         }
 
         NotificationGroupManager groupManager = NotificationGroupManager.getInstance();
         Notification notification = groupManager.getNotificationGroup("NotificationXg")
-                .createNotification("生成成功", MessageType.INFO).setTitle("X-Generator");
+                .createNotification("生成成功，共有 " + count + " 个文件发生改变", MessageType.INFO).setTitle("X-Generator");
         Notifications.Bus.notify(notification, project);
         xgMainDialog.doCancelAction();
     }
@@ -494,21 +515,31 @@ public class XGCodeGeneratorUI {
      * @param template 模板
      * @param map      地图
      */
-    public void generateControllerCode(Template template, Map<String, Object> map) throws IOException {
+    public int generateControllerCode(Template template, Map<String, Object> map) throws IOException {
+        int count = 0;
         if (xgGeneratorGlobalObj.getGenerateController()) {
             Path path = Paths.get(xgGeneratorGlobalObj.getOutputControllerPath());
+            // 在使用 FileOutputStream 时，如果文件的父目录不存在（即文件所在的文件夹），Java 会抛出 FileNotFoundException，即使你尝试创建一个新的文件。
+            // 为了避免这个问题，你需要确保文件的父目录已经存在。如果目录不存在，你需要手动创建它。
             Files.createDirectories(path);
 
-            for (XgGeneratorTableObj xgGeneratorTableObj : xgGeneratorTableObjList) {
-                try (FileOutputStream fileOutputStream = new FileOutputStream(xgGeneratorTableObj.getControllerPath())) {
-                    Map<String, Object> stringObjectMap = BeanUtil.beanToMap(xgGeneratorTableObj);
-                    map.put("table", stringObjectMap);
-                    template.process(map, new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8));
-                } catch (IOException | TemplateException e) {
-                    throw new RuntimeException(e);
+            for (XgGeneratorTableObj xgGeneratorTableObj : xgGeneratorSelectedTableObjList) {
+                Path filePath = Paths.get(xgGeneratorTableObj.getControllerPath());
+                // 检查文件是否存在并且是否允许覆盖
+                boolean shouldProcess = Files.exists(filePath) && this.xgGeneratorGlobalObj.getFileOverride() || !Files.exists(filePath);
+                if (shouldProcess) {
+                    try (FileOutputStream fileOutputStream = new FileOutputStream(xgGeneratorTableObj.getControllerPath())) {
+                        Map<String, Object> stringObjectMap = BeanUtil.beanToMap(xgGeneratorTableObj);
+                        map.put("table", stringObjectMap);
+                        template.process(map, new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8));
+                        count++;
+                    } catch (IOException | TemplateException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
         }
+        return count;
     }
 
     /**
@@ -517,21 +548,29 @@ public class XGCodeGeneratorUI {
      * @param template 模板
      * @param map      地图
      */
-    public void generateEntityCode(Template template, Map<String, Object> map) throws IOException {
+    public int generateEntityCode(Template template, Map<String, Object> map) throws IOException {
+        int count = 0;
         if (xgGeneratorGlobalObj.getGenerateEntity()) {
             Path path = Paths.get(xgGeneratorGlobalObj.getOutputEntityPath());
             Files.createDirectories(path);
 
-            for (XgGeneratorTableObj xgGeneratorTableObj : xgGeneratorTableObjList) {
-                try (FileOutputStream fileOutputStream = new FileOutputStream(xgGeneratorTableObj.getEntityPath())) {
-                    Map<String, Object> stringObjectMap = BeanUtil.beanToMap(xgGeneratorTableObj);
-                    map.put("table", stringObjectMap);
-                    template.process(map, new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8));
-                } catch (IOException | TemplateException e) {
-                    throw new RuntimeException(e);
+            for (XgGeneratorTableObj xgGeneratorTableObj : xgGeneratorSelectedTableObjList) {
+                Path filePath = Paths.get(xgGeneratorTableObj.getEntityPath());
+                // 检查文件是否存在并且是否允许覆盖
+                boolean shouldProcess = Files.exists(filePath) && this.xgGeneratorGlobalObj.getFileOverride() || !Files.exists(filePath);
+                if (shouldProcess) {
+                    try (FileOutputStream fileOutputStream = new FileOutputStream(xgGeneratorTableObj.getEntityPath())) {
+                        Map<String, Object> stringObjectMap = BeanUtil.beanToMap(xgGeneratorTableObj);
+                        map.put("table", stringObjectMap);
+                        template.process(map, new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8));
+                        count++;
+                    } catch (IOException | TemplateException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
         }
+        return count;
     }
 
     /**
@@ -540,21 +579,29 @@ public class XGCodeGeneratorUI {
      * @param template 模板
      * @param map      地图
      */
-    public void generateDTOCode(Template template, Map<String, Object> map) throws IOException {
+    public int generateDTOCode(Template template, Map<String, Object> map) throws IOException {
+        int count = 0;
         if (xgGeneratorGlobalObj.getGenerateDTO()) {
             Path path = Paths.get(xgGeneratorGlobalObj.getOutputDTOPath());
             Files.createDirectories(path);
 
-            for (XgGeneratorTableObj xgGeneratorTableObj : xgGeneratorTableObjList) {
-                try (FileOutputStream fileOutputStream = new FileOutputStream(xgGeneratorTableObj.getDtoPath())) {
-                    Map<String, Object> stringObjectMap = BeanUtil.beanToMap(xgGeneratorTableObj);
-                    map.put("table", stringObjectMap);
-                    template.process(map, new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8));
-                } catch (IOException | TemplateException e) {
-                    throw new RuntimeException(e);
+            for (XgGeneratorTableObj xgGeneratorTableObj : xgGeneratorSelectedTableObjList) {
+                Path filePath = Paths.get(xgGeneratorTableObj.getDtoPath());
+                // 检查文件是否存在并且是否允许覆盖
+                boolean shouldProcess = Files.exists(filePath) && this.xgGeneratorGlobalObj.getFileOverride() || !Files.exists(filePath);
+                if (shouldProcess) {
+                    try (FileOutputStream fileOutputStream = new FileOutputStream(xgGeneratorTableObj.getDtoPath())) {
+                        Map<String, Object> stringObjectMap = BeanUtil.beanToMap(xgGeneratorTableObj);
+                        map.put("table", stringObjectMap);
+                        template.process(map, new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8));
+                        count++;
+                    } catch (IOException | TemplateException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
         }
+        return count;
     }
 
     /**
@@ -563,21 +610,29 @@ public class XGCodeGeneratorUI {
      * @param template 模板
      * @param map      地图
      */
-    public void generateQueryCode(Template template, Map<String, Object> map) throws IOException {
+    public int generateQueryCode(Template template, Map<String, Object> map) throws IOException {
+        int count = 0;
         if (xgGeneratorGlobalObj.getGenerateQuery()) {
             Path path = Paths.get(xgGeneratorGlobalObj.getOutputQueryPath());
             Files.createDirectories(path);
 
-            for (XgGeneratorTableObj xgGeneratorTableObj : xgGeneratorTableObjList) {
-                try (FileOutputStream fileOutputStream = new FileOutputStream(xgGeneratorTableObj.getQueryPath())) {
-                    Map<String, Object> stringObjectMap = BeanUtil.beanToMap(xgGeneratorTableObj);
-                    map.put("table", stringObjectMap);
-                    template.process(map, new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8));
-                } catch (IOException | TemplateException e) {
-                    throw new RuntimeException(e);
+            for (XgGeneratorTableObj xgGeneratorTableObj : xgGeneratorSelectedTableObjList) {
+                Path filePath = Paths.get(xgGeneratorTableObj.getQueryPath());
+                // 检查文件是否存在并且是否允许覆盖
+                boolean shouldProcess = Files.exists(filePath) && this.xgGeneratorGlobalObj.getFileOverride() || !Files.exists(filePath);
+                if (shouldProcess) {
+                    try (FileOutputStream fileOutputStream = new FileOutputStream(xgGeneratorTableObj.getQueryPath())) {
+                        Map<String, Object> stringObjectMap = BeanUtil.beanToMap(xgGeneratorTableObj);
+                        map.put("table", stringObjectMap);
+                        template.process(map, new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8));
+                        count++;
+                    } catch (IOException | TemplateException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
         }
+        return count;
     }
 
     /**
@@ -586,21 +641,29 @@ public class XGCodeGeneratorUI {
      * @param template 模板
      * @param map      地图
      */
-    public void generateServiceCode(Template template, Map<String, Object> map) throws IOException {
+    public int generateServiceCode(Template template, Map<String, Object> map) throws IOException {
+        int count = 0;
         if (xgGeneratorGlobalObj.getGenerateService()) {
             Path path = Paths.get(xgGeneratorGlobalObj.getOutputServicePath());
             Files.createDirectories(path);
 
-            for (XgGeneratorTableObj xgGeneratorTableObj : xgGeneratorTableObjList) {
-                try (FileOutputStream fileOutputStream = new FileOutputStream(xgGeneratorTableObj.getServicePath())) {
-                    Map<String, Object> stringObjectMap = BeanUtil.beanToMap(xgGeneratorTableObj);
-                    map.put("table", stringObjectMap);
-                    template.process(map, new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8));
-                } catch (IOException | TemplateException e) {
-                    throw new RuntimeException(e);
+            for (XgGeneratorTableObj xgGeneratorTableObj : xgGeneratorSelectedTableObjList) {
+                Path filePath = Paths.get(xgGeneratorTableObj.getServicePath());
+                // 检查文件是否存在并且是否允许覆盖
+                boolean shouldProcess = Files.exists(filePath) && this.xgGeneratorGlobalObj.getFileOverride() || !Files.exists(filePath);
+                if (shouldProcess) {
+                    try (FileOutputStream fileOutputStream = new FileOutputStream(xgGeneratorTableObj.getServicePath())) {
+                        Map<String, Object> stringObjectMap = BeanUtil.beanToMap(xgGeneratorTableObj);
+                        map.put("table", stringObjectMap);
+                        template.process(map, new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8));
+                        count++;
+                    } catch (IOException | TemplateException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
         }
+        return count;
     }
 
     /**
@@ -609,21 +672,29 @@ public class XGCodeGeneratorUI {
      * @param template 模板
      * @param map      地图
      */
-    public void generateServiceImplCode(Template template, Map<String, Object> map) throws IOException {
+    public int generateServiceImplCode(Template template, Map<String, Object> map) throws IOException {
+        int count = 0;
         if (xgGeneratorGlobalObj.getGenerateService()) {
             Path path = Paths.get(xgGeneratorGlobalObj.getOutputServiceImplPath());
             Files.createDirectories(path);
 
-            for (XgGeneratorTableObj xgGeneratorTableObj : xgGeneratorTableObjList) {
-                try (FileOutputStream fileOutputStream = new FileOutputStream(xgGeneratorTableObj.getServiceImplPath())) {
-                    Map<String, Object> stringObjectMap = BeanUtil.beanToMap(xgGeneratorTableObj);
-                    map.put("table", stringObjectMap);
-                    template.process(map, new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8));
-                } catch (IOException | TemplateException e) {
-                    throw new RuntimeException(e);
+            for (XgGeneratorTableObj xgGeneratorTableObj : xgGeneratorSelectedTableObjList) {
+                Path filePath = Paths.get(xgGeneratorTableObj.getServiceImplPath());
+                // 检查文件是否存在并且是否允许覆盖
+                boolean shouldProcess = Files.exists(filePath) && this.xgGeneratorGlobalObj.getFileOverride() || !Files.exists(filePath);
+                if (shouldProcess) {
+                    try (FileOutputStream fileOutputStream = new FileOutputStream(xgGeneratorTableObj.getServiceImplPath())) {
+                        Map<String, Object> stringObjectMap = BeanUtil.beanToMap(xgGeneratorTableObj);
+                        map.put("table", stringObjectMap);
+                        template.process(map, new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8));
+                        count++;
+                    } catch (IOException | TemplateException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
         }
+        return count;
     }
 
     /**
@@ -632,21 +703,29 @@ public class XGCodeGeneratorUI {
      * @param template 模板
      * @param map      地图
      */
-    public void generateMapperCode(Template template, Map<String, Object> map) throws IOException {
+    public int generateMapperCode(Template template, Map<String, Object> map) throws IOException {
+        int count = 0;
         if (xgGeneratorGlobalObj.getGenerateMapper()) {
             Path path = Paths.get(xgGeneratorGlobalObj.getOutputMapperPath());
             Files.createDirectories(path);
 
-            for (XgGeneratorTableObj xgGeneratorTableObj : xgGeneratorTableObjList) {
-                try (FileOutputStream fileOutputStream = new FileOutputStream(xgGeneratorTableObj.getMapperPath())) {
-                    Map<String, Object> stringObjectMap = BeanUtil.beanToMap(xgGeneratorTableObj);
-                    map.put("table", stringObjectMap);
-                    template.process(map, new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8));
-                } catch (IOException | TemplateException e) {
-                    throw new RuntimeException(e);
+            for (XgGeneratorTableObj xgGeneratorTableObj : xgGeneratorSelectedTableObjList) {
+                Path filePath = Paths.get(xgGeneratorTableObj.getMapperPath());
+                // 检查文件是否存在并且是否允许覆盖
+                boolean shouldProcess = Files.exists(filePath) && this.xgGeneratorGlobalObj.getFileOverride() || !Files.exists(filePath);
+                if (shouldProcess) {
+                    try (FileOutputStream fileOutputStream = new FileOutputStream(xgGeneratorTableObj.getMapperPath())) {
+                        Map<String, Object> stringObjectMap = BeanUtil.beanToMap(xgGeneratorTableObj);
+                        map.put("table", stringObjectMap);
+                        template.process(map, new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8));
+                        count++;
+                    } catch (IOException | TemplateException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
         }
+        return count;
     }
 
     /**
@@ -655,21 +734,29 @@ public class XGCodeGeneratorUI {
      * @param template 模板
      * @param map      地图
      */
-    public void generateMapperXmlCode(Template template, Map<String, Object> map) throws IOException {
+    public int generateMapperXmlCode(Template template, Map<String, Object> map) throws IOException {
+        int count = 0;
         if (xgGeneratorGlobalObj.getGenerateMapperXml()) {
             Path path = Paths.get(xgGeneratorGlobalObj.getOutputMapperXmlPath());
             Files.createDirectories(path);
 
-            for (XgGeneratorTableObj xgGeneratorTableObj : xgGeneratorTableObjList) {
-                try (FileOutputStream fileOutputStream = new FileOutputStream(xgGeneratorTableObj.getMapXmlPath())) {
-                    Map<String, Object> stringObjectMap = BeanUtil.beanToMap(xgGeneratorTableObj);
-                    map.put("table", stringObjectMap);
-                    template.process(map, new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8));
-                } catch (IOException | TemplateException e) {
-                    throw new RuntimeException(e);
+            for (XgGeneratorTableObj xgGeneratorTableObj : xgGeneratorSelectedTableObjList) {
+                Path filePath = Paths.get(xgGeneratorTableObj.getMapXmlPath());
+                // 检查文件是否存在并且是否允许覆盖
+                boolean shouldProcess = Files.exists(filePath) && this.xgGeneratorGlobalObj.getFileOverride() || !Files.exists(filePath);
+                if (shouldProcess) {
+                    try (FileOutputStream fileOutputStream = new FileOutputStream(xgGeneratorTableObj.getMapXmlPath())) {
+                        Map<String, Object> stringObjectMap = BeanUtil.beanToMap(xgGeneratorTableObj);
+                        map.put("table", stringObjectMap);
+                        template.process(map, new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8));
+                        count++;
+                    } catch (IOException | TemplateException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
         }
+        return count;
     }
 
     /**
@@ -678,20 +765,28 @@ public class XGCodeGeneratorUI {
      * @param template 模板
      * @param map      地图
      */
-    public void generateMapStructCode(Template template, Map<String, Object> map) throws IOException {
+    public int generateMapStructCode(Template template, Map<String, Object> map) throws IOException {
+        int count = 0;
         if (xgGeneratorGlobalObj.getGenerateMapStruct()) {
             Path path = Paths.get(xgGeneratorGlobalObj.getOutputMapStructPath());
             Files.createDirectories(path);
 
-            for (XgGeneratorTableObj xgGeneratorTableObj : xgGeneratorTableObjList) {
-                try (FileOutputStream fileOutputStream = new FileOutputStream(xgGeneratorTableObj.getMapstructPath())) {
-                    Map<String, Object> stringObjectMap = BeanUtil.beanToMap(xgGeneratorTableObj);
-                    map.put("table", stringObjectMap);
-                    template.process(map, new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8));
-                } catch (IOException | TemplateException e) {
-                    throw new RuntimeException(e);
+            for (XgGeneratorTableObj xgGeneratorTableObj : xgGeneratorSelectedTableObjList) {
+                Path filePath = Paths.get(xgGeneratorTableObj.getMapstructPath());
+                // 检查文件是否存在并且是否允许覆盖
+                boolean shouldProcess = Files.exists(filePath) && this.xgGeneratorGlobalObj.getFileOverride() || !Files.exists(filePath);
+                if (shouldProcess) {
+                    try (FileOutputStream fileOutputStream = new FileOutputStream(xgGeneratorTableObj.getMapstructPath())) {
+                        Map<String, Object> stringObjectMap = BeanUtil.beanToMap(xgGeneratorTableObj);
+                        map.put("table", stringObjectMap);
+                        template.process(map, new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8));
+                        count++;
+                    } catch (IOException | TemplateException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
         }
+        return count;
     }
 }

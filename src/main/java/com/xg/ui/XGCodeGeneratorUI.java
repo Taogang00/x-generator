@@ -1,5 +1,6 @@
 package com.xg.ui;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.XmlUtil;
@@ -14,6 +15,7 @@ import com.xg.utils.XGFileChooserUtil;
 import com.xg.utils.XGMavenUtil;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
+import freemarker.template.TemplateException;
 import lombok.Getter;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -21,9 +23,7 @@ import org.w3c.dom.NodeList;
 
 import javax.swing.*;
 import java.awt.event.ItemEvent;
-import java.io.File;
-import java.io.IOException;
-import java.io.StringReader;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.Function;
@@ -282,24 +282,40 @@ public class XGCodeGeneratorUI {
     }
 
     public void generateCode(Project project) throws IOException {
-        System.out.println(JSONUtil.toJsonStr(xgGeneratorTableObjList));
-//        try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("template/entity.java.ftl");
-//             FileOutputStream fileOutputStream = new FileOutputStream(this.xgGlobalInfo.getOutputEntityPath())) {
-//            assert resourceAsStream != null;
+        System.out.println(JSONUtil.toJsonStr(this.xgGlobalInfo));
+        System.out.println(JSONUtil.toJsonStr(this.xgGeneratorTableObjList));
+
+//        Map<String, Object> map = new HashMap<>();
+//        Map<String, Object> xgGlobalInfoMap = BeanUtil.beanToMap(this.xgGlobalInfo);
+//        map.put("global", xgGlobalInfoMap);
 //
-//            Map<String, Object> xgGlobalInfoMap = BeanUtil.beanToMap(this.xgGlobalInfo);
+//        //默认-生成entity
+//        try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("template/entity.java.ftl")) {
+//            assert resourceAsStream != null;
 //            String templateContent = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
 //            Template template = getTemplateFromString(templateContent, "entity");
-//            template.process(xgGlobalInfoMap, new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8));
-//        } catch (TemplateException e) {
-//            throw new RuntimeException(e);
+//            generateEntityCode(template, map);
 //        }
     }
 
-    public void generateEntityCode(Project project, XGGlobalInfo xgGlobalInfo, XgGeneratorTableObj xgGeneratorTableObj) {
-        System.out.println(project);
-        System.out.println(xgGlobalInfo);
-        System.out.println(xgGeneratorTableObj);
+    public void generateEntityCode(Template template, Map<String, Object> map) {
+        if (xgGlobalInfo.getGenerateEntity()) {
+            File entityFile = new File(xgGlobalInfo.getOutputEntityPath());
+            if (!entityFile.exists()) {
+                //noinspection ResultOfMethodCallIgnored
+                entityFile.mkdir();
+            }
+
+            for (XgGeneratorTableObj xgGeneratorTableObj : xgGeneratorTableObjList) {
+                try (FileOutputStream fileOutputStream = new FileOutputStream(xgGeneratorTableObj.getEntityPath())) {
+                    Map<String, Object> stringObjectMap = BeanUtil.beanToMap(xgGeneratorTableObj);
+                    map.put("table", stringObjectMap);
+                    template.process(map, new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8));
+                } catch (IOException | TemplateException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
     }
 
     public Template getTemplateFromString(String templateContent, String templateName) throws IOException {
@@ -322,11 +338,13 @@ public class XGCodeGeneratorUI {
             xgGeneratorTableObj.setTableName(xgXmlElementTable.getName());
             xgGeneratorTableObj.setTableComment(xgXmlElementTable.getComment());
             xgGeneratorTableObj.setEntityClassName(xgXmlElementTable.getName());
+            xgGeneratorTableObj.setEntityPackagePath(xgGlobalInfo.getEntityPackagePath());
+            xgGeneratorTableObj.setEntityPath(xgGlobalInfo.getOutputEntityPath() + File.separator + xgXmlElementTable.getName() + ".java");
 
             List<XGGeneratorTableFieldsObj> fields = new ArrayList<>();
             for (XGXmlElementColumnInfo columnInfo : xgXmlElementTable.getColumnList()) {
                 XGGeneratorTableFieldsObj xgGeneratorTableFieldsObj = new XGGeneratorTableFieldsObj();
-                xgGeneratorTableFieldsObj.setComment(columnInfo.getComment());
+                xgGeneratorTableFieldsObj.setComment(columnInfo.getName());
                 xgGeneratorTableFieldsObj.setPrimaryKey(columnInfo.getPrimaryKey());
                 xgGeneratorTableFieldsObj.setPropertyName(columnInfo.getFieldName());
                 //TODO转换

@@ -13,6 +13,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.MessageType;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.ui.DocumentAdapter;
 import com.intellij.ui.components.fields.ExpandableTextField;
 import com.xg.model.*;
 import com.xg.render.XGTableListCellRenderer;
@@ -23,11 +24,13 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import lombok.Getter;
 import org.apache.commons.io.IOUtils;
+import org.jetbrains.annotations.NotNull;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
 import java.awt.event.ItemEvent;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -97,8 +100,13 @@ public class XGCodeGeneratorUI {
             projectModuleComboBox.addItem(s);
         }
 
-        // 作者，从系统中读取
-        authorTextField.addActionListener(e -> this.xgGeneratorGlobalObj.setAuthor(authorTextField.getText()));
+        // 作者
+        authorTextField.getDocument().addDocumentListener(new DocumentAdapter() {
+            @Override
+            protected void textChanged(@NotNull DocumentEvent e) {
+                xgGeneratorGlobalObj.setAuthor(authorTextField.getText());
+            }
+        });
 
         // 生成对象
         packageAllBtn.addActionListener(e -> {

@@ -29,7 +29,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.xg.model.XGXmlElementColumnInfo.*;
+import static com.xg.model.XGXmlElementColumn.*;
 import static com.xg.model.XGXmlElementTable.*;
 
 public class XGCodeGeneratorUI {
@@ -208,7 +208,7 @@ public class XGCodeGeneratorUI {
 
             // 提取表名 (Name 属性)
             XGXmlElementTable XGXmlElementTable = new XGXmlElementTable();
-            List<XGXmlElementColumnInfo> columnList = new ArrayList<>();
+            List<XGXmlElementColumn> columnList = new ArrayList<>();
             String tableName = tableElement.getAttribute(XML_ELEMENT_TABLE_ATTRIBUTE_NAME);
             String tableText = tableElement.getAttribute(XML_ELEMENT_TABLE_ATTRIBUTE_TEXT);
             XGXmlElementTable.setName(tableName);
@@ -225,12 +225,12 @@ public class XGCodeGeneratorUI {
                 String columnText = columnElement.getAttribute(XML_ELEMENT_COLUMN_ATTRIBUTE_TEXT);
                 String dataType = columnElement.getAttribute(XML_ELEMENT_COLUMN_ATTRIBUTE_DATATYPE);
 
-                XGXmlElementColumnInfo XGXmlElementColumnInfo = new XGXmlElementColumnInfo();
-                XGXmlElementColumnInfo.setName(columnText);
-                XGXmlElementColumnInfo.setFieldName(columnName);
-                XGXmlElementColumnInfo.setFieldType(dataType);
-                XGXmlElementColumnInfo.setPrimaryKey(Boolean.getBoolean(primaryKey));
-                XGXmlElementTable.getColumnList().add(XGXmlElementColumnInfo);
+                XGXmlElementColumn XGXmlElementColumn = new XGXmlElementColumn();
+                XGXmlElementColumn.setName(columnText);
+                XGXmlElementColumn.setFieldName(columnName);
+                XGXmlElementColumn.setFieldType(dataType);
+                XGXmlElementColumn.setPrimaryKey(Boolean.getBoolean(primaryKey));
+                XGXmlElementTable.getColumnList().add(XGXmlElementColumn);
             }
             list.add(XGXmlElementTable);
         }
@@ -342,7 +342,7 @@ public class XGCodeGeneratorUI {
             xgGeneratorTableObj.setEntityPath(xgGlobalInfo.getOutputEntityPath() + File.separator + xgXmlElementTable.getName() + ".java");
 
             List<XGGeneratorTableFieldsObj> fields = new ArrayList<>();
-            for (XGXmlElementColumnInfo columnInfo : xgXmlElementTable.getColumnList()) {
+            for (XGXmlElementColumn columnInfo : xgXmlElementTable.getColumnList()) {
                 XGGeneratorTableFieldsObj xgGeneratorTableFieldsObj = new XGGeneratorTableFieldsObj();
                 xgGeneratorTableFieldsObj.setComment(columnInfo.getName());
                 xgGeneratorTableFieldsObj.setPrimaryKey(columnInfo.getPrimaryKey());

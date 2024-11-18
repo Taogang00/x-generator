@@ -9,7 +9,7 @@ import lombok.Data;
  * @date 2024/11/14
  */
 @Data
-public class XGXmlElementColumnInfo {
+public class XGXmlElementColumn {
 
     public static final String XML_ELEMENT_COLUMN_NAME = "Column";
     public static final String XML_ELEMENT_COLUMN_ATTRIBUTE_NAME = "Name";

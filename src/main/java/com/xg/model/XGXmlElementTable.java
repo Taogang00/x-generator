@@ -30,5 +30,5 @@ public class XGXmlElementTable {
     /**
      * 列信息集合
      */
-    private List<XGXmlElementColumnInfo> columnList;
+    private List<XGXmlElementColumn> columnList;
 }

@@ -3,6 +3,7 @@ package com.xg.ui;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.XmlUtil;
 import cn.hutool.json.JSONUtil;
 import com.intellij.icons.AllIcons;
@@ -36,6 +37,10 @@ public class XGCodeGeneratorUI {
 
     @Getter
     private JPanel rootJPanel;
+    @Getter
+    private JLabel runInfoLabel;
+    @Getter
+    private Map<String, XGXmlElementTable> tableInfoMap;
 
     private JComboBox<String> projectModuleComboBox;
     private ExpandableTextField controllerPathTextField;
@@ -50,7 +55,6 @@ public class XGCodeGeneratorUI {
 
     private JRadioButton ignoreRadioButton;
     private JRadioButton coverRadioButton;
-
     private JCheckBox controllerCheckBox;
     private JCheckBox serviceCheckBox;
     private JCheckBox mapperCheckBox;
@@ -59,24 +63,16 @@ public class XGCodeGeneratorUI {
     private JCheckBox queryCheckBox;
     private JCheckBox mapStructCheckBox;
     private JCheckBox mapXmlCheckBox;
-
     private JButton importBtn;
     private JButton packageAllBtn;
     private JButton settingBtn;
-
     private JComboBox<String> configComboBox;
-
     private JList<String> tableList;
     private JTextField ignoreTablePrefixTextField;
     private JTextField authorTextField;
-    @Getter
-    private JLabel runInfoLabel;
-
     private List<XGXmlElementTable> tableInfoList;
     private final List<XgGeneratorTableObj> xgGeneratorTableObjList;
     private final XGGlobalInfo xgGlobalInfo;
-    @Getter
-    private Map<String, XGXmlElementTable> tableInfoMap;
 
     public XGCodeGeneratorUI(Project project) {
         this.settingBtn.setIcon(AllIcons.General.Settings);
@@ -92,9 +88,7 @@ public class XGCodeGeneratorUI {
             projectModuleComboBox.addItem(s);
         }
 
-        authorTextField.addActionListener(e -> {
-            this.xgGlobalInfo.setAuthor(authorTextField.getText());
-        });
+        authorTextField.addActionListener(e -> this.xgGlobalInfo.setAuthor(authorTextField.getText()));
 
         packageAllBtn.addActionListener(e -> {
             if (!this.controllerCheckBox.isSelected()
@@ -126,31 +120,15 @@ public class XGCodeGeneratorUI {
             }
         });
 
-        // 生成
-        controllerCheckBox.addItemListener(e -> {
-            this.xgGlobalInfo.setGenerateController(e.getStateChange() == ItemEvent.SELECTED);
-        });
-        serviceCheckBox.addItemListener(e -> {
-            this.xgGlobalInfo.setGenerateService(e.getStateChange() == ItemEvent.SELECTED);
-        });
-        entityCheckBox.addItemListener(e -> {
-            this.xgGlobalInfo.setGenerateEntity(e.getStateChange() == ItemEvent.SELECTED);
-        });
-        dtoCheckBox.addItemListener(e -> {
-            this.xgGlobalInfo.setGenerateDTO(e.getStateChange() == ItemEvent.SELECTED);
-        });
-        queryCheckBox.addItemListener(e -> {
-            this.xgGlobalInfo.setGenerateQuery(e.getStateChange() == ItemEvent.SELECTED);
-        });
-        mapStructCheckBox.addItemListener(e -> {
-            this.xgGlobalInfo.setGenerateMapStruct(e.getStateChange() == ItemEvent.SELECTED);
-        });
-        mapperCheckBox.addItemListener(e -> {
-            this.xgGlobalInfo.setGenerateMapper(e.getStateChange() == ItemEvent.SELECTED);
-        });
-        mapXmlCheckBox.addItemListener(e -> {
-            this.xgGlobalInfo.setGenerateMapperXml(e.getStateChange() == ItemEvent.SELECTED);
-        });
+        // 生成与否
+        controllerCheckBox.addItemListener(e -> this.xgGlobalInfo.setGenerateController(e.getStateChange() == ItemEvent.SELECTED));
+        serviceCheckBox.addItemListener(e -> this.xgGlobalInfo.setGenerateService(e.getStateChange() == ItemEvent.SELECTED));
+        entityCheckBox.addItemListener(e -> this.xgGlobalInfo.setGenerateEntity(e.getStateChange() == ItemEvent.SELECTED));
+        dtoCheckBox.addItemListener(e -> this.xgGlobalInfo.setGenerateDTO(e.getStateChange() == ItemEvent.SELECTED));
+        queryCheckBox.addItemListener(e -> this.xgGlobalInfo.setGenerateQuery(e.getStateChange() == ItemEvent.SELECTED));
+        mapStructCheckBox.addItemListener(e -> this.xgGlobalInfo.setGenerateMapStruct(e.getStateChange() == ItemEvent.SELECTED));
+        mapperCheckBox.addItemListener(e -> this.xgGlobalInfo.setGenerateMapper(e.getStateChange() == ItemEvent.SELECTED));
+        mapXmlCheckBox.addItemListener(e -> this.xgGlobalInfo.setGenerateMapperXml(e.getStateChange() == ItemEvent.SELECTED));
 
         // 选择项目时需要给代码生成的路径进行赋值
         projectModuleComboBox.addItemListener(e -> {
@@ -159,6 +137,7 @@ public class XGCodeGeneratorUI {
             }
         });
 
+        // 导入xml按钮事件
         importBtn.addActionListener(e -> {
             VirtualFile virtualFile = XGFileChooserUtil.chooseFileVirtual(project);
             if (ObjectUtil.isNull(virtualFile)) {
@@ -184,12 +163,19 @@ public class XGCodeGeneratorUI {
             }
         });
 
-        //初始化包赋值操作
+        // 初始化包赋值操作
         if (ObjectUtil.isNotNull(projectModuleComboBox.getSelectedItem())) {
             initSelectedModulePackage(project, projectModuleComboBox.getSelectedItem().toString());
         }
     }
 
+    /**
+     * 导入表 XML
+     *
+     * @param path         路径
+     * @param runInfoLabel Run Info 标签
+     * @return {@link List }<{@link XGXmlElementTable }>
+     */
     public static List<XGXmlElementTable> importTableXml(String path, JLabel runInfoLabel) {
         List<XGXmlElementTable> list = new ArrayList<>();
 
@@ -229,7 +215,7 @@ public class XGCodeGeneratorUI {
                 XGXmlElementColumn.setName(columnText);
                 XGXmlElementColumn.setFieldName(columnName);
                 XGXmlElementColumn.setFieldType(dataType);
-                XGXmlElementColumn.setPrimaryKey(Boolean.getBoolean(primaryKey));
+                XGXmlElementColumn.setPrimaryKey(Boolean.valueOf(primaryKey));
                 XGXmlElementTable.getColumnList().add(XGXmlElementColumn);
             }
             list.add(XGXmlElementTable);
@@ -239,6 +225,12 @@ public class XGCodeGeneratorUI {
         return list;
     }
 
+    /**
+     * 初始化选定模块包
+     *
+     * @param project      项目
+     * @param selectedItem 已选项
+     */
     private void initSelectedModulePackage(Project project, String selectedItem) {
         File sourcePath = XGMavenUtil.getMavenArtifactIdSourcePath(project, selectedItem);
         File resourcePath = XGMavenUtil.getMavenArtifactIdResourcePath(project, selectedItem);
@@ -252,6 +244,7 @@ public class XGCodeGeneratorUI {
         this.xgGlobalInfo.setOutputControllerPath(absolutePath + File.separator + "controller");
         this.xgGlobalInfo.setOutputEntityPath(absolutePath + File.separator + "entity");
         this.xgGlobalInfo.setOutputServicePath(absolutePath + File.separator + "service");
+        this.xgGlobalInfo.setOutputServiceImplPath(absolutePath + File.separator + "service" + File.separator + "impl");
         this.xgGlobalInfo.setOutputQueryPath(absolutePath + File.separator + "query");
         this.xgGlobalInfo.setOutputDTOPath(absolutePath + File.separator + "dto");
         this.xgGlobalInfo.setOutputMapperPath(absolutePath + File.separator + "mapper");
@@ -264,6 +257,7 @@ public class XGCodeGeneratorUI {
 
         this.xgGlobalInfo.setControllerPackagePath(modulePath + "." + "controller");
         this.xgGlobalInfo.setServicePackagePath(modulePath + "." + "service");
+        this.xgGlobalInfo.setServiceImplPackagePath(modulePath + "." + "service.impl");
         this.xgGlobalInfo.setMapperPackagePath(modulePath + "." + "mapper");
         this.xgGlobalInfo.setEntityPackagePath(modulePath + "." + "entity");
         this.xgGlobalInfo.setDtoPackagePath(modulePath + "." + "dto");
@@ -281,6 +275,79 @@ public class XGCodeGeneratorUI {
         mapperXmlPathTextField.setText(this.xgGlobalInfo.getMapperXmlPackagePath());
     }
 
+    /**
+     * 初始化需要生成的表对象
+     *
+     * @param selectedValuesList Selected Values 列表
+     */
+    public void initSelectXgGeneratorTableObj(List<? extends String> selectedValuesList) {
+        xgGeneratorTableObjList.clear();
+        for (String s : selectedValuesList) {
+            XGXmlElementTable xgXmlElementTable = tableInfoMap.get(s);
+            String elementTableName = xgXmlElementTable.getName();
+            String tableObj = elementTableName.replace("_", "");
+
+            XgGeneratorTableObj xgGeneratorTableObj = new XgGeneratorTableObj();
+            xgGeneratorTableObj.setTableName(elementTableName);
+            xgGeneratorTableObj.setTableComment(xgXmlElementTable.getComment());
+            //entity
+            xgGeneratorTableObj.setEntityClassName(tableObj);
+            xgGeneratorTableObj.setEntityPackagePath(xgGlobalInfo.getEntityPackagePath());
+            xgGeneratorTableObj.setEntityPath(xgGlobalInfo.getOutputEntityPath() + File.separator + tableObj + ".java");
+            //mapper
+            xgGeneratorTableObj.setMapperClassName(tableObj + "Mapper");
+            xgGeneratorTableObj.setMapperPath(xgGlobalInfo.getMapperPackagePath());
+            xgGeneratorTableObj.setMapperPackagePath(xgGlobalInfo.getOutputEntityPath() + File.separator + tableObj + "Mapper.java");
+            //mapper-xml
+            xgGeneratorTableObj.setMapXml(tableObj + "Mapper");
+            xgGeneratorTableObj.setMapXmlPath(xgGlobalInfo.getOutputMapperXmlPath());
+            xgGeneratorTableObj.setMapXmlPackagePath(xgGlobalInfo.getOutputMapperXmlPath() + File.separator + tableObj + "Mapper.xml");
+            //service
+            xgGeneratorTableObj.setServiceClassName(tableObj + "Service");
+            xgGeneratorTableObj.setServicePath(xgGlobalInfo.getServicePackagePath());
+            xgGeneratorTableObj.setServicePackagePath(xgGlobalInfo.getOutputServicePath() + File.separator + tableObj + "Service.java");
+            //service-impl
+            xgGeneratorTableObj.setServiceImplClassName(tableObj + "ServiceImpl");
+            xgGeneratorTableObj.setServiceImplPath(xgGlobalInfo.getServiceImplPackagePath());
+            xgGeneratorTableObj.setServiceImplPackagePath(xgGlobalInfo.getOutputServiceImplPath() + File.separator + tableObj + "ServiceImpl.java");
+            //dto
+            xgGeneratorTableObj.setDtoClassName(tableObj + "DTO");
+            xgGeneratorTableObj.setDtoPath(xgGlobalInfo.getDtoPackagePath());
+            xgGeneratorTableObj.setDtoPackagePath(xgGlobalInfo.getOutputDTOPath() + File.separator + tableObj + "DTO.java");
+            //query
+            xgGeneratorTableObj.setQueryClassName(tableObj + "Query");
+            xgGeneratorTableObj.setQueryPath(xgGlobalInfo.getQueryPackagePath());
+            xgGeneratorTableObj.setQueryPackagePath(xgGlobalInfo.getOutputQueryPath() + File.separator + tableObj + "Query.java");
+            //controller
+            xgGeneratorTableObj.setControllerClassName(tableObj + "Controller");
+            xgGeneratorTableObj.setControllerPath(xgGlobalInfo.getControllerPackagePath());
+            xgGeneratorTableObj.setControllerPackagePath(xgGlobalInfo.getOutputControllerPath() + File.separator + tableObj + "Controller.java");
+            //mapstruct
+            xgGeneratorTableObj.setMapstructClassName(tableObj + "Mapstruct");
+            xgGeneratorTableObj.setMapstructPath(xgGlobalInfo.getOutputMapStructPath());
+            xgGeneratorTableObj.setMapstructPackagePath(xgGlobalInfo.getOutputMapStructPath() + File.separator + tableObj + "Mapstruct.java");
+
+            List<XGGeneratorTableFieldsObj> fields = new ArrayList<>();
+            for (XGXmlElementColumn columnInfo : xgXmlElementTable.getColumnList()) {
+                XGGeneratorTableFieldsObj xgGeneratorTableFieldsObj = new XGGeneratorTableFieldsObj();
+                xgGeneratorTableFieldsObj.setComment(columnInfo.getName());
+                xgGeneratorTableFieldsObj.setPrimaryKey(columnInfo.getPrimaryKey());
+                xgGeneratorTableFieldsObj.setPropertyName(StrUtil.lowerFirst(columnInfo.getFieldName()));
+                //TODO转换
+                xgGeneratorTableFieldsObj.setPropertyType(columnInfo.getFieldType());
+                fields.add(xgGeneratorTableFieldsObj);
+            }
+            xgGeneratorTableObj.setFields(fields);
+            xgGeneratorTableObjList.add(xgGeneratorTableObj);
+        }
+    }
+
+    /**
+     * 生成代码-点击生成按钮事件
+     *
+     * @param project 项目
+     * @throws IOException io异常
+     */
     public void generateCode(Project project) throws IOException {
         System.out.println(JSONUtil.toJsonStr(this.xgGlobalInfo));
         System.out.println(JSONUtil.toJsonStr(this.xgGeneratorTableObjList));
@@ -328,31 +395,5 @@ public class XGCodeGeneratorUI {
 
         // 创建模板并加载\ templateName 是模板的名称，可以任意指定
         return new Template(templateName, stringReader, cfg);
-    }
-
-    public void initSelectXgGeneratorTableObj(List<? extends String> selectedValuesList) {
-        xgGeneratorTableObjList.clear();
-        for (String s : selectedValuesList) {
-            XGXmlElementTable xgXmlElementTable = tableInfoMap.get(s);
-            XgGeneratorTableObj xgGeneratorTableObj = new XgGeneratorTableObj();
-            xgGeneratorTableObj.setTableName(xgXmlElementTable.getName());
-            xgGeneratorTableObj.setTableComment(xgXmlElementTable.getComment());
-            xgGeneratorTableObj.setEntityClassName(xgXmlElementTable.getName());
-            xgGeneratorTableObj.setEntityPackagePath(xgGlobalInfo.getEntityPackagePath());
-            xgGeneratorTableObj.setEntityPath(xgGlobalInfo.getOutputEntityPath() + File.separator + xgXmlElementTable.getName() + ".java");
-
-            List<XGGeneratorTableFieldsObj> fields = new ArrayList<>();
-            for (XGXmlElementColumn columnInfo : xgXmlElementTable.getColumnList()) {
-                XGGeneratorTableFieldsObj xgGeneratorTableFieldsObj = new XGGeneratorTableFieldsObj();
-                xgGeneratorTableFieldsObj.setComment(columnInfo.getName());
-                xgGeneratorTableFieldsObj.setPrimaryKey(columnInfo.getPrimaryKey());
-                xgGeneratorTableFieldsObj.setPropertyName(columnInfo.getFieldName());
-                //TODO转换
-                xgGeneratorTableFieldsObj.setPropertyType(columnInfo.getFieldType());
-                fields.add(xgGeneratorTableFieldsObj);
-            }
-            xgGeneratorTableObj.setFields(fields);
-            xgGeneratorTableObjList.add(xgGeneratorTableObj);
-        }
     }
 }

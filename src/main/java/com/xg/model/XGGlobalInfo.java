@@ -54,6 +54,7 @@ public class XGGlobalInfo {
     private String outputControllerPath;
     private String outputEntityPath;
     private String outputServicePath;
+    private String outputServiceImplPath;
     private String outputQueryPath;
     private String outputMapStructPath;
     private String outputMapperPath;

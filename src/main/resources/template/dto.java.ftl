@@ -1,5 +1,5 @@
 <#--@formatter:off-->
-package ${package.DTO};
+package ${global.dtoPackagePath};
 
 import lombok.Data;
 
@@ -9,21 +9,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * ${entity} 实体DTO传输对象
+ * ${table.entityClassName} 实体DTO传输对象
  *
- * @author ${author}
- * @date ${date}
+ * @author ${global.author}
+ * @date ${global.dateTime}
  */
-<#if entityLombokModel>
 @Data
-</#if>
-public class ${entity}DTO {
+public class ${table.dtoClassName} {
 
-<#list table.fields as field>
+<#list table.tableFields as field>
     <#if field.comment!?length gt 0>
-        /**
-        * ${field.comment}
-        */
+    /**
+    * ${field.comment}
+    */
     </#if>
     private ${field.propertyType} ${field.propertyName};
 

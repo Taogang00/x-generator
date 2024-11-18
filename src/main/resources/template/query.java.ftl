@@ -20,7 +20,7 @@ import java.util.Date;
 </#if>
 public class ${entity}Query extends PageQuery {
 
-<#list table.fields as field>
+<#list table.tableFields as field>
     <#if field.comment!?length gt 0>
         /**
         * ${field.comment}

@@ -5,7 +5,7 @@ ${global.author}
 
 public class ${table.entityClassName} {
 
-<#list table.fields as field>
+<#list table.tableFields as field>
 
     <#if field.comment!?length gt 0>
         /**

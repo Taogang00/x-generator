@@ -18,6 +18,7 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import lombok.Getter;
+import org.apache.commons.io.IOUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -89,10 +90,10 @@ public class XGCodeGeneratorUI {
             projectModuleComboBox.addItem(s);
         }
 
-        //作者，从系统中读取
+        // 作者，从系统中读取
         authorTextField.addActionListener(e -> this.xgGlobalInfo.setAuthor(authorTextField.getText()));
 
-        //生成对象
+        // 生成对象
         packageAllBtn.addActionListener(e -> {
             if (!this.controllerCheckBox.isSelected()
                     || !this.serviceCheckBox.isSelected()
@@ -299,36 +300,36 @@ public class XGCodeGeneratorUI {
             xgGeneratorTableObj.setEntityPath(xgGlobalInfo.getOutputEntityPath() + File.separator + tableObj + ".java");
             //mapper
             xgGeneratorTableObj.setMapperClassName(tableObj + "Mapper");
-            xgGeneratorTableObj.setMapperPath(xgGlobalInfo.getMapperPackagePath());
-            xgGeneratorTableObj.setMapperPackagePath(xgGlobalInfo.getOutputEntityPath() + File.separator + tableObj + "Mapper.java");
+            xgGeneratorTableObj.setMapperPackagePath(xgGlobalInfo.getMapperPackagePath());
+            xgGeneratorTableObj.setMapperPath(xgGlobalInfo.getOutputEntityPath() + File.separator + tableObj + "Mapper.java");
             //mapper-xml
             xgGeneratorTableObj.setMapXml(tableObj + "Mapper");
-            xgGeneratorTableObj.setMapXmlPath(xgGlobalInfo.getOutputMapperXmlPath());
-            xgGeneratorTableObj.setMapXmlPackagePath(xgGlobalInfo.getOutputMapperXmlPath() + File.separator + tableObj + "Mapper.xml");
+            xgGeneratorTableObj.setMapXmlPackagePath(xgGlobalInfo.getOutputMapperXmlPath());
+            xgGeneratorTableObj.setMapXmlPath(xgGlobalInfo.getOutputMapperXmlPath() + File.separator + tableObj + "Mapper.xml");
             //service
             xgGeneratorTableObj.setServiceClassName(tableObj + "Service");
-            xgGeneratorTableObj.setServicePath(xgGlobalInfo.getServicePackagePath());
-            xgGeneratorTableObj.setServicePackagePath(xgGlobalInfo.getOutputServicePath() + File.separator + tableObj + "Service.java");
+            xgGeneratorTableObj.setServicePackagePath(xgGlobalInfo.getServicePackagePath());
+            xgGeneratorTableObj.setServicePath(xgGlobalInfo.getOutputServicePath() + File.separator + tableObj + "Service.java");
             //service-impl
             xgGeneratorTableObj.setServiceImplClassName(tableObj + "ServiceImpl");
-            xgGeneratorTableObj.setServiceImplPath(xgGlobalInfo.getServiceImplPackagePath());
-            xgGeneratorTableObj.setServiceImplPackagePath(xgGlobalInfo.getOutputServiceImplPath() + File.separator + tableObj + "ServiceImpl.java");
+            xgGeneratorTableObj.setServiceImplPackagePath(xgGlobalInfo.getServiceImplPackagePath());
+            xgGeneratorTableObj.setServiceImplPath(xgGlobalInfo.getOutputServiceImplPath() + File.separator + tableObj + "ServiceImpl.java");
             //dto
             xgGeneratorTableObj.setDtoClassName(tableObj + "DTO");
-            xgGeneratorTableObj.setDtoPath(xgGlobalInfo.getDtoPackagePath());
-            xgGeneratorTableObj.setDtoPackagePath(xgGlobalInfo.getOutputDTOPath() + File.separator + tableObj + "DTO.java");
+            xgGeneratorTableObj.setDtoPackagePath(xgGlobalInfo.getDtoPackagePath());
+            xgGeneratorTableObj.setDtoPath(xgGlobalInfo.getOutputDTOPath() + File.separator + tableObj + "DTO.java");
             //query
             xgGeneratorTableObj.setQueryClassName(tableObj + "Query");
-            xgGeneratorTableObj.setQueryPath(xgGlobalInfo.getQueryPackagePath());
-            xgGeneratorTableObj.setQueryPackagePath(xgGlobalInfo.getOutputQueryPath() + File.separator + tableObj + "Query.java");
+            xgGeneratorTableObj.setQueryPackagePath(xgGlobalInfo.getQueryPackagePath());
+            xgGeneratorTableObj.setQueryPath(xgGlobalInfo.getOutputQueryPath() + File.separator + tableObj + "Query.java");
             //controller
             xgGeneratorTableObj.setControllerClassName(tableObj + "Controller");
-            xgGeneratorTableObj.setControllerPath(xgGlobalInfo.getControllerPackagePath());
-            xgGeneratorTableObj.setControllerPackagePath(xgGlobalInfo.getOutputControllerPath() + File.separator + tableObj + "Controller.java");
+            xgGeneratorTableObj.setControllerPackagePath(xgGlobalInfo.getControllerPackagePath());
+            xgGeneratorTableObj.setControllerPath(xgGlobalInfo.getOutputControllerPath() + File.separator + tableObj + "Controller.java");
             //mapstruct
             xgGeneratorTableObj.setMapstructClassName(tableObj + "Mapstruct");
-            xgGeneratorTableObj.setMapstructPath(xgGlobalInfo.getOutputMapStructPath());
-            xgGeneratorTableObj.setMapstructPackagePath(xgGlobalInfo.getOutputMapStructPath() + File.separator + tableObj + "Mapstruct.java");
+            xgGeneratorTableObj.setMapstructPackagePath(xgGlobalInfo.getOutputMapStructPath());
+            xgGeneratorTableObj.setMapstructPath(xgGlobalInfo.getOutputMapStructPath() + File.separator + tableObj + "Mapstruct.java");
 
             List<XGGeneratorTableFieldsObj> tableFields = new ArrayList<>();
             for (XGXmlElementColumn columnInfo : xgXmlElementTable.getColumnList()) {
@@ -355,25 +356,39 @@ public class XGCodeGeneratorUI {
         System.out.println(JSONUtil.toJsonStr(this.xgGlobalInfo));
         System.out.println(JSONUtil.toJsonStr(this.xgGeneratorTableObjList));
 
-//        Map<String, Object> map = new HashMap<>();
-//        Map<String, Object> xgGlobalInfoMap = BeanUtil.beanToMap(this.xgGlobalInfo);
-//        map.put("global", xgGlobalInfoMap);
-//
-//        //默认-生成entity
-//        try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("template/entity.java.ftl")) {
-//            assert resourceAsStream != null;
-//            String templateContent = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
-//            Template template = getTemplateFromString(templateContent, "entity");
-//            generateEntityCode(template, map);
-//        }
+        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> xgGlobalInfoMap = BeanUtil.beanToMap(this.xgGlobalInfo);
+        map.put("global", xgGlobalInfoMap);
+
+        //默认-生成entity
+        try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("template/entity.java.ftl")) {
+            assert resourceAsStream != null;
+            String templateContent = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
+            Template template = getTemplateFromString(templateContent, "entity");
+            generateEntityCode(template, map);
+        }
+
+        //默认-生成dto
+        try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("template/dto.java.ftl")) {
+            assert resourceAsStream != null;
+            String templateContent = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
+            Template template = getTemplateFromString(templateContent, "dto");
+            generateDTOCode(template, map);
+        }
     }
 
+    /**
+     * 生成entity代码
+     *
+     * @param template 模板
+     * @param map      地图
+     */
     public void generateEntityCode(Template template, Map<String, Object> map) {
         if (xgGlobalInfo.getGenerateEntity()) {
-            File entityFile = new File(xgGlobalInfo.getOutputEntityPath());
-            if (!entityFile.exists()) {
+            File file = new File(xgGlobalInfo.getOutputEntityPath());
+            if (!file.exists()) {
                 //noinspection ResultOfMethodCallIgnored
-                entityFile.mkdir();
+                file.mkdir();
             }
 
             for (XgGeneratorTableObj xgGeneratorTableObj : xgGeneratorTableObjList) {
@@ -388,6 +403,40 @@ public class XGCodeGeneratorUI {
         }
     }
 
+    /**
+     * 生成DTO代码
+     *
+     * @param template 模板
+     * @param map      地图
+     */
+    public void generateDTOCode(Template template, Map<String, Object> map) {
+        if (xgGlobalInfo.getGenerateDTO()) {
+            File file = new File(xgGlobalInfo.getOutputDTOPath());
+            if (!file.exists()) {
+                //noinspection ResultOfMethodCallIgnored
+                file.mkdir();
+            }
+
+            for (XgGeneratorTableObj xgGeneratorTableObj : xgGeneratorTableObjList) {
+                try (FileOutputStream fileOutputStream = new FileOutputStream(xgGeneratorTableObj.getDtoPath())) {
+                    Map<String, Object> stringObjectMap = BeanUtil.beanToMap(xgGeneratorTableObj);
+                    map.put("table", stringObjectMap);
+                    template.process(map, new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8));
+                } catch (IOException | TemplateException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+    }
+
+    /**
+     * 从字符串获取模板
+     *
+     * @param templateContent 模板内容
+     * @param templateName    模板名称
+     * @return {@link Template }
+     * @throws IOException io异常
+     */
     public Template getTemplateFromString(String templateContent, String templateName) throws IOException {
         // 创建 FreeMarker 配置对象
         Configuration cfg = new Configuration(Configuration.VERSION_2_3_33);

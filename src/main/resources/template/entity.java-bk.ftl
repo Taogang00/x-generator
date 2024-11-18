@@ -32,7 +32,7 @@ public class ${entity}{
 </#if>
 
 <#-- ----------  BEGIN 字段循环遍历  ---------->
-<#list table.fields as field>
+<#list table.tableFields as field>
 <#if field.comment!?length gt 0>
     /**
     * ${field.comment}

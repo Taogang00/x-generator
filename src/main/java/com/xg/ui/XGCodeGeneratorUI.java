@@ -75,11 +75,12 @@ public class XGCodeGeneratorUI {
     private final XGGlobalInfo xgGlobalInfo;
 
     public XGCodeGeneratorUI(Project project) {
+        this.xgGlobalInfo = new XGGlobalInfo();
+
         this.settingBtn.setIcon(AllIcons.General.Settings);
         this.importBtn.setIcon(AllIcons.ToolbarDecorator.Import);
         this.authorTextField.setText(System.getProperty("user.name"));
         this.packageAllBtn.setText("全不选");
-        this.xgGlobalInfo = new XGGlobalInfo();
         this.xgGeneratorTableObjList = new ArrayList<>();
         this.xgGlobalInfo.setDateTime(DateUtil.formatDateTime(new Date()));
         this.xgGlobalInfo.setAuthor(authorTextField.getText());
@@ -88,8 +89,10 @@ public class XGCodeGeneratorUI {
             projectModuleComboBox.addItem(s);
         }
 
+        //作者，从系统中读取
         authorTextField.addActionListener(e -> this.xgGlobalInfo.setAuthor(authorTextField.getText()));
 
+        //生成对象
         packageAllBtn.addActionListener(e -> {
             if (!this.controllerCheckBox.isSelected()
                     || !this.serviceCheckBox.isSelected()
@@ -327,7 +330,7 @@ public class XGCodeGeneratorUI {
             xgGeneratorTableObj.setMapstructPath(xgGlobalInfo.getOutputMapStructPath());
             xgGeneratorTableObj.setMapstructPackagePath(xgGlobalInfo.getOutputMapStructPath() + File.separator + tableObj + "Mapstruct.java");
 
-            List<XGGeneratorTableFieldsObj> fields = new ArrayList<>();
+            List<XGGeneratorTableFieldsObj> tableFields = new ArrayList<>();
             for (XGXmlElementColumn columnInfo : xgXmlElementTable.getColumnList()) {
                 XGGeneratorTableFieldsObj xgGeneratorTableFieldsObj = new XGGeneratorTableFieldsObj();
                 xgGeneratorTableFieldsObj.setComment(columnInfo.getName());
@@ -335,9 +338,9 @@ public class XGCodeGeneratorUI {
                 xgGeneratorTableFieldsObj.setPropertyName(StrUtil.lowerFirst(columnInfo.getFieldName()));
                 //TODO转换
                 xgGeneratorTableFieldsObj.setPropertyType(columnInfo.getFieldType());
-                fields.add(xgGeneratorTableFieldsObj);
+                tableFields.add(xgGeneratorTableFieldsObj);
             }
-            xgGeneratorTableObj.setFields(fields);
+            xgGeneratorTableObj.setTableFields(tableFields);
             xgGeneratorTableObjList.add(xgGeneratorTableObj);
         }
     }

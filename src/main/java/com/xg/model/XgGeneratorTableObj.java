@@ -65,5 +65,5 @@ public class XgGeneratorTableObj {
 
     private String mapstructPath;
 
-    private List<XGGeneratorTableFieldsObj> fields;
+    private List<XGGeneratorTableFieldsObj> tableFields;
 }

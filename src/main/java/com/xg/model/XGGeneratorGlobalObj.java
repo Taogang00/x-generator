@@ -11,7 +11,7 @@ public class XGGeneratorGlobalObj {
     private String author;
     private String dateTime;
     private String tablePrefix;
-    private Boolean ignoreTablePrefix;
+    private String ignoreTablePrefix;
     private String codeGeneratorPath;
     private Boolean fileOverride;
 

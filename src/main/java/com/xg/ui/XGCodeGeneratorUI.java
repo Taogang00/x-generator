@@ -205,6 +205,14 @@ public class XGCodeGeneratorUI {
         if (ObjectUtil.isNotNull(projectModuleComboBox.getSelectedItem())) {
             initSelectedModulePackage(project, projectModuleComboBox.getSelectedItem().toString());
         }
+
+        // 12.代码作者-默认是加载当前操作系统用户名称
+        ignoreTablePrefixTextField.getDocument().addDocumentListener(new DocumentAdapter() {
+            @Override
+            protected void textChanged(@NotNull DocumentEvent e) {
+                xgGeneratorGlobalObj.setIgnoreTablePrefix(ignoreTablePrefixTextField.getText());
+            }
+        });
     }
 
     /**
@@ -323,48 +331,47 @@ public class XGCodeGeneratorUI {
         for (String s : selectedValuesList) {
             XGXmlElementTable xgXmlElementTable = tableInfoMap.get(s);
             String elementTableName = xgXmlElementTable.getName();
-            String tableObj = elementTableName.replace("_", "");
 
             XgGeneratorTableObj xgGeneratorTableObj = new XgGeneratorTableObj();
             xgGeneratorTableObj.setTableName(elementTableName);
             xgGeneratorTableObj.setTableComment(xgXmlElementTable.getComment());
             //entity
-            xgGeneratorTableObj.setEntityClassName(tableObj);
+            xgGeneratorTableObj.setEntityClassName(elementTableName);
             xgGeneratorTableObj.setEntityPackagePath(xgGeneratorGlobalObj.getEntityPackagePath());
-            xgGeneratorTableObj.setEntityPath(xgGeneratorGlobalObj.getOutputEntityPath() + File.separator + tableObj + ".java");
+            xgGeneratorTableObj.setEntityPath(xgGeneratorGlobalObj.getOutputEntityPath() + File.separator + xgGeneratorTableObj.getEntityClassName() + ".java");
             //mapper
-            xgGeneratorTableObj.setMapperClassName(tableObj + "Mapper");
+            xgGeneratorTableObj.setMapperClassName(elementTableName + "Mapper");
             xgGeneratorTableObj.setMapperPackagePath(xgGeneratorGlobalObj.getMapperPackagePath());
-            xgGeneratorTableObj.setMapperPath(xgGeneratorGlobalObj.getOutputEntityPath() + File.separator + tableObj + "Mapper.java");
+            xgGeneratorTableObj.setMapperPath(xgGeneratorGlobalObj.getOutputEntityPath() + File.separator + xgGeneratorTableObj.getMapstructClassName() + ".java");
             //mapper-xml
-            xgGeneratorTableObj.setMapXml(tableObj + "Mapper");
+            xgGeneratorTableObj.setMapXml(elementTableName + "Mapper");
             //TODO 不用赋值
             xgGeneratorTableObj.setMapXmlPackagePath(xgGeneratorGlobalObj.getOutputMapperXmlPath());
-            xgGeneratorTableObj.setMapXmlPath(xgGeneratorGlobalObj.getOutputMapperXmlPath() + File.separator + tableObj + "Mapper.xml");
+            xgGeneratorTableObj.setMapXmlPath(xgGeneratorGlobalObj.getOutputMapperXmlPath() + File.separator + xgGeneratorTableObj.getMapXml() + ".xml");
             //service
-            xgGeneratorTableObj.setServiceClassName(tableObj + "Service");
+            xgGeneratorTableObj.setServiceClassName(elementTableName + "Service");
             xgGeneratorTableObj.setServicePackagePath(xgGeneratorGlobalObj.getServicePackagePath());
-            xgGeneratorTableObj.setServicePath(xgGeneratorGlobalObj.getOutputServicePath() + File.separator + tableObj + "Service.java");
+            xgGeneratorTableObj.setServicePath(xgGeneratorGlobalObj.getOutputServicePath() + File.separator + xgGeneratorTableObj.getServiceClassName() + ".java");
             //service-impl
-            xgGeneratorTableObj.setServiceImplClassName(tableObj + "ServiceImpl");
+            xgGeneratorTableObj.setServiceImplClassName(elementTableName + "ServiceImpl");
             xgGeneratorTableObj.setServiceImplPackagePath(xgGeneratorGlobalObj.getServiceImplPackagePath());
-            xgGeneratorTableObj.setServiceImplPath(xgGeneratorGlobalObj.getOutputServiceImplPath() + File.separator + tableObj + "ServiceImpl.java");
+            xgGeneratorTableObj.setServiceImplPath(xgGeneratorGlobalObj.getOutputServiceImplPath() + File.separator + xgGeneratorTableObj.getServiceImplClassName() + ".java");
             //dto
-            xgGeneratorTableObj.setDtoClassName(tableObj + "DTO");
+            xgGeneratorTableObj.setDtoClassName(elementTableName + "DTO");
             xgGeneratorTableObj.setDtoPackagePath(xgGeneratorGlobalObj.getDtoPackagePath());
-            xgGeneratorTableObj.setDtoPath(xgGeneratorGlobalObj.getOutputDTOPath() + File.separator + tableObj + "DTO.java");
+            xgGeneratorTableObj.setDtoPath(xgGeneratorGlobalObj.getOutputDTOPath() + File.separator + xgGeneratorTableObj.getDtoClassName() + ".java");
             //query
-            xgGeneratorTableObj.setQueryClassName(tableObj + "Query");
+            xgGeneratorTableObj.setQueryClassName(elementTableName + "Query");
             xgGeneratorTableObj.setQueryPackagePath(xgGeneratorGlobalObj.getQueryPackagePath());
-            xgGeneratorTableObj.setQueryPath(xgGeneratorGlobalObj.getOutputQueryPath() + File.separator + tableObj + "Query.java");
+            xgGeneratorTableObj.setQueryPath(xgGeneratorGlobalObj.getOutputQueryPath() + File.separator + xgGeneratorTableObj.getQueryClassName() + ".java");
             //controller
-            xgGeneratorTableObj.setControllerClassName(tableObj + "Controller");
+            xgGeneratorTableObj.setControllerClassName(elementTableName + "Controller");
             xgGeneratorTableObj.setControllerPackagePath(xgGeneratorGlobalObj.getControllerPackagePath());
-            xgGeneratorTableObj.setControllerPath(xgGeneratorGlobalObj.getOutputControllerPath() + File.separator + tableObj + "Controller.java");
+            xgGeneratorTableObj.setControllerPath(xgGeneratorGlobalObj.getOutputControllerPath() + File.separator + xgGeneratorTableObj.getControllerClassName() + ".java");
             //mapstruct
-            xgGeneratorTableObj.setMapstructClassName(tableObj + "Mapstruct");
+            xgGeneratorTableObj.setMapstructClassName(elementTableName + "Mapstruct");
             xgGeneratorTableObj.setMapstructPackagePath(xgGeneratorGlobalObj.getMapstructPackagePath());
-            xgGeneratorTableObj.setMapstructPath(xgGeneratorGlobalObj.getOutputMapStructPath() + File.separator + tableObj + "Mapstruct.java");
+            xgGeneratorTableObj.setMapstructPath(xgGeneratorGlobalObj.getOutputMapStructPath() + File.separator + xgGeneratorTableObj.getMapstructClassName() + ".java");
 
             List<XGGeneratorTableFieldsObj> tableFields = new ArrayList<>();
             for (XGXmlElementColumn columnInfo : xgXmlElementTable.getColumnList()) {
@@ -423,6 +430,36 @@ public class XGCodeGeneratorUI {
                 && !mapperCheckBox.isSelected() && !serviceCheckBox.isSelected() && !dtoCheckBox.isSelected()) {
             Messages.showDialog("请先选择要生成的代码对象！", "操作提示", new String[]{"确定"}, -1, Messages.getInformationIcon());
             return;
+        }
+
+        //去掉统一前缀
+        for (XgGeneratorTableObj xgGeneratorTableObj : xgGeneratorSelectedTableObjList) {
+            xgGeneratorTableObj.setControllerClassName(StrUtil.replaceIgnoreCase(xgGeneratorTableObj.getControllerClassName(), this.xgGeneratorGlobalObj.getIgnoreTablePrefix(), ""));
+            xgGeneratorTableObj.setControllerPath(xgGeneratorGlobalObj.getOutputControllerPath() + File.separator + xgGeneratorTableObj.getControllerClassName() + ".java");
+
+            xgGeneratorTableObj.setServiceClassName(StrUtil.replaceIgnoreCase(xgGeneratorTableObj.getServiceClassName(), this.xgGeneratorGlobalObj.getIgnoreTablePrefix(), ""));
+            xgGeneratorTableObj.setServicePath(xgGeneratorGlobalObj.getOutputServicePath() + File.separator + xgGeneratorTableObj.getServiceClassName() + ".java");
+
+            xgGeneratorTableObj.setServiceImplClassName(StrUtil.replaceIgnoreCase(xgGeneratorTableObj.getServiceImplClassName(), this.xgGeneratorGlobalObj.getIgnoreTablePrefix(), ""));
+            xgGeneratorTableObj.setServiceImplPath(xgGeneratorGlobalObj.getOutputServiceImplPath() + File.separator + xgGeneratorTableObj.getServiceImplClassName() + ".java");
+
+            xgGeneratorTableObj.setMapperClassName(StrUtil.replaceIgnoreCase(xgGeneratorTableObj.getMapperClassName(), this.xgGeneratorGlobalObj.getIgnoreTablePrefix(), ""));
+            xgGeneratorTableObj.setMapperPath(xgGeneratorGlobalObj.getOutputMapperPath() + File.separator + xgGeneratorTableObj.getMapperClassName() + ".java");
+
+            xgGeneratorTableObj.setDtoClassName(StrUtil.replaceIgnoreCase(xgGeneratorTableObj.getDtoClassName(), this.xgGeneratorGlobalObj.getIgnoreTablePrefix(), ""));
+            xgGeneratorTableObj.setDtoPath(xgGeneratorGlobalObj.getOutputDTOPath() + File.separator + xgGeneratorTableObj.getDtoClassName() + ".java");
+
+            xgGeneratorTableObj.setEntityClassName(StrUtil.replaceIgnoreCase(xgGeneratorTableObj.getEntityClassName(), this.xgGeneratorGlobalObj.getIgnoreTablePrefix(), ""));
+            xgGeneratorTableObj.setEntityPath(xgGeneratorGlobalObj.getOutputEntityPath() + File.separator + xgGeneratorTableObj.getEntityClassName() + ".java");
+
+            xgGeneratorTableObj.setQueryClassName(StrUtil.replaceIgnoreCase(xgGeneratorTableObj.getQueryClassName(), this.xgGeneratorGlobalObj.getIgnoreTablePrefix(), ""));
+            xgGeneratorTableObj.setQueryPath(xgGeneratorGlobalObj.getOutputQueryPath() + File.separator + xgGeneratorTableObj.getQueryClassName() + ".java");
+
+            xgGeneratorTableObj.setMapstructClassName(StrUtil.replaceIgnoreCase(xgGeneratorTableObj.getMapstructClassName(), this.xgGeneratorGlobalObj.getIgnoreTablePrefix(), ""));
+            xgGeneratorTableObj.setMapstructPath(xgGeneratorGlobalObj.getOutputMapStructPath() + File.separator + xgGeneratorTableObj.getMapstructClassName() + ".java");
+
+            xgGeneratorTableObj.setMapXml(StrUtil.replaceIgnoreCase(xgGeneratorTableObj.getMapXml(), this.xgGeneratorGlobalObj.getIgnoreTablePrefix(), ""));
+            xgGeneratorTableObj.setMapXmlPath(xgGeneratorGlobalObj.getOutputMapperXmlPath() + File.separator + xgGeneratorTableObj.getMapXml() + ".xml");
         }
 
         Map<String, Object> map = new HashMap<>();
@@ -503,8 +540,7 @@ public class XGCodeGeneratorUI {
         }
 
         NotificationGroupManager groupManager = NotificationGroupManager.getInstance();
-        Notification notification = groupManager.getNotificationGroup("NotificationXg")
-                .createNotification("生成成功，共有 " + count + " 个文件发生改变", MessageType.INFO).setTitle("X-Generator");
+        Notification notification = groupManager.getNotificationGroup("NotificationXg").createNotification("生成成功，共有 " + count + " 个文件发生变化", MessageType.INFO).setTitle("X-Generator");
         Notifications.Bus.notify(notification, project);
         xgMainDialog.doCancelAction();
     }

@@ -16,6 +16,7 @@ public class XGXmlElementColumn {
     public static final String XML_ELEMENT_COLUMN_ATTRIBUTE_TEXT = "Text";
     public static final String XML_ELEMENT_COLUMN_ATTRIBUTE_PRIMARY_KEY = "PrimaryKey";
     public static final String XML_ELEMENT_COLUMN_ATTRIBUTE_DATATYPE = "DataType";
+    //TODO not null, length
 
     /**
      * 列名

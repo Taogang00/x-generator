@@ -106,8 +106,9 @@ public class XGCodeGeneratorUI {
         this.skipRadioButton.setActionCommand("0");
         this.overrideRadioButton.setActionCommand("1");
 
-        this.settingBtn.setIcon(AllIcons.General.Settings);
-        this.importBtn.setIcon(AllIcons.ToolbarDecorator.Import);
+        this.settingBtn.setIcon(AllIcons.General.GearPlain);
+        this.importBtn.setIcon(AllIcons.General.OpenDisk);
+        this.runInfoLabel.setIcon(AllIcons.General.Information);
         this.authorTextField.setText(System.getProperty("user.name"));
         this.packageAllBtn.setText("全不选");
         this.xgGeneratorSelectedTableObjList = new ArrayList<>();
@@ -300,50 +301,47 @@ public class XGCodeGeneratorUI {
      */
     public List<XGXmlElementTable> importTableXml(String path, JLabel runInfoLabel) {
         List<XGXmlElementTable> list = new ArrayList<>();
+        try {
+            Document document = XmlUtil.readXML(path);
+            NodeList tableNodes = document.getElementsByTagName(XML_ELEMENT_TABLE_NAME);
+            // 遍历 Table 元素并打印信息
+            for (int i = 0; i < tableNodes.getLength(); i++) {
+                Element tableElement = (Element) tableNodes.item(i);
 
-        File file = new File(path);
-        if (!file.exists()) {
-            runInfoLabel.setText("文件不存在");
-            return null;
-        }
-        Document document = XmlUtil.readXML(file);
-        NodeList tableNodes = document.getElementsByTagName(XML_ELEMENT_TABLE_NAME);
+                // 提取表名 (Name 属性)
+                XGXmlElementTable XGXmlElementTable = new XGXmlElementTable();
+                List<XGXmlElementColumn> columnList = new ArrayList<>();
+                String tableName = tableElement.getAttribute(XML_ELEMENT_TABLE_ATTRIBUTE_NAME);
+                String tableText = tableElement.getAttribute(XML_ELEMENT_TABLE_ATTRIBUTE_TEXT);
+                XGXmlElementTable.setName(tableName);
+                XGXmlElementTable.setComment(tableText);
+                XGXmlElementTable.setColumnList(columnList);
 
-        // 遍历 Table 元素并打印信息
-        for (int i = 0; i < tableNodes.getLength(); i++) {
-            // 获取 Table 元素
-            Element tableElement = (Element) tableNodes.item(i);
+                // 你可以根据需要提取更多的属性或子元素
+                // 例如，提取 Table 下的 Column 元素
+                NodeList columnNodes = tableElement.getElementsByTagName(XML_ELEMENT_COLUMN_NAME);
+                for (int j = 0; j < columnNodes.getLength(); j++) {
+                    Element columnElement = (Element) columnNodes.item(j);
+                    String primaryKey = columnElement.getAttribute(XML_ELEMENT_COLUMN_ATTRIBUTE_PRIMARY_KEY);
+                    String columnName = columnElement.getAttribute(XML_ELEMENT_COLUMN_ATTRIBUTE_NAME);
+                    String columnText = columnElement.getAttribute(XML_ELEMENT_COLUMN_ATTRIBUTE_TEXT);
+                    String dataType = columnElement.getAttribute(XML_ELEMENT_COLUMN_ATTRIBUTE_DATATYPE);
 
-            // 提取表名 (Name 属性)
-            XGXmlElementTable XGXmlElementTable = new XGXmlElementTable();
-            List<XGXmlElementColumn> columnList = new ArrayList<>();
-            String tableName = tableElement.getAttribute(XML_ELEMENT_TABLE_ATTRIBUTE_NAME);
-            String tableText = tableElement.getAttribute(XML_ELEMENT_TABLE_ATTRIBUTE_TEXT);
-            XGXmlElementTable.setName(tableName);
-            XGXmlElementTable.setComment(tableText);
-            XGXmlElementTable.setColumnList(columnList);
-
-            // 你可以根据需要提取更多的属性或子元素
-            // 例如，提取 Table 下的 Column 元素
-            NodeList columnNodes = tableElement.getElementsByTagName(XML_ELEMENT_COLUMN_NAME);
-            for (int j = 0; j < columnNodes.getLength(); j++) {
-                Element columnElement = (Element) columnNodes.item(j);
-                String primaryKey = columnElement.getAttribute(XML_ELEMENT_COLUMN_ATTRIBUTE_PRIMARY_KEY);
-                String columnName = columnElement.getAttribute(XML_ELEMENT_COLUMN_ATTRIBUTE_NAME);
-                String columnText = columnElement.getAttribute(XML_ELEMENT_COLUMN_ATTRIBUTE_TEXT);
-                String dataType = columnElement.getAttribute(XML_ELEMENT_COLUMN_ATTRIBUTE_DATATYPE);
-
-                XGXmlElementColumn XGXmlElementColumn = new XGXmlElementColumn();
-                XGXmlElementColumn.setName(columnText);
-                XGXmlElementColumn.setFieldName(columnName);
-                XGXmlElementColumn.setFieldType(dataType);
-                XGXmlElementColumn.setPrimaryKey(Boolean.valueOf(primaryKey));
-                XGXmlElementTable.getColumnList().add(XGXmlElementColumn);
+                    XGXmlElementColumn XGXmlElementColumn = new XGXmlElementColumn();
+                    XGXmlElementColumn.setName(columnText);
+                    XGXmlElementColumn.setFieldName(columnName);
+                    XGXmlElementColumn.setFieldType(dataType);
+                    XGXmlElementColumn.setPrimaryKey(Boolean.valueOf(primaryKey));
+                    XGXmlElementTable.getColumnList().add(XGXmlElementColumn);
+                }
+                list.add(XGXmlElementTable);
             }
-            list.add(XGXmlElementTable);
+            this.runInfoLabel.setText("已导入" + list.size() + "张表");
+            this.runInfoLabel.setIcon(AllIcons.General.Information);
+        } catch (Exception e) {
+            this.runInfoLabel.setText("文件解析错误，请选择正确格式的xml文件");
+            this.runInfoLabel.setIcon(AllIcons.General.Warning);
         }
-
-        runInfoLabel.setText("已导入" + list.size() + "张表");
         return list;
     }
 

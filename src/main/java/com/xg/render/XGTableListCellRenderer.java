@@ -48,7 +48,7 @@ public class XGTableListCellRenderer extends JLabel implements ListCellRenderer<
         if (isSelected) {
             List<? extends String> selectedValuesList = list.getSelectedValuesList();
             xgCodeGeneratorUI.getRunInfoLabel().setText("已选择" + selectedValuesList.size() + "张表");
-            xgCodeGeneratorUI.initSelectXgGeneratorTableObj(selectedValuesList);
+            xgCodeGeneratorUI.initXgGeneratorSelectedTableObjList(selectedValuesList);
         }
         if (isSelected) {
             setBackground(list.getSelectionBackground());

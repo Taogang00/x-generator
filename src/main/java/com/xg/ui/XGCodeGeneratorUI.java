@@ -356,7 +356,7 @@ public class XGCodeGeneratorUI {
      *
      * @param selectedValuesList Selected Values 列表
      */
-    public void initSelectXgGeneratorTableObj(List<? extends String> selectedValuesList) {
+    public void initXgGeneratorSelectedTableObjList(List<? extends String> selectedValuesList) {
         xgGeneratorSelectedTableObjList.clear();
         for (String s : selectedValuesList) {
             XGXmlElementTable xgXmlElementTable = tableInfoMap.get(s);
@@ -375,7 +375,6 @@ public class XGCodeGeneratorUI {
             xgGeneratorTableObj.setMapperPath(xgGeneratorGlobalObj.getOutputEntityPath() + File.separator + xgGeneratorTableObj.getMapstructClassName() + ".java");
             //mapper-xml
             xgGeneratorTableObj.setMapperXml(elementTableName + "Mapper");
-            //TODO 不用赋值
             xgGeneratorTableObj.setMapperXmlPackagePath(xgGeneratorGlobalObj.getOutputMapperXmlPath());
             xgGeneratorTableObj.setMapperXmlPath(xgGeneratorGlobalObj.getOutputMapperXmlPath() + File.separator + xgGeneratorTableObj.getMapperXml() + ".xml");
             //service
@@ -432,7 +431,7 @@ public class XGCodeGeneratorUI {
      * @return {@link Template }
      * @throws IOException io异常
      */
-    public Template getTemplateFromString(String templateContent, String templateName) throws IOException {
+    public Template getFreemarkerTemplate(String templateContent, String templateName) throws IOException {
         // 创建 FreeMarker 配置对象
         Configuration cfg = new Configuration(Configuration.VERSION_2_3_33);
         cfg.setDefaultEncoding(StandardCharsets.UTF_8.displayName());
@@ -452,7 +451,7 @@ public class XGCodeGeneratorUI {
      * @throws IOException io异常
      */
     @SuppressWarnings("all")
-    public void generateCode(Project project, XGMainDialog xgMainDialog) throws IOException {
+    public void generateCodeAction(Project project, XGMainDialog xgMainDialog) throws IOException {
         if (this.tableInfoList == null || this.tableInfoList.isEmpty()) {
             Messages.showDialog("请先导入表实体数据！", "操作提示", new String[]{"确定"}, -1, Messages.getInformationIcon());
             return;
@@ -507,7 +506,7 @@ public class XGCodeGeneratorUI {
         try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("template/controller.java.ftl")) {
             assert resourceAsStream != null;
             String templateContent = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
-            Template template = getTemplateFromString(templateContent, "controller");
+            Template template = getFreemarkerTemplate(templateContent, "controller");
             count += generateControllerCode(template, map);
         }
 
@@ -515,7 +514,7 @@ public class XGCodeGeneratorUI {
         try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("template/entity.java.ftl")) {
             assert resourceAsStream != null;
             String templateContent = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
-            Template template = getTemplateFromString(templateContent, "entity");
+            Template template = getFreemarkerTemplate(templateContent, "entity");
             count += generateEntityCode(template, map);
         }
 
@@ -523,7 +522,7 @@ public class XGCodeGeneratorUI {
         try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("template/dto.java.ftl")) {
             assert resourceAsStream != null;
             String templateContent = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
-            Template template = getTemplateFromString(templateContent, "dto");
+            Template template = getFreemarkerTemplate(templateContent, "dto");
             count += generateDTOCode(template, map);
         }
 
@@ -531,7 +530,7 @@ public class XGCodeGeneratorUI {
         try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("template/query.java.ftl")) {
             assert resourceAsStream != null;
             String templateContent = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
-            Template template = getTemplateFromString(templateContent, "query");
+            Template template = getFreemarkerTemplate(templateContent, "query");
             count += generateQueryCode(template, map);
         }
 
@@ -539,7 +538,7 @@ public class XGCodeGeneratorUI {
         try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("template/service.java.ftl")) {
             assert resourceAsStream != null;
             String templateContent = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
-            Template template = getTemplateFromString(templateContent, "service");
+            Template template = getFreemarkerTemplate(templateContent, "service");
             count += generateServiceCode(template, map);
         }
 
@@ -547,7 +546,7 @@ public class XGCodeGeneratorUI {
         try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("template/serviceImpl.java.ftl")) {
             assert resourceAsStream != null;
             String templateContent = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
-            Template template = getTemplateFromString(templateContent, "serviceImpl");
+            Template template = getFreemarkerTemplate(templateContent, "serviceImpl");
             count += generateServiceImplCode(template, map);
         }
 
@@ -555,7 +554,7 @@ public class XGCodeGeneratorUI {
         try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("template/mapper.java.ftl")) {
             assert resourceAsStream != null;
             String templateContent = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
-            Template template = getTemplateFromString(templateContent, "mapper");
+            Template template = getFreemarkerTemplate(templateContent, "mapper");
             count += generateMapperCode(template, map);
         }
 
@@ -563,7 +562,7 @@ public class XGCodeGeneratorUI {
         try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("template/mapper.xml.ftl")) {
             assert resourceAsStream != null;
             String templateContent = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
-            Template template = getTemplateFromString(templateContent, "mapper-xml");
+            Template template = getFreemarkerTemplate(templateContent, "mapper-xml");
             count += generateMapperXmlCode(template, map);
         }
 
@@ -571,7 +570,7 @@ public class XGCodeGeneratorUI {
         try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("template/mapstruct.java.ftl")) {
             assert resourceAsStream != null;
             String templateContent = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
-            Template template = getTemplateFromString(templateContent, "mapstruct");
+            Template template = getFreemarkerTemplate(templateContent, "mapstruct");
             count += generateMapStructCode(template, map);
         }
 

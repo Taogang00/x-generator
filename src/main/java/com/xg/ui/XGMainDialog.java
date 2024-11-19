@@ -38,7 +38,7 @@ public class XGMainDialog extends DialogWrapper {
         // 在这里调用 XGCodeGeneratorUI 中的方法
         if (codeGeneratorUI != null) {
             try {
-                codeGeneratorUI.generateCode(project, this);
+                codeGeneratorUI.generateCodeAction(project, this);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

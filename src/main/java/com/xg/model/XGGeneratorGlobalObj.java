@@ -15,7 +15,6 @@ public class XGGeneratorGlobalObj {
     private String codeGeneratorPath;
     private Boolean fileOverride;
 
-    private String modulePackagePath;
     private String controllerPackagePath;
     private String entityPackagePath;
     private String dtoPackagePath;

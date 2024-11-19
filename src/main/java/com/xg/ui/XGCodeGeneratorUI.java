@@ -44,6 +44,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static cn.hutool.core.text.StrPool.DOT;
 import static com.xg.model.XGXmlElementColumn.*;
 import static com.xg.model.XGXmlElementTable.*;
 
@@ -112,23 +113,6 @@ public class XGCodeGeneratorUI {
         this.xgGeneratorGlobalObj.setDateTime(DateUtil.formatDateTime(new Date()));
         this.xgGeneratorGlobalObj.setAuthor(authorTextField.getText());
         this.xgGeneratorGlobalObj.setFileOverride(false);
-
-        // 数据库类型映射
-        this.columnJavaTypeMapping.put("varchar(\\(\\d+\\))?", new Tuple("String", "java.lang.String"));
-        this.columnJavaTypeMapping.put("varchar2(\\(\\d+\\))?", new Tuple("String", "java.lang.String"));
-        this.columnJavaTypeMapping.put("nvarchar(\\(\\d+\\))?", new Tuple("String", "java.lang.String"));
-        this.columnJavaTypeMapping.put("nvarchar2(\\(\\d+\\))?", new Tuple("String", "java.lang.String"));
-        this.columnJavaTypeMapping.put("char(\\(\\d+\\))?", new Tuple("String", "java.lang.String"));
-        this.columnJavaTypeMapping.put("(tiny|medium|long)*text", new Tuple("String", "java.lang.String"));
-        this.columnJavaTypeMapping.put("numeric(\\(\\d+,\\d+\\))?", new Tuple("Double", "java.lang.Double"));
-        this.columnJavaTypeMapping.put("numericn(\\(\\d+,\\d+\\))?", new Tuple("Double", "java.lang.Double"));
-        this.columnJavaTypeMapping.put("numeric(\\(\\d+\\))?", new Tuple("Integer", "java.lang.Integer"));
-        this.columnJavaTypeMapping.put("decimal(\\(\\d+,\\d+\\))?", new Tuple("Double", "java.lang.Double"));
-        this.columnJavaTypeMapping.put("bigint(\\(\\d+\\))?", new Tuple("Long", "java.lang.Long"));
-        this.columnJavaTypeMapping.put("(tiny|small|medium)*int(\\(\\d+\\))?", new Tuple("Integer", "java.lang.Integer"));
-        this.columnJavaTypeMapping.put("integer", new Tuple("Integer", "java.lang.Integer"));
-        this.columnJavaTypeMapping.put("date", new Tuple("Date", "java.util.Date"));
-        this.columnJavaTypeMapping.put("datetime", new Tuple("Date", "java.util.Date"));
 
         // 1.项目模块加载
         List<String> mavenArtifactIds = XGMavenUtil.getMavenArtifactId(project);
@@ -201,7 +185,7 @@ public class XGCodeGeneratorUI {
         // 6.选择项目时需要给代码生成的路径进行赋值
         projectModuleComboBox.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.SELECTED) {
-                initSelectedModulePackage(project, e.getItem().toString());
+                initXgGeneratorGlobalOutputPathAndPackagePath(project, e.getItem().toString());
             }
         });
 
@@ -233,7 +217,7 @@ public class XGCodeGeneratorUI {
 
         // 11.初始化包赋值操作
         if (ObjectUtil.isNotNull(projectModuleComboBox.getSelectedItem())) {
-            initSelectedModulePackage(project, projectModuleComboBox.getSelectedItem().toString());
+            initXgGeneratorGlobalOutputPathAndPackagePath(project, projectModuleComboBox.getSelectedItem().toString());
         }
 
         // 12.代码作者-默认是加载当前操作系统用户名称
@@ -241,6 +225,17 @@ public class XGCodeGeneratorUI {
             @Override
             protected void textChanged(@NotNull DocumentEvent e) {
                 xgGeneratorGlobalObj.setIgnoreTablePrefix(ignoreTablePrefixTextField.getText());
+            }
+        });
+
+        // 13.初始化数据库类型映射
+        initColumnJavaTypeMapping();
+
+        // 14. PathTextField 监听
+        controllerPathTextField.getDocument().addDocumentListener(new DocumentAdapter() {
+            @Override
+            protected void textChanged(@NotNull DocumentEvent e) {
+                xgGeneratorGlobalObj.setControllerPackagePath(controllerPathTextField.getText());
             }
         });
     }
@@ -252,7 +247,7 @@ public class XGCodeGeneratorUI {
      * @param runInfoLabel Run Info 标签
      * @return {@link List }<{@link XGXmlElementTable }>
      */
-    public static List<XGXmlElementTable> importTableXml(String path, JLabel runInfoLabel) {
+    public List<XGXmlElementTable> importTableXml(String path, JLabel runInfoLabel) {
         List<XGXmlElementTable> list = new ArrayList<>();
 
         File file = new File(path);
@@ -302,53 +297,83 @@ public class XGCodeGeneratorUI {
     }
 
     /**
-     * 初始化选定模块包
+     * 初始化输出代码的路径和包路径
      *
      * @param project      项目
      * @param selectedItem 已选项
      */
-    private void initSelectedModulePackage(Project project, String selectedItem) {
-        File sourcePath = XGMavenUtil.getMavenArtifactIdSourcePath(project, selectedItem);
-        File resourcePath = XGMavenUtil.getMavenArtifactIdResourcePath(project, selectedItem);
-        assert sourcePath != null;
-        assert resourcePath != null;
+    public void initXgGeneratorGlobalOutputPathAndPackagePath(Project project, String selectedItem) {
+        //src/main/java 绝对地址目录,形如：D:\gogs\camel\2.src\tles-oles-camel-out\src\main\java
+        File sourceDirectory = XGMavenUtil.getMavenArtifactIdSourcePath(project, selectedItem);
+        //src/main/source 绝对地址目录，形如：D:\gogs\camel\2.src\tles-oles-camel-out\src\main\resource
+        File resourceDirectory = XGMavenUtil.getMavenArtifactIdResourcePath(project, selectedItem);
+        assert sourceDirectory != null;
+        assert resourceDirectory != null;
+        String sourceDirectoryAbsolutePath = sourceDirectory.getAbsolutePath();
 
-        codeGeneratorPathTextField.setText(sourcePath.getAbsolutePath());
-        File file = XGFileChooserUtil.walkFiles(sourcePath);
-        String absolutePath = file.getAbsolutePath();
+        codeGeneratorPathTextField.setText(sourceDirectoryAbsolutePath);
+        File file = XGFileChooserUtil.walkFiles(sourceDirectory);
+        String outputFilePath = file.getAbsolutePath();
 
-        this.xgGeneratorGlobalObj.setOutputControllerPath(absolutePath + File.separator + "controller");
-        this.xgGeneratorGlobalObj.setOutputEntityPath(absolutePath + File.separator + "entity");
-        this.xgGeneratorGlobalObj.setOutputServicePath(absolutePath + File.separator + "service");
-        this.xgGeneratorGlobalObj.setOutputServiceImplPath(absolutePath + File.separator + "service" + File.separator + "impl");
-        this.xgGeneratorGlobalObj.setOutputQueryPath(absolutePath + File.separator + "query");
-        this.xgGeneratorGlobalObj.setOutputDTOPath(absolutePath + File.separator + "dto");
-        this.xgGeneratorGlobalObj.setOutputMapperPath(absolutePath + File.separator + "mapper");
-        this.xgGeneratorGlobalObj.setOutputMapStructPath(absolutePath + File.separator + "mapstruct");
-        this.xgGeneratorGlobalObj.setOutputMapperXmlPath(resourcePath + File.separator + "mapper");
+        this.xgGeneratorGlobalObj.setOutputControllerPath(outputFilePath + File.separator + "controller");
+        this.xgGeneratorGlobalObj.setOutputEntityPath(outputFilePath + File.separator + "entity");
+        this.xgGeneratorGlobalObj.setOutputServicePath(outputFilePath + File.separator + "service");
+        this.xgGeneratorGlobalObj.setOutputServiceImplPath(outputFilePath + File.separator + "service" + File.separator + "impl");
+        this.xgGeneratorGlobalObj.setOutputQueryPath(outputFilePath + File.separator + "query");
+        this.xgGeneratorGlobalObj.setOutputDTOPath(outputFilePath + File.separator + "dto");
+        this.xgGeneratorGlobalObj.setOutputMapperPath(outputFilePath + File.separator + "mapper");
+        this.xgGeneratorGlobalObj.setOutputMapStructPath(outputFilePath + File.separator + "mapstruct");
+        this.xgGeneratorGlobalObj.setOutputMapperXmlPath(resourceDirectory + File.separator + "mapper");
 
-        String modulePath = absolutePath.replace(sourcePath.getAbsolutePath() + File.separator, "");
-        modulePath = modulePath.replace(File.separator, ".");
-        this.xgGeneratorGlobalObj.setModulePackagePath(modulePath);
+        //D:\gogs\camel\2.src\tles-oles-camel-out\src\main\java 与 D:\gogs\camel\2.src\tles-oles-camel-out\src\main\java\com\tles\oles\controller 差：
+        //=\com\tles\oles\controller
+        String controllerPackagePath = StrUtil.removePrefix(this.xgGeneratorGlobalObj.getOutputControllerPath(), sourceDirectoryAbsolutePath);
+        String servicePackagePath = StrUtil.removePrefix(this.xgGeneratorGlobalObj.getOutputServicePath(), sourceDirectoryAbsolutePath);
+        String serviceImplPackagePath = StrUtil.removePrefix(this.xgGeneratorGlobalObj.getOutputServiceImplPath(), sourceDirectoryAbsolutePath);
+        String mapperPackagePath = StrUtil.removePrefix(this.xgGeneratorGlobalObj.getOutputMapperPath(), sourceDirectoryAbsolutePath);
+        String entityPackagePath = StrUtil.removePrefix(this.xgGeneratorGlobalObj.getOutputEntityPath(), sourceDirectoryAbsolutePath);
+        String dtoPackagePath = StrUtil.removePrefix(this.xgGeneratorGlobalObj.getOutputDTOPath(), sourceDirectoryAbsolutePath);
+        String queryPackagePath = StrUtil.removePrefix(this.xgGeneratorGlobalObj.getOutputQueryPath(), sourceDirectoryAbsolutePath);
+        String mapStructPackagePath = StrUtil.removePrefix(this.xgGeneratorGlobalObj.getOutputMapStructPath(), sourceDirectoryAbsolutePath);
 
-        this.xgGeneratorGlobalObj.setControllerPackagePath(modulePath + "." + "controller");
-        this.xgGeneratorGlobalObj.setServicePackagePath(modulePath + "." + "service");
-        this.xgGeneratorGlobalObj.setServiceImplPackagePath(modulePath + "." + "service.impl");
-        this.xgGeneratorGlobalObj.setMapperPackagePath(modulePath + "." + "mapper");
-        this.xgGeneratorGlobalObj.setEntityPackagePath(modulePath + "." + "entity");
-        this.xgGeneratorGlobalObj.setDtoPackagePath(modulePath + "." + "dto");
-        this.xgGeneratorGlobalObj.setQueryPackagePath(modulePath + "." + "query");
-        this.xgGeneratorGlobalObj.setMapstructPackagePath(modulePath + "." + "mapstruct");
+        // \com\tles\oles\controller -> .com.tles.oles.controller
+        controllerPackagePath = StrUtil.replace(controllerPackagePath, File.separator, DOT);
+        servicePackagePath = StrUtil.replace(servicePackagePath, File.separator, DOT);
+        serviceImplPackagePath = StrUtil.replace(serviceImplPackagePath, File.separator, DOT);
+        mapperPackagePath = StrUtil.replace(mapperPackagePath, File.separator, DOT);
+        entityPackagePath = StrUtil.replace(entityPackagePath, File.separator, DOT);
+        dtoPackagePath = StrUtil.replace(dtoPackagePath, File.separator, DOT);
+        queryPackagePath = StrUtil.replace(queryPackagePath, File.separator, DOT);
+        mapStructPackagePath = StrUtil.replace(mapStructPackagePath, File.separator, DOT);
+
+        // 去掉 .com.tles.oles.controller 第一个.
+        controllerPackagePath = StrUtil.removePrefix(controllerPackagePath, DOT);
+        servicePackagePath = StrUtil.removePrefix(servicePackagePath, DOT);
+        serviceImplPackagePath = StrUtil.removePrefix(serviceImplPackagePath, DOT);
+        mapperPackagePath = StrUtil.removePrefix(mapperPackagePath, DOT);
+        entityPackagePath = StrUtil.removePrefix(entityPackagePath, DOT);
+        dtoPackagePath = StrUtil.removePrefix(dtoPackagePath, DOT);
+        queryPackagePath = StrUtil.removePrefix(queryPackagePath, DOT);
+        mapStructPackagePath = StrUtil.removePrefix(mapStructPackagePath, DOT);
+
+        this.xgGeneratorGlobalObj.setControllerPackagePath(controllerPackagePath);
+        this.xgGeneratorGlobalObj.setServicePackagePath(servicePackagePath);
+        this.xgGeneratorGlobalObj.setServiceImplPackagePath(serviceImplPackagePath);
+        this.xgGeneratorGlobalObj.setMapperPackagePath(mapperPackagePath);
+        this.xgGeneratorGlobalObj.setEntityPackagePath(entityPackagePath);
+        this.xgGeneratorGlobalObj.setDtoPackagePath(dtoPackagePath);
+        this.xgGeneratorGlobalObj.setQueryPackagePath(queryPackagePath);
+        this.xgGeneratorGlobalObj.setMapstructPackagePath(mapStructPackagePath);
         this.xgGeneratorGlobalObj.setMapperXmlPackagePath("mapper");
 
-        controllerPathTextField.setText(this.xgGeneratorGlobalObj.getControllerPackagePath());
-        servicePathTextField.setText(this.xgGeneratorGlobalObj.getServicePackagePath());
-        mapperPathTextField.setText(this.xgGeneratorGlobalObj.getMapperPackagePath());
-        entityPathTextField.setText(this.xgGeneratorGlobalObj.getEntityPackagePath());
-        dtoPathTextField.setText(this.xgGeneratorGlobalObj.getDtoPackagePath());
-        queryPathTextField.setText(this.xgGeneratorGlobalObj.getQueryPackagePath());
-        mapStructPathTextField.setText(this.xgGeneratorGlobalObj.getMapstructPackagePath());
-        mapperXmlPathTextField.setText(this.xgGeneratorGlobalObj.getMapperXmlPackagePath());
+        this.controllerPathTextField.setText(controllerPackagePath);
+        this.servicePathTextField.setText(this.xgGeneratorGlobalObj.getServicePackagePath());
+        this.mapperPathTextField.setText(this.xgGeneratorGlobalObj.getMapperPackagePath());
+        this.entityPathTextField.setText(this.xgGeneratorGlobalObj.getEntityPackagePath());
+        this.dtoPathTextField.setText(this.xgGeneratorGlobalObj.getDtoPackagePath());
+        this.queryPathTextField.setText(this.xgGeneratorGlobalObj.getQueryPackagePath());
+        this.mapStructPathTextField.setText(this.xgGeneratorGlobalObj.getMapstructPackagePath());
+        this.mapperXmlPathTextField.setText(this.xgGeneratorGlobalObj.getMapperXmlPackagePath());
     }
 
     /**
@@ -421,6 +446,28 @@ public class XGCodeGeneratorUI {
             xgGeneratorTableObj.setTableFields(tableFields);
             xgGeneratorSelectedTableObjList.add(xgGeneratorTableObj);
         }
+    }
+
+    /**
+     * 初始化数据库类型映射
+     */
+    public void initColumnJavaTypeMapping() {
+        // 数据库类型映射
+        this.columnJavaTypeMapping.put("varchar(\\(\\d+\\))?", new Tuple("String", "java.lang.String"));
+        this.columnJavaTypeMapping.put("varchar2(\\(\\d+\\))?", new Tuple("String", "java.lang.String"));
+        this.columnJavaTypeMapping.put("nvarchar(\\(\\d+\\))?", new Tuple("String", "java.lang.String"));
+        this.columnJavaTypeMapping.put("nvarchar2(\\(\\d+\\))?", new Tuple("String", "java.lang.String"));
+        this.columnJavaTypeMapping.put("char(\\(\\d+\\))?", new Tuple("String", "java.lang.String"));
+        this.columnJavaTypeMapping.put("(tiny|medium|long)*text", new Tuple("String", "java.lang.String"));
+        this.columnJavaTypeMapping.put("numeric(\\(\\d+,\\d+\\))?", new Tuple("Double", "java.lang.Double"));
+        this.columnJavaTypeMapping.put("numericn(\\(\\d+,\\d+\\))?", new Tuple("Double", "java.lang.Double"));
+        this.columnJavaTypeMapping.put("numeric(\\(\\d+\\))?", new Tuple("Integer", "java.lang.Integer"));
+        this.columnJavaTypeMapping.put("decimal(\\(\\d+,\\d+\\))?", new Tuple("Double", "java.lang.Double"));
+        this.columnJavaTypeMapping.put("bigint(\\(\\d+\\))?", new Tuple("Long", "java.lang.Long"));
+        this.columnJavaTypeMapping.put("(tiny|small|medium)*int(\\(\\d+\\))?", new Tuple("Integer", "java.lang.Integer"));
+        this.columnJavaTypeMapping.put("integer", new Tuple("Integer", "java.lang.Integer"));
+        this.columnJavaTypeMapping.put("date", new Tuple("Date", "java.util.Date"));
+        this.columnJavaTypeMapping.put("datetime", new Tuple("Date", "java.util.Date"));
     }
 
     /**

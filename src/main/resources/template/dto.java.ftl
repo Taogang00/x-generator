@@ -20,8 +20,8 @@ public class ${table.dtoClassName} {
 <#list table.tableFields as field>
     <#if field.comment!?length gt 0>
     /**
-    * ${field.comment}
-    */
+     * ${field.comment}
+     */
     </#if>
     private ${field.propertyType} ${field.propertyName};
 

@@ -2,7 +2,9 @@ package com.xg.ui;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.lang.Tuple;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.XmlUtil;
 import com.intellij.icons.AllIcons;
@@ -47,6 +49,7 @@ import static com.xg.model.XGXmlElementTable.*;
 
 public class XGCodeGeneratorUI {
 
+
     @Getter
     private JPanel rootJPanel;
     @Getter
@@ -86,6 +89,8 @@ public class XGCodeGeneratorUI {
     private final List<XgGeneratorTableObj> xgGeneratorSelectedTableObjList;
     private final XGGeneratorGlobalObj xgGeneratorGlobalObj;
 
+    private final Map<String, Tuple> columnJavaTypeMapping = new HashMap<>();
+
     public XGCodeGeneratorUI(Project project) {
         this.xgGeneratorGlobalObj = new XGGeneratorGlobalObj();
         this.ignoreTablePrefixTextField.setText("_");
@@ -101,6 +106,22 @@ public class XGCodeGeneratorUI {
         this.xgGeneratorGlobalObj.setDateTime(DateUtil.formatDateTime(new Date()));
         this.xgGeneratorGlobalObj.setAuthor(authorTextField.getText());
         this.xgGeneratorGlobalObj.setFileOverride(false);
+
+        // 数据库类型映射
+        this.columnJavaTypeMapping.put("varchar(\\(\\d+\\))?", new Tuple("String", "java.lang.String"));
+        this.columnJavaTypeMapping.put("varchar2(\\(\\d+\\))?", new Tuple("String", "java.lang.String"));
+        this.columnJavaTypeMapping.put("nvarchar(\\(\\d+\\))?", new Tuple("String", "java.lang.String"));
+        this.columnJavaTypeMapping.put("nvarchar2(\\(\\d+\\))?", new Tuple("String", "java.lang.String"));
+        this.columnJavaTypeMapping.put("char(\\(\\d+\\))?", new Tuple("String", "java.lang.String"));
+        this.columnJavaTypeMapping.put("(tiny|medium|long)*text", new Tuple("String", "java.lang.String"));
+        this.columnJavaTypeMapping.put("numeric(\\(\\d+,\\d+\\))?", new Tuple("Double", "java.lang.Double"));
+        this.columnJavaTypeMapping.put("numeric(\\(\\d+\\))?", new Tuple("Integer", "java.lang.Integer"));
+        this.columnJavaTypeMapping.put("decimal(\\(\\d+,\\d+\\))?", new Tuple("Double", "java.lang.Double"));
+        this.columnJavaTypeMapping.put("bigint(\\(\\d+\\))?", new Tuple("Long", "java.lang.Long"));
+        this.columnJavaTypeMapping.put("(tiny|small|medium)*int(\\(\\d+\\))?", new Tuple("Integer", "java.lang.Integer"));
+        this.columnJavaTypeMapping.put("integer", new Tuple("Integer", "java.lang.Integer"));
+        this.columnJavaTypeMapping.put("date", new Tuple("Date", "java.util.Date"));
+        this.columnJavaTypeMapping.put("datetime", new Tuple("Date", "java.util.Date"));
 
         // 1.项目模块加载
         List<String> mavenArtifactIds = XGMavenUtil.getMavenArtifactId(project);
@@ -381,8 +402,14 @@ public class XGCodeGeneratorUI {
                 xgGeneratorTableFieldsObj.setComment(columnInfo.getName());
                 xgGeneratorTableFieldsObj.setPrimaryKey(columnInfo.getPrimaryKey());
                 xgGeneratorTableFieldsObj.setPropertyName(StrUtil.lowerFirst(columnInfo.getFieldName()));
-                //TODO转换
                 xgGeneratorTableFieldsObj.setPropertyType(columnInfo.getFieldType());
+                //重新赋值
+                for (Map.Entry<String, Tuple> regexEntry : this.columnJavaTypeMapping.entrySet()) {
+                    boolean match = ReUtil.isMatch(regexEntry.getKey(), columnInfo.getFieldType().toLowerCase());
+                    if (match) {
+                        xgGeneratorTableFieldsObj.setPropertyType(regexEntry.getValue().get(0));
+                    }
+                }
                 tableFields.add(xgGeneratorTableFieldsObj);
             }
             xgGeneratorTableObj.setTableFields(tableFields);

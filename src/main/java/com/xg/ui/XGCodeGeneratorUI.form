@@ -88,7 +88,7 @@
                 </constraints>
                 <properties>
                   <model>
-                    <item value="默认(ErStudio+MybatisPlus)"/>
+                    <item value="默认"/>
                   </model>
                 </properties>
               </component>

@@ -11,6 +11,7 @@ import java.util.List;
 
 /**
  * ${table.mapperClassName} Mapper 接口
+ *
  * @author ${global.author}
  * @date ${global.dateTime}
  */

@@ -21,7 +21,7 @@ import java.util.List;
  * @date ${global.dateTime}
  */
 @RestController
-@RequestMapping("/v1/${table.entityClassName}")
+@RequestMapping("/v1/${table.controllerMapping}")
 @RequiredArgsConstructor
 public class ${table.controllerClassName} {
 

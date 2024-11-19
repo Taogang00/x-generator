@@ -29,11 +29,7 @@
         <where>
         <#list table.tableFields as field>
             <if test="@com.guanwei.core.utils.EmptyUtil@isNotEmpty(${field.propertyName?uncap_first})">
-            <#if field_index = 0>
-                ${field.propertyName?uncap_first} = ${'#'}${'{'}${field.propertyName?uncap_first}${'}'}
-            <#else>
                 AND ${field.propertyName?uncap_first} = ${'#'}${'{'}${field.propertyName?uncap_first}${'}'}
-            </#if>
             </if>
         </#list>
         </where>

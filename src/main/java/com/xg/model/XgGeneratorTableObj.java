@@ -1,5 +1,6 @@
 package com.xg.model;
 
+import cn.hutool.core.util.StrUtil;
 import lombok.Data;
 
 import java.util.List;
@@ -47,6 +48,8 @@ public class XgGeneratorTableObj {
 
     private String controllerPath;
 
+    private String controllerMapping;
+
     private String dtoClassName;
 
     private String dtoPackagePath;
@@ -67,4 +70,10 @@ public class XgGeneratorTableObj {
 
     private List<XGGeneratorTableFieldsObj> tableFields;
 
+    @SuppressWarnings("unused")
+    public String getControllerMapping() {
+        return StrUtil.toUnderlineCase(this.getEntityClassName())
+                .replace("_", "-")
+                .toLowerCase();
+    }
 }

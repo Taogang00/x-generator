@@ -15,6 +15,7 @@ import java.util.Date;
  * @date ${global.dateTime}
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class ${table.queryClassName} extends PageQuery {
 
 <#list table.tableFields as field>

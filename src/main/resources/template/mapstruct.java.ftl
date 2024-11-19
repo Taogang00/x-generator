@@ -1,11 +1,10 @@
 <#--@formatter:off-->
 package ${table.mapstructPackagePath};
 
+import com.guanwei.mybatis.mapstruct.MybatisPageBaseConvertMapper;
 import ${table.dtoPackagePath}.${table.dtoClassName};
 import ${table.entityPackagePath}.${table.entityClassName};
-import com.guanwei.mybatis.mapstruct.MybatisPageBaseConvertMapper;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 

@@ -7,6 +7,7 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.XmlUtil;
+import cn.hutool.json.JSONUtil;
 import com.intellij.icons.AllIcons;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationGroupManager;
@@ -72,7 +73,8 @@ public class XGCodeGeneratorUI {
     private ExpandableTextField queryPathTextField;
     private ExpandableTextField mapStructPathTextField;
     private ExpandableTextField mapperXmlPathTextField;
-    private ExpandableTextField codeGeneratorPathTextField;
+    private ExpandableTextField sourceCodeGeneratorPathTextField;
+    private ExpandableTextField resourcesCodeGeneratorPathTextField;
 
     private JRadioButton skipRadioButton;
     private JRadioButton overrideRadioButton;
@@ -92,12 +94,11 @@ public class XGCodeGeneratorUI {
     private JTextField ignoreTablePrefixTextField;
     private JTextField authorTextField;
     private List<XGXmlElementTable> tableInfoList;
+
     private final List<XgGeneratorTableObj> xgGeneratorSelectedTableObjList;
     private final XGGeneratorGlobalObj xgGeneratorGlobalObj;
-
     private final Map<String, Tuple> columnJavaTypeMapping = new HashMap<>();
 
-    @SuppressWarnings("SpellCheckingInspection")
     public XGCodeGeneratorUI(Project project) {
         this.xgGeneratorGlobalObj = new XGGeneratorGlobalObj();
         this.ignoreTablePrefixTextField.setText("_");
@@ -120,15 +121,7 @@ public class XGCodeGeneratorUI {
             projectModuleComboBox.addItem(item);
         }
 
-        // 2.代码作者-默认是加载当前操作系统用户名称
-        authorTextField.getDocument().addDocumentListener(new DocumentAdapter() {
-            @Override
-            protected void textChanged(@NotNull DocumentEvent e) {
-                xgGeneratorGlobalObj.setAuthor(authorTextField.getText());
-            }
-        });
-
-        // 3.生成Java对象【全选】、【全不选】按钮事件
+        // 2.生成Java对象【全选】、【全不选】按钮事件
         packageAllBtn.addActionListener(e -> {
             if (!this.controllerCheckBox.isSelected()
                     || !this.serviceCheckBox.isSelected()
@@ -159,7 +152,7 @@ public class XGCodeGeneratorUI {
             }
         });
 
-        // 4.生成Java对象生成与否的单选事件
+        // 3.生成Java对象生成与否的单选事件
         controllerCheckBox.addItemListener(e -> this.xgGeneratorGlobalObj.setGenerateController(e.getStateChange() == ItemEvent.SELECTED));
         serviceCheckBox.addItemListener(e -> this.xgGeneratorGlobalObj.setGenerateService(e.getStateChange() == ItemEvent.SELECTED));
         entityCheckBox.addItemListener(e -> this.xgGeneratorGlobalObj.setGenerateEntity(e.getStateChange() == ItemEvent.SELECTED));
@@ -169,7 +162,7 @@ public class XGCodeGeneratorUI {
         mapperCheckBox.addItemListener(e -> this.xgGeneratorGlobalObj.setGenerateMapper(e.getStateChange() == ItemEvent.SELECTED));
         mapperXmlCheckBox.addItemListener(e -> this.xgGeneratorGlobalObj.setGenerateMapperXml(e.getStateChange() == ItemEvent.SELECTED));
 
-        // 5.添加ActionListener来监听文件冲突时按钮的状态变化
+        // 4.添加ActionListener来监听文件冲突时按钮的状态变化
         ActionListener actionListener = e -> {
             // 获取选中的 JRadioButton
             JRadioButton selectedButton = (JRadioButton) e.getSource();
@@ -182,14 +175,14 @@ public class XGCodeGeneratorUI {
         skipRadioButton.addActionListener(actionListener);
         overrideRadioButton.addActionListener(actionListener);
 
-        // 6.选择项目时需要给代码生成的路径进行赋值
+        // 5.选择项目时需要给代码生成的路径进行赋值
         projectModuleComboBox.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 initXgGeneratorGlobalOutputPathAndPackagePath(project, e.getItem().toString());
             }
         });
 
-        // 10.导入xml按钮事件
+        // 6.导入xml按钮事件
         importBtn.addActionListener(e -> {
             VirtualFile virtualFile = XGFileChooserUtil.chooseFileVirtual(project);
             if (ObjectUtil.isNull(virtualFile)) {
@@ -215,27 +208,85 @@ public class XGCodeGeneratorUI {
             }
         });
 
-        // 11.初始化包赋值操作
+        // 7.初始化包赋值操作
         if (ObjectUtil.isNotNull(projectModuleComboBox.getSelectedItem())) {
             initXgGeneratorGlobalOutputPathAndPackagePath(project, projectModuleComboBox.getSelectedItem().toString());
         }
 
-        // 12.代码作者-默认是加载当前操作系统用户名称
+        // 8.初始化数据库类型映射
+        initColumnJavaTypeMapping();
+
+        // 9. 表单元素输入监听
+        authorTextField.getDocument().addDocumentListener(new DocumentAdapter() {
+            @Override
+            protected void textChanged(@NotNull DocumentEvent e) {
+                xgGeneratorGlobalObj.setAuthor(authorTextField.getText());
+            }
+        });
         ignoreTablePrefixTextField.getDocument().addDocumentListener(new DocumentAdapter() {
             @Override
             protected void textChanged(@NotNull DocumentEvent e) {
                 xgGeneratorGlobalObj.setIgnoreTablePrefix(ignoreTablePrefixTextField.getText());
             }
         });
-
-        // 13.初始化数据库类型映射
-        initColumnJavaTypeMapping();
-
-        // 14. PathTextField 监听
+        sourceCodeGeneratorPathTextField.getDocument().addDocumentListener(new DocumentAdapter() {
+            @Override
+            protected void textChanged(@NotNull DocumentEvent e) {
+                xgGeneratorGlobalObj.setSourceCodeGeneratorPath(sourceCodeGeneratorPathTextField.getText());
+            }
+        });
+        resourcesCodeGeneratorPathTextField.getDocument().addDocumentListener(new DocumentAdapter() {
+            @Override
+            protected void textChanged(@NotNull DocumentEvent e) {
+                xgGeneratorGlobalObj.setResourcesCodeGeneratorPath(resourcesCodeGeneratorPathTextField.getText());
+            }
+        });
         controllerPathTextField.getDocument().addDocumentListener(new DocumentAdapter() {
             @Override
             protected void textChanged(@NotNull DocumentEvent e) {
                 xgGeneratorGlobalObj.setControllerPackagePath(controllerPathTextField.getText());
+            }
+        });
+        servicePathTextField.getDocument().addDocumentListener(new DocumentAdapter() {
+            @Override
+            protected void textChanged(@NotNull DocumentEvent e) {
+                xgGeneratorGlobalObj.setServicePackagePath(servicePathTextField.getText());
+            }
+        });
+        entityPathTextField.getDocument().addDocumentListener(new DocumentAdapter() {
+            @Override
+            protected void textChanged(@NotNull DocumentEvent e) {
+                xgGeneratorGlobalObj.setEntityPackagePath(entityPathTextField.getText());
+            }
+        });
+        dtoPathTextField.getDocument().addDocumentListener(new DocumentAdapter() {
+            @Override
+            protected void textChanged(@NotNull DocumentEvent e) {
+                xgGeneratorGlobalObj.setDtoPackagePath(dtoPathTextField.getText());
+            }
+        });
+        queryPathTextField.getDocument().addDocumentListener(new DocumentAdapter() {
+            @Override
+            protected void textChanged(@NotNull DocumentEvent e) {
+                xgGeneratorGlobalObj.setQueryPackagePath(queryPathTextField.getText());
+            }
+        });
+        mapStructPathTextField.getDocument().addDocumentListener(new DocumentAdapter() {
+            @Override
+            protected void textChanged(@NotNull DocumentEvent e) {
+                xgGeneratorGlobalObj.setMapstructPackagePath(mapStructPathTextField.getText());
+            }
+        });
+        mapperPathTextField.getDocument().addDocumentListener(new DocumentAdapter() {
+            @Override
+            protected void textChanged(@NotNull DocumentEvent e) {
+                xgGeneratorGlobalObj.setMapperPackagePath(mapperPathTextField.getText());
+            }
+        });
+        mapperXmlPathTextField.getDocument().addDocumentListener(new DocumentAdapter() {
+            @Override
+            protected void textChanged(@NotNull DocumentEvent e) {
+                xgGeneratorGlobalObj.setMapperXmlPackagePath(mapperXmlPathTextField.getText());
             }
         });
     }
@@ -310,36 +361,29 @@ public class XGCodeGeneratorUI {
         assert sourceDirectory != null;
         assert resourceDirectory != null;
         String sourceDirectoryAbsolutePath = sourceDirectory.getAbsolutePath();
+        String resourceDirectoryAbsolutePath = resourceDirectory.getAbsolutePath();
 
-        codeGeneratorPathTextField.setText(sourceDirectoryAbsolutePath);
+        this.sourceCodeGeneratorPathTextField.setText(sourceDirectoryAbsolutePath);
+        this.resourcesCodeGeneratorPathTextField.setText(resourceDirectoryAbsolutePath);
+        this.xgGeneratorGlobalObj.setSourceCodeGeneratorPath(sourceDirectoryAbsolutePath);
+        this.xgGeneratorGlobalObj.setResourcesCodeGeneratorPath(resourceDirectoryAbsolutePath);
+
         File file = XGFileChooserUtil.walkFiles(sourceDirectory);
         String outputFilePath = file.getAbsolutePath();
 
-        this.xgGeneratorGlobalObj.setOutputControllerPath(outputFilePath + File.separator + "controller");
-        this.xgGeneratorGlobalObj.setOutputEntityPath(outputFilePath + File.separator + "entity");
-        this.xgGeneratorGlobalObj.setOutputServicePath(outputFilePath + File.separator + "service");
-        this.xgGeneratorGlobalObj.setOutputServiceImplPath(outputFilePath + File.separator + "service" + File.separator + "impl");
-        this.xgGeneratorGlobalObj.setOutputQueryPath(outputFilePath + File.separator + "query");
-        this.xgGeneratorGlobalObj.setOutputDTOPath(outputFilePath + File.separator + "dto");
-        this.xgGeneratorGlobalObj.setOutputMapperPath(outputFilePath + File.separator + "mapper");
-        this.xgGeneratorGlobalObj.setOutputMapStructPath(outputFilePath + File.separator + "mapstruct");
-        this.xgGeneratorGlobalObj.setOutputMapperXmlPath(resourceDirectory + File.separator + "mapper");
-
         //D:\gogs\camel\2.src\tles-oles-camel-out\src\main\java 与 D:\gogs\camel\2.src\tles-oles-camel-out\src\main\java\com\tles\oles\controller 差：
         //=\com\tles\oles\controller
-        String controllerPackagePath = StrUtil.removePrefix(this.xgGeneratorGlobalObj.getOutputControllerPath(), sourceDirectoryAbsolutePath);
-        String servicePackagePath = StrUtil.removePrefix(this.xgGeneratorGlobalObj.getOutputServicePath(), sourceDirectoryAbsolutePath);
-        String serviceImplPackagePath = StrUtil.removePrefix(this.xgGeneratorGlobalObj.getOutputServiceImplPath(), sourceDirectoryAbsolutePath);
-        String mapperPackagePath = StrUtil.removePrefix(this.xgGeneratorGlobalObj.getOutputMapperPath(), sourceDirectoryAbsolutePath);
-        String entityPackagePath = StrUtil.removePrefix(this.xgGeneratorGlobalObj.getOutputEntityPath(), sourceDirectoryAbsolutePath);
-        String dtoPackagePath = StrUtil.removePrefix(this.xgGeneratorGlobalObj.getOutputDTOPath(), sourceDirectoryAbsolutePath);
-        String queryPackagePath = StrUtil.removePrefix(this.xgGeneratorGlobalObj.getOutputQueryPath(), sourceDirectoryAbsolutePath);
-        String mapStructPackagePath = StrUtil.removePrefix(this.xgGeneratorGlobalObj.getOutputMapStructPath(), sourceDirectoryAbsolutePath);
+        String controllerPackagePath = StrUtil.removePrefix(outputFilePath + File.separator + "controller", sourceDirectoryAbsolutePath);
+        String servicePackagePath = StrUtil.removePrefix(outputFilePath + File.separator + "service", sourceDirectoryAbsolutePath);
+        String mapperPackagePath = StrUtil.removePrefix(outputFilePath + File.separator + "mapper", sourceDirectoryAbsolutePath);
+        String entityPackagePath = StrUtil.removePrefix(outputFilePath + File.separator + "entity", sourceDirectoryAbsolutePath);
+        String dtoPackagePath = StrUtil.removePrefix(outputFilePath + File.separator + "dto", sourceDirectoryAbsolutePath);
+        String queryPackagePath = StrUtil.removePrefix(outputFilePath + File.separator + "query", sourceDirectoryAbsolutePath);
+        String mapStructPackagePath = StrUtil.removePrefix(outputFilePath + File.separator + "mapstruct", sourceDirectoryAbsolutePath);
 
         // \com\tles\oles\controller -> .com.tles.oles.controller
         controllerPackagePath = StrUtil.replace(controllerPackagePath, File.separator, DOT);
         servicePackagePath = StrUtil.replace(servicePackagePath, File.separator, DOT);
-        serviceImplPackagePath = StrUtil.replace(serviceImplPackagePath, File.separator, DOT);
         mapperPackagePath = StrUtil.replace(mapperPackagePath, File.separator, DOT);
         entityPackagePath = StrUtil.replace(entityPackagePath, File.separator, DOT);
         dtoPackagePath = StrUtil.replace(dtoPackagePath, File.separator, DOT);
@@ -349,7 +393,6 @@ public class XGCodeGeneratorUI {
         // 去掉 .com.tles.oles.controller 第一个.
         controllerPackagePath = StrUtil.removePrefix(controllerPackagePath, DOT);
         servicePackagePath = StrUtil.removePrefix(servicePackagePath, DOT);
-        serviceImplPackagePath = StrUtil.removePrefix(serviceImplPackagePath, DOT);
         mapperPackagePath = StrUtil.removePrefix(mapperPackagePath, DOT);
         entityPackagePath = StrUtil.removePrefix(entityPackagePath, DOT);
         dtoPackagePath = StrUtil.removePrefix(dtoPackagePath, DOT);
@@ -358,7 +401,6 @@ public class XGCodeGeneratorUI {
 
         this.xgGeneratorGlobalObj.setControllerPackagePath(controllerPackagePath);
         this.xgGeneratorGlobalObj.setServicePackagePath(servicePackagePath);
-        this.xgGeneratorGlobalObj.setServiceImplPackagePath(serviceImplPackagePath);
         this.xgGeneratorGlobalObj.setMapperPackagePath(mapperPackagePath);
         this.xgGeneratorGlobalObj.setEntityPackagePath(entityPackagePath);
         this.xgGeneratorGlobalObj.setDtoPackagePath(dtoPackagePath);
@@ -514,6 +556,7 @@ public class XGCodeGeneratorUI {
             return;
         }
 
+        System.out.println(JSONUtil.toJsonStr(xgGeneratorGlobalObj));
         //去掉统一前缀
         for (XgGeneratorTableObj xgGeneratorTableObj : xgGeneratorSelectedTableObjList) {
             xgGeneratorTableObj.setControllerClassName(StrUtil.replaceIgnoreCase(xgGeneratorTableObj.getControllerClassName(), this.xgGeneratorGlobalObj.getIgnoreTablePrefix(), ""));

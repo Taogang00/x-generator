@@ -30,6 +30,7 @@ public class ${table.entityClassName} {
     private ${field.propertyType} ${field.propertyName};
     </#if>
 </#list>
+
 <#list table.tableFields as field>
     <#if !field.primaryKey>
     <#if field.comment!?length gt 0>
@@ -38,8 +39,8 @@ public class ${table.entityClassName} {
      */
     </#if>
     private ${field.propertyType} ${field.propertyName};
-    </#if>
 
+    </#if>
 </#list>
 }
 <#--@formatter:on-->

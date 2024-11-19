@@ -47,8 +47,13 @@ import java.util.stream.Collectors;
 import static com.xg.model.XGXmlElementColumn.*;
 import static com.xg.model.XGXmlElementTable.*;
 
+/**
+ * 代码生成器 主页的UI
+ *
+ * @author taogang
+ * @date 2024/11/19
+ */
 public class XGCodeGeneratorUI {
-
 
     @Getter
     private JPanel rootJPanel;
@@ -91,6 +96,7 @@ public class XGCodeGeneratorUI {
 
     private final Map<String, Tuple> columnJavaTypeMapping = new HashMap<>();
 
+    @SuppressWarnings("SpellCheckingInspection")
     public XGCodeGeneratorUI(Project project) {
         this.xgGeneratorGlobalObj = new XGGeneratorGlobalObj();
         this.ignoreTablePrefixTextField.setText("_");
@@ -115,6 +121,7 @@ public class XGCodeGeneratorUI {
         this.columnJavaTypeMapping.put("char(\\(\\d+\\))?", new Tuple("String", "java.lang.String"));
         this.columnJavaTypeMapping.put("(tiny|medium|long)*text", new Tuple("String", "java.lang.String"));
         this.columnJavaTypeMapping.put("numeric(\\(\\d+,\\d+\\))?", new Tuple("Double", "java.lang.Double"));
+        this.columnJavaTypeMapping.put("numericn(\\(\\d+,\\d+\\))?", new Tuple("Double", "java.lang.Double"));
         this.columnJavaTypeMapping.put("numeric(\\(\\d+\\))?", new Tuple("Integer", "java.lang.Integer"));
         this.columnJavaTypeMapping.put("decimal(\\(\\d+,\\d+\\))?", new Tuple("Double", "java.lang.Double"));
         this.columnJavaTypeMapping.put("bigint(\\(\\d+\\))?", new Tuple("Long", "java.lang.Long"));

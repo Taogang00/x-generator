@@ -24,7 +24,7 @@ public class XGGeneratorTableFieldsObj {
     /**
      * 数据类路径
      */
-    private String propertyClassPath;
+    private String propertyClass;
 
     /**
      * 列注释
@@ -32,7 +32,17 @@ public class XGGeneratorTableFieldsObj {
     private String comment;
 
     /**
-     * 是主键
+     * 是否是主键
      */
     private Boolean primaryKey;
+
+    /**
+     * 是否为空
+     */
+    private Boolean notNull;
+
+    /**
+     * 最大长度
+     */
+    private Integer length;
 }

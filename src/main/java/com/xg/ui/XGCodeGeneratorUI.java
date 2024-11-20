@@ -7,7 +7,6 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.XmlUtil;
-import cn.hutool.json.JSONUtil;
 import com.intellij.icons.AllIcons;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationGroupManager;
@@ -479,6 +478,7 @@ public class XGCodeGeneratorUI {
                     boolean match = ReUtil.isMatch(regexEntry.getKey(), columnInfo.getFieldType().toLowerCase());
                     if (match) {
                         xgGeneratorTableFieldsObj.setPropertyType(regexEntry.getValue().get(0));
+                        xgGeneratorTableFieldsObj.setPropertyClass(regexEntry.getValue().get(1));
                     }
                 }
                 tableFields.add(xgGeneratorTableFieldsObj);
@@ -554,7 +554,6 @@ public class XGCodeGeneratorUI {
             return;
         }
 
-        System.out.println(JSONUtil.toJsonStr(xgGeneratorGlobalObj));
         //去掉统一前缀
         for (XgGeneratorTableObj xgGeneratorTableObj : xgGeneratorSelectedTableObjList) {
             xgGeneratorTableObj.setControllerClassName(StrUtil.replaceIgnoreCase(xgGeneratorTableObj.getControllerClassName(), this.xgGeneratorGlobalObj.getIgnoreTablePrefix(), ""));

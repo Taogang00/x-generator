@@ -18,8 +18,8 @@ public class XGGeneratorGlobalObj {
 
     private String author;
     private String dateTime;
-    private String removeClassNamePrefix;
-    private String addClassNamePrefix;
+    private String removeClassNamePrefix = ""; //需要初始化为空字符串
+    private String addClassNamePrefix = ""; //需要初始化为空字符串
     private String sourceCodeGeneratorPath; //src/main/java
     private String resourcesCodeGeneratorPath; //src/main/resources
     private Boolean fileOverride;

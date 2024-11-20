@@ -47,7 +47,7 @@ tasks {
         //最低版本 idea2022.2 开始基于jdk17编译
         sinceBuild.set("222")
         //最高版本
-        untilBuild.set("999.*")
+        untilBuild.set("243.*")
     }
 
     signPlugin {

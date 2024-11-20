@@ -527,6 +527,8 @@ public class XGCodeGeneratorUI {
         // 创建 FreeMarker 配置对象
         Configuration cfg = new Configuration(Configuration.VERSION_2_3_33);
         cfg.setDefaultEncoding(StandardCharsets.UTF_8.displayName());
+        // 在 FreeMarker 中，当模板渲染数值时，默认会按照 # 格式化规则来输出。如果数值超过 4 位，默认会加入千位分隔符（即逗号）
+        cfg.setNumberFormat("0"); // 设置全局的数值格式为不带逗号的形式
 
         // 使用 StringReader 将字符串内容转换为 Reader
         StringReader stringReader = new StringReader(templateContent);

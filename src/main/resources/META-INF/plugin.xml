@@ -5,7 +5,7 @@
 
     <!-- Public plugin name should be written in Title Case.
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-name -->
-    <name>x-generator</name>
+    <name>X-Generator</name>
 
     <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
     <vendor email="tao_gang@outlook.com" url="https://gitee.com/taogang">TaoGang</vendor>
@@ -13,7 +13,26 @@
     <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
          Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
-    <description><![CDATA[X代码生成器，支持ERStudio导出的xml文件，自动识别项目结构，生成Controller, Service, ServiceImpl, Entity, Mapper相关通用代码]]></description>
+    <description><![CDATA[
+    <h3>X 代码生成器，支持通过识别特定格式的xml文件来生成Java模板代码</h3>
+    <ul>
+        <li>现只支持Maven项目自动识别项目结构</li>
+        <li>支持生成Controller, Service, ServiceImpl, Entity, Mapper等模板代码</li>
+        <li>支持Gradle项目自动识别项目结构-TODO</li>
+        <li>支持自定义模板-TODO</li>
+        <li>支持导入导出配置-TODO</li>
+        <li>支持自定义筛选配置生成代码-TODO</li>
+    </ul>
+    ]]></description>
+
+    <change-notes><![CDATA[
+        <h3>0.0.1</h3>
+        <ul>
+            <li>1.支持Maven项目自动识别项目结构</li>
+            <li>2.支持作者公司领域统一模板代码生成</li>
+        </ul>
+    ]]>
+    </change-notes>
 
     <!-- Product and plugin compatibility requirements.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->

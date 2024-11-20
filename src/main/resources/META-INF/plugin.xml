@@ -26,6 +26,10 @@
     ]]></description>
 
     <change-notes><![CDATA[
+        <h3>0.0.2</h3>
+        <ul>
+            <li>1.优化迭代查找模块下的目录的问题</li>
+        </ul>
         <h3>0.0.1</h3>
         <ul>
             <li>1.支持Maven项目自动识别项目结构</li>

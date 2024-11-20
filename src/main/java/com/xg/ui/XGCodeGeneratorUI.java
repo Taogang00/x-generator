@@ -19,7 +19,7 @@ import com.intellij.ui.DocumentAdapter;
 import com.intellij.ui.components.fields.ExpandableTextField;
 import com.xg.model.*;
 import com.xg.render.XGTableListCellRenderer;
-import com.xg.utils.XGFileChooserUtil;
+import com.xg.utils.XGFileUtil;
 import com.xg.utils.XGMavenUtil;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -184,7 +184,7 @@ public class XGCodeGeneratorUI {
 
         // 6.导入xml按钮事件
         importBtn.addActionListener(e -> {
-            VirtualFile virtualFile = XGFileChooserUtil.chooseFileVirtual(project);
+            VirtualFile virtualFile = XGFileUtil.chooseFileVirtual(project);
             if (ObjectUtil.isNull(virtualFile)) {
                 return;
             }
@@ -368,7 +368,7 @@ public class XGCodeGeneratorUI {
         this.xgGeneratorGlobalObj.setSourceCodeGeneratorPath(sourceDirectoryAbsolutePath);
         this.xgGeneratorGlobalObj.setResourcesCodeGeneratorPath(resourceDirectoryAbsolutePath);
 
-        File file = XGFileChooserUtil.walkFiles(sourceDirectory);
+        File file = XGFileUtil.walkFiles(sourceDirectory);
         String outputFilePath = file.getAbsolutePath();
 
         //D:\gogs\camel\2.src\tles-oles-camel-out\src\main\java 与 D:\gogs\camel\2.src\tles-oles-camel-out\src\main\java\com\tles\oles\controller 差：

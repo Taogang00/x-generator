@@ -9,7 +9,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 
 import java.io.File;
 
-public class XGFileChooserUtil {
+public class XGFileUtil {
 
     /**
      * 遍历文件
@@ -26,17 +26,15 @@ public class XGFileChooserUtil {
      * @return {@link File }
      */
     public static File walkFiles(File file) {
-        if (file.isDirectory()) {
-            final File[] subFiles = file.listFiles();
-            if (ArrayUtil.isNotEmpty(subFiles)) {
-                if (subFiles.length > 1) {
-                    return file;
-                } else {
-                    return walkFiles(subFiles[0]);
-                }
-            } else {
-                return file;
-            }
+        if (!file.isDirectory()) {
+            return file;
+        }
+        File[] subFiles = file.listFiles();
+        if (ArrayUtil.isEmpty(subFiles)) {
+            return file;
+        }
+        if (subFiles.length == 1 && subFiles[0].isDirectory()) {
+            return walkFiles(subFiles[0]);
         }
         return file;
     }

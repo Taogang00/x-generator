@@ -16,7 +16,8 @@ public class XGXmlElementColumn {
     public static final String XML_ELEMENT_COLUMN_ATTRIBUTE_TEXT = "Text";
     public static final String XML_ELEMENT_COLUMN_ATTRIBUTE_PRIMARY_KEY = "PrimaryKey";
     public static final String XML_ELEMENT_COLUMN_ATTRIBUTE_DATATYPE = "DataType";
-    //TODO not null, length
+    public static final String XML_ELEMENT_COLUMN_ATTRIBUTE_NULL_OPTION = "NullOption";
+    public static final String XML_ELEMENT_COLUMN_ATTRIBUTE_DATA_LENGTH = "DataLength";
 
     /**
      * 列名
@@ -42,4 +43,14 @@ public class XGXmlElementColumn {
      * 是主键
      */
     private Boolean primaryKey;
+
+    /**
+     * 是否为空
+     */
+    private Boolean nullOption;
+
+    /**
+     * 数据长度
+     */
+    private Integer dataLength = 255;
 }

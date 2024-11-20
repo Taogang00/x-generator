@@ -39,10 +39,10 @@ public class XGGeneratorTableFieldsObj {
     /**
      * 是否为空
      */
-    private Boolean notNull;
+    private Boolean nullOption;
 
     /**
-     * 最大长度
+     * 数据长度
      */
-    private Integer length;
+    private Integer dataLength;
 }

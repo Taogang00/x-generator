@@ -22,6 +22,7 @@ intellij {
 
     //这里指定了，在plugin.xml idea-plugin.depends 也需要指定
     plugins.set(listOf("org.jetbrains.idea.maven"))
+    updateSinceUntilBuild.set(true)
 }
 
 dependencies {
@@ -45,7 +46,6 @@ tasks {
 
     patchPluginXml {
         sinceBuild.set("232")
-        untilBuild.set("")
     }
 
     signPlugin {

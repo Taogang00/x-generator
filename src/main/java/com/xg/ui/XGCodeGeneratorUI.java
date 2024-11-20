@@ -190,7 +190,7 @@ public class XGCodeGeneratorUI {
             }
             String path = virtualFile.getPath();
             tableList.setListData(new String[0]); // 清空JList内容
-            this.tableInfoList = importTableXml(path, runInfoLabel);
+            this.tableInfoList = importTableXml(path);
 
             if (tableInfoList != null) {
                 tableInfoMap = tableInfoList.stream().collect(Collectors.toMap(XGXmlElementTable::getName, Function.identity()));
@@ -294,11 +294,10 @@ public class XGCodeGeneratorUI {
     /**
      * 导入表 XML
      *
-     * @param path         路径
-     * @param runInfoLabel Run Info 标签
+     * @param path 路径
      * @return {@link List }<{@link XGXmlElementTable }>
      */
-    public List<XGXmlElementTable> importTableXml(String path, JLabel runInfoLabel) {
+    public List<XGXmlElementTable> importTableXml(String path) {
         List<XGXmlElementTable> list = new ArrayList<>();
         try {
             Document document = XmlUtil.readXML(path);
@@ -325,12 +324,16 @@ public class XGCodeGeneratorUI {
                     String columnName = columnElement.getAttribute(XML_ELEMENT_COLUMN_ATTRIBUTE_NAME);
                     String columnText = columnElement.getAttribute(XML_ELEMENT_COLUMN_ATTRIBUTE_TEXT);
                     String dataType = columnElement.getAttribute(XML_ELEMENT_COLUMN_ATTRIBUTE_DATATYPE);
+                    String nullOption = columnElement.getAttribute(XML_ELEMENT_COLUMN_ATTRIBUTE_NULL_OPTION);
+                    String dataLength = columnElement.getAttribute(XML_ELEMENT_COLUMN_ATTRIBUTE_DATA_LENGTH);
 
                     XGXmlElementColumn XGXmlElementColumn = new XGXmlElementColumn();
                     XGXmlElementColumn.setName(columnText);
                     XGXmlElementColumn.setFieldName(columnName);
                     XGXmlElementColumn.setFieldType(dataType);
                     XGXmlElementColumn.setPrimaryKey(Boolean.valueOf(primaryKey));
+                    XGXmlElementColumn.setDataLength(Integer.valueOf(dataLength));
+                    XGXmlElementColumn.setNullOption("NOT NULL".equalsIgnoreCase(nullOption));
                     XGXmlElementTable.getColumnList().add(XGXmlElementColumn);
                 }
                 list.add(XGXmlElementTable);
@@ -471,6 +474,8 @@ public class XGCodeGeneratorUI {
                 XGGeneratorTableFieldsObj xgGeneratorTableFieldsObj = new XGGeneratorTableFieldsObj();
                 xgGeneratorTableFieldsObj.setComment(columnInfo.getName());
                 xgGeneratorTableFieldsObj.setPrimaryKey(columnInfo.getPrimaryKey());
+                xgGeneratorTableFieldsObj.setNullOption(columnInfo.getNullOption());
+                xgGeneratorTableFieldsObj.setDataLength(columnInfo.getDataLength());
                 xgGeneratorTableFieldsObj.setPropertyName(StrUtil.lowerFirst(columnInfo.getFieldName()));
                 xgGeneratorTableFieldsObj.setPropertyType(columnInfo.getFieldType());
                 //重新赋值

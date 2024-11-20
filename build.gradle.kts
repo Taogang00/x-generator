@@ -22,7 +22,6 @@ intellij {
 
     //这里指定了，在plugin.xml idea-plugin.depends 也需要指定
     plugins.set(listOf("org.jetbrains.idea.maven"))
-    updateSinceUntilBuild.set(true)
 }
 
 dependencies {
@@ -45,7 +44,10 @@ tasks {
     }
 
     patchPluginXml {
-        sinceBuild.set("232")
+        //最低版本 idea2022.2 开始基于jdk17编译
+        sinceBuild.set("222")
+        //最高版本
+        untilBuild.set("999.*")
     }
 
     signPlugin {

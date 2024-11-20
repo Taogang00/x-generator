@@ -18,7 +18,8 @@ public class XGGeneratorGlobalObj {
 
     private String author;
     private String dateTime;
-    private String ignoreTablePrefix;
+    private String removeClassNamePrefix;
+    private String addClassNamePrefix;
     private String sourceCodeGeneratorPath; //src/main/java
     private String resourcesCodeGeneratorPath; //src/main/resources
     private Boolean fileOverride;

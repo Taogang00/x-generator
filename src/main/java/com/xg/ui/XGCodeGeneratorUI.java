@@ -90,7 +90,8 @@ public class XGCodeGeneratorUI {
     private JButton settingBtn;
     private JComboBox<String> configComboBox;
     private JList<String> tableList;
-    private JTextField ignoreTablePrefixTextField;
+    private JTextField removeClassNamePrefixTextField;
+    private JTextField addClassNamePrefixTextFieldTextField;
     private JTextField authorTextField;
     private List<XGXmlElementTable> tableInfoList;
 
@@ -100,8 +101,6 @@ public class XGCodeGeneratorUI {
 
     public XGCodeGeneratorUI(Project project) {
         this.xgGeneratorGlobalObj = new XGGeneratorGlobalObj();
-        this.ignoreTablePrefixTextField.setText("_");
-        this.xgGeneratorGlobalObj.setIgnoreTablePrefix("_");
         this.skipRadioButton.setActionCommand("0");
         this.overrideRadioButton.setActionCommand("1");
 
@@ -223,10 +222,16 @@ public class XGCodeGeneratorUI {
                 xgGeneratorGlobalObj.setAuthor(authorTextField.getText());
             }
         });
-        ignoreTablePrefixTextField.getDocument().addDocumentListener(new DocumentAdapter() {
+        removeClassNamePrefixTextField.getDocument().addDocumentListener(new DocumentAdapter() {
             @Override
             protected void textChanged(@NotNull DocumentEvent e) {
-                xgGeneratorGlobalObj.setIgnoreTablePrefix(ignoreTablePrefixTextField.getText());
+                xgGeneratorGlobalObj.setRemoveClassNamePrefix(removeClassNamePrefixTextField.getText());
+            }
+        });
+        addClassNamePrefixTextFieldTextField.getDocument().addDocumentListener(new DocumentAdapter() {
+            @Override
+            protected void textChanged(@NotNull DocumentEvent e) {
+                xgGeneratorGlobalObj.setAddClassNamePrefix(addClassNamePrefixTextFieldTextField.getText());
             }
         });
         sourceCodeGeneratorPathTextField.getDocument().addDocumentListener(new DocumentAdapter() {
@@ -563,31 +568,50 @@ public class XGCodeGeneratorUI {
 
         //去掉统一前缀
         for (XgGeneratorTableObj xgGeneratorTableObj : xgGeneratorSelectedTableObjList) {
-            xgGeneratorTableObj.setControllerClassName(StrUtil.replaceIgnoreCase(xgGeneratorTableObj.getControllerClassName(), this.xgGeneratorGlobalObj.getIgnoreTablePrefix(), ""));
-            xgGeneratorTableObj.setControllerPath(xgGeneratorGlobalObj.getOutputControllerPath() + File.separator + xgGeneratorTableObj.getControllerClassName() + ".java");
+            String controllerName = StrUtil.removePrefix(xgGeneratorTableObj.getControllerClassName(), this.xgGeneratorGlobalObj.getRemoveClassNamePrefix());
+            controllerName = this.xgGeneratorGlobalObj.getAddClassNamePrefix() + controllerName;
+            xgGeneratorTableObj.setControllerClassName(controllerName);
 
-            xgGeneratorTableObj.setServiceClassName(StrUtil.replaceIgnoreCase(xgGeneratorTableObj.getServiceClassName(), this.xgGeneratorGlobalObj.getIgnoreTablePrefix(), ""));
-            xgGeneratorTableObj.setServicePath(xgGeneratorGlobalObj.getOutputServicePath() + File.separator + xgGeneratorTableObj.getServiceClassName() + ".java");
+            String serviceName = StrUtil.removePrefix(xgGeneratorTableObj.getServiceClassName(), this.xgGeneratorGlobalObj.getRemoveClassNamePrefix());
+            serviceName = this.xgGeneratorGlobalObj.getAddClassNamePrefix() + serviceName;
+            xgGeneratorTableObj.setServiceClassName(serviceName);
 
-            xgGeneratorTableObj.setServiceImplClassName(StrUtil.replaceIgnoreCase(xgGeneratorTableObj.getServiceImplClassName(), this.xgGeneratorGlobalObj.getIgnoreTablePrefix(), ""));
-            xgGeneratorTableObj.setServiceImplPath(xgGeneratorGlobalObj.getOutputServiceImplPath() + File.separator + xgGeneratorTableObj.getServiceImplClassName() + ".java");
+            String serviceImplName = StrUtil.removePrefix(xgGeneratorTableObj.getServiceImplClassName(), this.xgGeneratorGlobalObj.getRemoveClassNamePrefix());
+            serviceImplName = this.xgGeneratorGlobalObj.getAddClassNamePrefix() + serviceImplName;
+            xgGeneratorTableObj.setServiceImplClassName(serviceImplName);
 
-            xgGeneratorTableObj.setMapperClassName(StrUtil.replaceIgnoreCase(xgGeneratorTableObj.getMapperClassName(), this.xgGeneratorGlobalObj.getIgnoreTablePrefix(), ""));
-            xgGeneratorTableObj.setMapperPath(xgGeneratorGlobalObj.getOutputMapperPath() + File.separator + xgGeneratorTableObj.getMapperClassName() + ".java");
+            String mapperName = StrUtil.removePrefix(xgGeneratorTableObj.getMapperClassName(), this.xgGeneratorGlobalObj.getRemoveClassNamePrefix());
+            mapperName = this.xgGeneratorGlobalObj.getAddClassNamePrefix() + mapperName;
+            xgGeneratorTableObj.setMapperClassName(mapperName);
 
-            xgGeneratorTableObj.setDtoClassName(StrUtil.replaceIgnoreCase(xgGeneratorTableObj.getDtoClassName(), this.xgGeneratorGlobalObj.getIgnoreTablePrefix(), ""));
+            String dtoName = StrUtil.removePrefix(xgGeneratorTableObj.getDtoClassName(), this.xgGeneratorGlobalObj.getRemoveClassNamePrefix());
+            dtoName = this.xgGeneratorGlobalObj.getAddClassNamePrefix() + dtoName;
+            xgGeneratorTableObj.setDtoClassName(dtoName);
+
+            String entityName = StrUtil.removePrefix(xgGeneratorTableObj.getEntityClassName(), this.xgGeneratorGlobalObj.getRemoveClassNamePrefix());
+            entityName = this.xgGeneratorGlobalObj.getAddClassNamePrefix() + entityName;
+            xgGeneratorTableObj.setEntityClassName(entityName);
+
+            String queryName = StrUtil.removePrefix(xgGeneratorTableObj.getQueryClassName(), this.xgGeneratorGlobalObj.getRemoveClassNamePrefix());
+            queryName = this.xgGeneratorGlobalObj.getAddClassNamePrefix() + queryName;
+            xgGeneratorTableObj.setQueryClassName(queryName);
+
+            String mapStructName = StrUtil.removePrefix(xgGeneratorTableObj.getMapstructClassName(), this.xgGeneratorGlobalObj.getRemoveClassNamePrefix());
+            mapStructName = this.xgGeneratorGlobalObj.getAddClassNamePrefix() + mapStructName;
+            xgGeneratorTableObj.setMapstructClassName(mapStructName);
+
+            String xmlName = StrUtil.removePrefix(xgGeneratorTableObj.getMapperXml(), this.xgGeneratorGlobalObj.getRemoveClassNamePrefix());
+            xmlName = this.xgGeneratorGlobalObj.getAddClassNamePrefix() + xmlName;
+            xgGeneratorTableObj.setMapperXml(xmlName);
+
             xgGeneratorTableObj.setDtoPath(xgGeneratorGlobalObj.getOutputDTOPath() + File.separator + xgGeneratorTableObj.getDtoClassName() + ".java");
-
-            xgGeneratorTableObj.setEntityClassName(StrUtil.replaceIgnoreCase(xgGeneratorTableObj.getEntityClassName(), this.xgGeneratorGlobalObj.getIgnoreTablePrefix(), ""));
+            xgGeneratorTableObj.setControllerPath(xgGeneratorGlobalObj.getOutputControllerPath() + File.separator + xgGeneratorTableObj.getControllerClassName() + ".java");
             xgGeneratorTableObj.setEntityPath(xgGeneratorGlobalObj.getOutputEntityPath() + File.separator + xgGeneratorTableObj.getEntityClassName() + ".java");
-
-            xgGeneratorTableObj.setQueryClassName(StrUtil.replaceIgnoreCase(xgGeneratorTableObj.getQueryClassName(), this.xgGeneratorGlobalObj.getIgnoreTablePrefix(), ""));
+            xgGeneratorTableObj.setServiceImplPath(xgGeneratorGlobalObj.getOutputServiceImplPath() + File.separator + xgGeneratorTableObj.getServiceImplClassName() + ".java");
+            xgGeneratorTableObj.setServicePath(xgGeneratorGlobalObj.getOutputServicePath() + File.separator + xgGeneratorTableObj.getServiceClassName() + ".java");
             xgGeneratorTableObj.setQueryPath(xgGeneratorGlobalObj.getOutputQueryPath() + File.separator + xgGeneratorTableObj.getQueryClassName() + ".java");
-
-            xgGeneratorTableObj.setMapstructClassName(StrUtil.replaceIgnoreCase(xgGeneratorTableObj.getMapstructClassName(), this.xgGeneratorGlobalObj.getIgnoreTablePrefix(), ""));
             xgGeneratorTableObj.setMapstructPath(xgGeneratorGlobalObj.getOutputMapStructPath() + File.separator + xgGeneratorTableObj.getMapstructClassName() + ".java");
-
-            xgGeneratorTableObj.setMapperXml(StrUtil.replaceIgnoreCase(xgGeneratorTableObj.getMapperXml(), this.xgGeneratorGlobalObj.getIgnoreTablePrefix(), ""));
+            xgGeneratorTableObj.setMapperPath(xgGeneratorGlobalObj.getOutputMapperPath() + File.separator + xgGeneratorTableObj.getMapperClassName() + ".java");
             xgGeneratorTableObj.setMapperXmlPath(xgGeneratorGlobalObj.getOutputMapperXmlPath() + File.separator + xgGeneratorTableObj.getMapperXml() + ".xml");
         }
 

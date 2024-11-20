@@ -21,8 +21,8 @@ public class XGMainDialog extends DialogWrapper {
         this.setCancelButtonText("取消");
         this.project = project;
 
-        this.setTitle("X-代码生成器 0.0.1");
-        this.setSize(999, 450);
+        this.setTitle("X-代码生成器 0.0.2");
+        this.setSize(990, 450);
         this.setResizable(false);
         init();
     }

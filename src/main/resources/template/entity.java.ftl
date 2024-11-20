@@ -25,7 +25,7 @@ public class ${table.entityClassName} {
      * ${field.comment}
      */
     </#if>
-    @TableId(type = IdType.AUTO)
+    @TableId(type = IdType.ASSIGN_ID)
     private ${field.propertyType} ${field.propertyName};
     </#if>
 </#list>

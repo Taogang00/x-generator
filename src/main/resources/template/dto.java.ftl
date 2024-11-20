@@ -1,15 +1,11 @@
 <#--@formatter:off-->
 package ${global.dtoPackagePath};
 
-import lombok.Data;
-
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.ArrayList;
-import java.util.List;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import lombok.Data;
 import org.hibernate.validator.constraints.Length;
+
+import java.util.Date;
 
 /**
  * ${table.entityClassName} 实体DTO传输对象
@@ -29,7 +25,9 @@ public class ${table.dtoClassName} {
     <#if field.nullOption?has_content && field.nullOption == true>
     @NotNull(message = "${field.comment}不能为空！")
     </#if>
+    <#if field.propertyClass =="java.lang.String">
     @Length(max = ${field.dataLength}, message = "${field.comment}长度不能超过${field.dataLength}位")
+    </#if>
     private ${field.propertyType} ${field.propertyName};
 
 </#list>

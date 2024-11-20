@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import com.guanwei.mybatis.model.PageQuery;
 
-import java.math.BigDecimal;
 import java.util.Date;
 
 /**

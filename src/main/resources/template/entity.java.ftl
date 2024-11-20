@@ -2,7 +2,6 @@
 package ${global.entityPackagePath};
 
 import java.util.Date;
-import java.math.BigDecimal;
 import java.lang.*;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;

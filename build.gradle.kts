@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.taogang"
-version = "0.0.2"
+version = "0.0.3"
 
 repositories {
     // 阿里云公共仓库

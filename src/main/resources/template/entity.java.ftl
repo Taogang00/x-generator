@@ -18,7 +18,9 @@ import lombok.Data;
 @TableName("${table.tableName}")
 public class ${table.entityClassName} {
 
+<#assign hasProcessed = false />
 <#list table.tableFields as field>
+    <#if !hasProcessed>
     <#if field.primaryKey>
     <#if field.comment!?length gt 0>
     /**
@@ -27,6 +29,8 @@ public class ${table.entityClassName} {
     </#if>
     @TableId(type = IdType.ASSIGN_ID)
     private ${field.propertyType} ${field.propertyName};
+    <#assign hasProcessed = true />
+    </#if>
     </#if>
 </#list>
 

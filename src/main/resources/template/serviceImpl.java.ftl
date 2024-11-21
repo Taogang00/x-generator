@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
- * ${table.serviceClassName}  服务实现类
+ * ${table.tableComment}  ${table.serviceClassName}实现类
  *
  * @author ${global.author}
  * @date ${global.dateTime}

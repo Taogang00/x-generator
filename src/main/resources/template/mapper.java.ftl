@@ -10,7 +10,7 @@ import org.apache.ibatis.annotations.Mapper;
 import java.util.List;
 
 /**
- * ${table.mapperClassName} Mapper 接口
+ * ${table.tableComment} Mapper 接口
  *
  * @author ${global.author}
  * @date ${global.dateTime}

@@ -9,7 +9,7 @@ import ${global.superServiceClassPackagePath}.${global.superServiceClass};
 import java.util.List;
 
 /**
- * ${table.serviceClassName} 服务接口
+ * ${table.tableComment} 服务接口
  *
  * @author ${global.author}
  * @date ${global.dateTime}

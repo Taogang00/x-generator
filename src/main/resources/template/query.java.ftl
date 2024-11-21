@@ -8,7 +8,7 @@ import com.guanwei.mybatis.model.PageQuery;
 import java.util.Date;
 
 /**
- * ${table.entityClassName} 查询对象
+ * ${table.tableComment} 查询对象
  *
  * @author ${global.author}
  * @date ${global.dateTime}

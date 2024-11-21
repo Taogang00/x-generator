@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * ${table.controllerClassName} 控制器
+ * ${table.tableComment} 控制器
  *
  * @author ${global.author}
  * @date ${global.dateTime}

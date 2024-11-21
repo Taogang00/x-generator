@@ -8,7 +8,7 @@ import org.hibernate.validator.constraints.Length;
 import java.util.Date;
 
 /**
- * ${table.entityClassName} 实体DTO传输对象
+ * ${table.tableComment} 实体DTO传输对象
  *
  * @author ${global.author}
  * @date ${global.dateTime}

@@ -21,7 +21,6 @@ import com.xg.model.*;
 import com.xg.render.XGTableListCellRenderer;
 import com.xg.utils.XGFileUtil;
 import com.xg.utils.XGMavenUtil;
-import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import lombok.Getter;
@@ -345,9 +344,9 @@ public class XGCodeGeneratorUI {
                     XGXmlElementColumn.setName(columnText);
                     XGXmlElementColumn.setFieldName(columnName);
                     XGXmlElementColumn.setFieldType(dataType);
-                    XGXmlElementColumn.setPrimaryKey(Boolean.valueOf(primaryKey));
                     XGXmlElementColumn.setDataLength(Integer.valueOf(dataLength));
-                    XGXmlElementColumn.setNullOption("NOT NULL".equalsIgnoreCase(nullOption));
+                    XGXmlElementColumn.setNullOption(Boolean.valueOf(nullOption));
+                    XGXmlElementColumn.setPrimaryKey(Boolean.valueOf(primaryKey));
                     XGXmlElementTable.getColumnList().add(XGXmlElementColumn);
                 }
                 list.add(XGXmlElementTable);

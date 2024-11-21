@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
 /**
- * ${table.entityClassName} 实体
+ * ${table.tableComment} 实体
  *
  * @author ${global.author}
  * @date ${global.dateTime}

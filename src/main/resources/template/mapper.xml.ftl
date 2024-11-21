@@ -4,9 +4,13 @@
 <mapper namespace="${table.mapperPackagePath}.${table.mapperClassName}">
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="${table.entityPackagePath}.${table.entityClassName}">
+    <#assign hasProcessed = false />
     <#list table.tableFields as field>
+        <#if !hasProcessed>
         <#if field.primaryKey><#--生成主键排在第一位-->
         <id column="${field.propertyName}" property="${field.propertyName}"/>
+        <#assign hasProcessed = true />
+        </#if>
         </#if>
     </#list>
     <#list table.tableFields as field>
@@ -18,8 +22,8 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-    <#list table.tableFields as field>
-        ${field.propertyName}<#if field_index != (table.tableFields?size - 1)>,</#if>
+    <#list table.tableFields?chunk(8) as group>
+        <#list group as field><#if field_index != 0 || !group?is_first>,</#if>${field.propertyName}</#list>
     </#list>
     </sql>
 

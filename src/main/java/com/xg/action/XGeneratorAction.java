@@ -24,9 +24,9 @@ public class XGeneratorAction extends AnAction {
                 // 获取Maven项目管理器
                 MavenProjectsManager manager = MavenProjectsManager.getInstance(project);
                 if (CollUtil.isNotEmpty(manager.getProjects())) {
-                    SwingUtilities.invokeLater(() -> {
-                        XGMainDialog generateWin = new XGMainDialog(project);
-                        generateWin.show();
+                    ApplicationManager.getApplication().invokeLater(() -> {
+                        XGMainDialog dialog = new XGMainDialog(project);
+                        dialog.show();
                     });
                 } else {
                     NotificationGroupManager groupManager = NotificationGroupManager.getInstance();

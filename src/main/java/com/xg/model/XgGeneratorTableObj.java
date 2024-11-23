@@ -12,61 +12,61 @@ public class XgGeneratorTableObj {
 
     private String tableComment;
 
+    private String controllerMapping;
+
     private String entityClassName;
 
     private String entityPackagePath;
 
-    private String entityPath;
+    private String entityAbsolutePath;
 
     private String mapperClassName;
 
     private String mapperPackagePath;
 
-    private String mapperPath;
+    private String mapperAbsolutePath;
 
     private String mapperXml;
 
     private String mapperXmlPackagePath;
 
-    private String mapperXmlPath;
+    private String mapperXmlAbsolutePath;
 
     private String serviceClassName;
 
     private String servicePackagePath;
 
-    private String servicePath;
+    private String serviceAbsolutePath;
 
     private String serviceImplClassName;
 
     private String serviceImplPackagePath;
 
-    private String serviceImplPath;
+    private String serviceImplAbsolutePath;
 
     private String controllerClassName;
 
     private String controllerPackagePath;
 
-    private String controllerPath;
-
-    private String controllerMapping;
+    private String controllerAbsolutePath;
 
     private String dtoClassName;
 
     private String dtoPackagePath;
 
-    private String dtoPath;
+    private String dtoAbsolutePath;
 
     private String queryClassName;
 
     private String queryPackagePath;
 
-    private String queryPath;
+    private String queryAbsolutePath;
 
     private String mapstructClassName;
 
     private String mapstructPackagePath;
 
-    private String mapstructPath;
+    private String mapstructAbsolutePath;
 
     private List<XGGeneratorTableFieldsObj> tableFields;
 

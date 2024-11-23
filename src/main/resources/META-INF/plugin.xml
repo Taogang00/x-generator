@@ -26,6 +26,10 @@
     ]]></description>
 
     <change-notes><![CDATA[
+        <h3>0.0.4</h3>
+        <ul>
+            <li>1.解决Write-unsafe context问题</li>
+        </ul>
         <h3>0.0.3</h3>
         <ul>
             <li>1.xml导入的模块解析进一步优化简化</li>

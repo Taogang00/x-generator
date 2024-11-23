@@ -12,8 +12,6 @@ import com.intellij.openapi.ui.MessageType;
 import com.xg.ui.XGMainDialog;
 import org.jetbrains.idea.maven.project.MavenProjectsManager;
 
-import javax.swing.*;
-
 public class XGeneratorAction extends AnAction {
 
     @Override

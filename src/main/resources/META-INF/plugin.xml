@@ -36,28 +36,7 @@
     ]]></description>
 
     <change-notes><![CDATA[
-        <h3>0.0.4</h3>
-        <ul>
-           <li>1. Resolved Write-unsafe context issue</li>
-        </ul>
-        <h3>0.0.3</h3>
-        <ul>
-           <li>1. Further optimized and simplified XML import module parsing</li>
-           <li>2. Adjusted and optimized default templates,
-        handling details</li>
-        </ul>
-        <h3>0.0.2</h3>
-        <ul>
-           <li>1. Optimized iterative search for project module directories</li>
-           <li>2. Optimized third-party JAR dependencies</li>
-           <li>3. Removed the table prefix removal feature,
-        replaced with manual replacement approach</li>
-        </ul>
-        <h3>0.0.1</h3>
-        <ul>
-           <li>1. Supports automatic recognition of Maven project structure</li>
-           <li>2. Supports the generation of unified template code for the author's company domain</li>
-        </ul>
+        <h3>X-Generator Changes Log</h3>
 
         <h3>0.0.4</h3>
         <ul>

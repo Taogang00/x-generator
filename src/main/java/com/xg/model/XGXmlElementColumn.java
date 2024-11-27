@@ -11,14 +11,6 @@ import lombok.Data;
 @Data
 public class XGXmlElementColumn {
 
-    public static final String XML_ELEMENT_COLUMN_NAME = "Column";
-    public static final String XML_ELEMENT_COLUMN_ATTRIBUTE_NAME = "Name";
-    public static final String XML_ELEMENT_COLUMN_ATTRIBUTE_TEXT = "Text";
-    public static final String XML_ELEMENT_COLUMN_ATTRIBUTE_PRIMARY_KEY = "PrimaryKey";
-    public static final String XML_ELEMENT_COLUMN_ATTRIBUTE_DATATYPE = "DataType";
-    public static final String XML_ELEMENT_COLUMN_ATTRIBUTE_NULL_OPTION = "NullOption";
-    public static final String XML_ELEMENT_COLUMN_ATTRIBUTE_DATA_LENGTH = "DataLength";
-
     /**
      * 列名
      */

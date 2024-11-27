@@ -44,8 +44,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static cn.hutool.core.text.StrPool.DOT;
-import static com.xg.model.XGXmlElementColumn.*;
-import static com.xg.model.XGXmlElementTable.*;
+import static com.xg.constant.XGConstants.*;
 import static com.xg.utils.XGFreemarkerUtil.getFreemarkerTemplate;
 
 /**

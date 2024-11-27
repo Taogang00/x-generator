@@ -13,10 +13,6 @@ import java.util.List;
 @Data
 public class XGXmlElementTable {
 
-    public static final String XML_ELEMENT_TABLE_NAME = "Table";
-    public static final String XML_ELEMENT_TABLE_ATTRIBUTE_NAME = "Name";
-    public static final String XML_ELEMENT_TABLE_ATTRIBUTE_TEXT = "Text";
-
     /**
      * 表名
      */

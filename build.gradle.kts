@@ -17,8 +17,8 @@ repositories {
 // Read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
 intellij {
     //https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html#configuration-intellij-extension
-    version.set("2024.3")
-    type.set("IU") // Target IDE Platform
+    version.set("2023.2.6")
+    type.set("IC") // Target IDE Platform
 
     //这里指定了，在plugin.xml idea-plugin.depends 也需要指定
     plugins.set(listOf("org.jetbrains.idea.maven"))

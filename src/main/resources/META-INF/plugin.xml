@@ -14,37 +14,70 @@
          Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
     <description><![CDATA[
-    <h3>X 代码生成器，支持通过识别特定格式的xml文件来生成Java模板代码</h3>
-    <ul>
-        <li>支持生成Controller, Service, ServiceImpl, Entity, Mapper等模板代码</li>
-        <li>支持Maven项目自动识别项目结构</li>
-        <li>支持Gradle项目自动识别项目结构 -TODO</li>
-        <li>支持自定义模板 -TODO</li>
-        <li>支持导入导出配置功能 -TODO</li>
-        <li>支持选择不同配置生成 -TODO</li>
-    </ul>
+        <h3>X-Generator, which supports generating Java template code by recognizing XML files in a specific format</h3>
+        <ul>
+            <li>Supports generating Controller, Service, ServiceImpl, Entity, Mapper template code</li>
+            <li>Automatically recognizes Maven project structure</li>
+            <li>Automatically recognizes Gradle project structure - TODO</li>
+            <li>Supports custom templates - TODO</li>
+            <li>Supports import/export configuration feature - TODO</li>
+            <li>Supports generating with different configurations - TODO</li>
+        </ul>
+
+        <h3>X 代码生成器，支持通过识别特定格式的xml文件来生成Java模板代码</h3>
+        <ul>
+            <li>支持生成Controller, Service, ServiceImpl, Entity, Mapper等模板代码</li>
+            <li>支持Maven项目自动识别项目结构</li>
+            <li>支持Gradle项目自动识别项目结构 -TODO</li>
+            <li>支持自定义模板 -TODO</li>
+            <li>支持导入导出配置功能 -TODO</li>
+            <li>支持选择不同配置生成 -TODO</li>
+        </ul>
     ]]></description>
 
     <change-notes><![CDATA[
         <h3>0.0.4</h3>
         <ul>
-            <li>1.解决Write-unsafe context问题</li>
+           <li>1. Resolved Write-unsafe context issue</li>
         </ul>
         <h3>0.0.3</h3>
         <ul>
-            <li>1.xml导入的模块解析进一步优化简化</li>
-            <li>2.默认的模板调整和优化，处理细节</li>
+           <li>1. Further optimized and simplified XML import module parsing</li>
+           <li>2. Adjusted and optimized default templates,
+        handling details</li>
         </ul>
         <h3>0.0.2</h3>
         <ul>
-            <li>1.优化迭代查找项目模块目录的问题</li>
-            <li>2.优化第三方jar包依赖</li>
-            <li>3.移除表前缀去掉，改为使用手动替换的方案</li>
+           <li>1. Optimized iterative search for project module directories</li>
+           <li>2. Optimized third-party JAR dependencies</li>
+           <li>3. Removed the table prefix removal feature,
+        replaced with manual replacement approach</li>
         </ul>
         <h3>0.0.1</h3>
         <ul>
-            <li>1.支持Maven项目自动识别项目结构</li>
-            <li>2.支持作者公司领域统一模板代码生成</li>
+           <li>1. Supports automatic recognition of Maven project structure</li>
+           <li>2. Supports the generation of unified template code for the author's company domain</li>
+        </ul>
+
+        <h3>0.0.4</h3>
+        <ul>
+           <li>1.解决Write-unsafe context问题</li>
+        </ul>
+        <h3>0.0.3</h3>
+        <ul>
+           <li>1.xml导入的模块解析进一步优化简化</li>
+           <li>2.默认的模板调整和优化，处理细节</li>
+        </ul>
+        <h3>0.0.2</h3>
+        <ul>
+           <li>1.优化迭代查找项目模块目录的问题</li>
+           <li>2.优化第三方jar包依赖</li>
+           <li>3.移除表前缀去掉，改为使用手动替换的方案</li>
+        </ul>
+        <h3>0.0.1</h3>
+        <ul>
+           <li>1.支持Maven项目自动识别项目结构</li>
+           <li>2.支持作者公司领域统一模板代码生成</li>
         </ul>
     ]]>
     </change-notes>

@@ -1,4 +1,4 @@
-package com.xg.model;
+package com.github.xg.model;
 
 import lombok.Data;
 
@@ -9,22 +9,22 @@ import lombok.Data;
  * @date 2024/11/14
  */
 @Data
-public class XGGeneratorTableFieldsObj {
+public class XGXmlElementColumn {
+
+    /**
+     * 列名
+     */
+    private String name;
 
     /**
      * 字段名
      */
-    private String propertyName;
+    private String fieldName;
 
     /**
-     * 数据类型-java
+     * 数据类型-数据库
      */
-    private String propertyType;
-
-    /**
-     * 数据类路径
-     */
-    private String propertyClass;
+    private String fieldType;
 
     /**
      * 列注释
@@ -32,7 +32,7 @@ public class XGGeneratorTableFieldsObj {
     private String comment;
 
     /**
-     * 是否是主键
+     * 是主键
      */
     private Boolean primaryKey;
 
@@ -44,5 +44,5 @@ public class XGGeneratorTableFieldsObj {
     /**
      * 数据长度
      */
-    private Integer dataLength;
+    private Integer dataLength = 255;
 }

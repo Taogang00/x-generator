@@ -74,7 +74,7 @@
 
     <actions>
         <action id="XGenerator"
-                class="com.xg.action.XGeneratorAction"
+                class="com.github.xg.action.XGeneratorAction"
                 text="X Generator"
                 description="XGenerator"
                 icon="/icon/x-generator.svg">

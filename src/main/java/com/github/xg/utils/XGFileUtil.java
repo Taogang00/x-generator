@@ -1,4 +1,4 @@
-package com.xg.utils;
+package com.github.xg.utils;
 
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ObjectUtil;

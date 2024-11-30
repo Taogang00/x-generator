@@ -1,4 +1,4 @@
-package com.xg.ui;
+package com.github.xg.ui;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateUtil;
@@ -17,10 +17,10 @@ import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.DocumentAdapter;
 import com.intellij.ui.components.fields.ExpandableTextField;
-import com.xg.model.*;
-import com.xg.render.XGTableListCellRenderer;
-import com.xg.utils.XGFileUtil;
-import com.xg.utils.XGMavenUtil;
+import com.github.xg.model.*;
+import com.github.xg.render.XGTableListCellRenderer;
+import com.github.xg.utils.XGFileUtil;
+import com.github.xg.utils.XGMavenUtil;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import lombok.Getter;
@@ -44,8 +44,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static cn.hutool.core.text.StrPool.DOT;
-import static com.xg.constant.XGConstants.*;
-import static com.xg.utils.XGFreemarkerUtil.getFreemarkerTemplate;
+import static com.github.xg.constant.XGConstants.*;
+import static com.github.xg.utils.XGFreemarkerUtil.getFreemarkerTemplate;
 
 /**
  * 代码生成器 主页的UI

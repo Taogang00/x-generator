@@ -1,4 +1,4 @@
-package com.xg.model;
+package com.github.xg.model;
 
 import lombok.Data;
 

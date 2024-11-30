@@ -1,4 +1,4 @@
-package com.xg.utils;
+package com.github.xg.utils;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;

@@ -1,4 +1,4 @@
-package com.xg.utils;
+package com.github.xg.utils;
 
 import com.intellij.openapi.project.Project;
 import org.jetbrains.idea.maven.model.MavenId;

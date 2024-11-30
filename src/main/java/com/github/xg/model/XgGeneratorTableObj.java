@@ -1,4 +1,4 @@
-package com.xg.model;
+package com.github.xg.model;
 
 import cn.hutool.core.util.StrUtil;
 import lombok.Data;

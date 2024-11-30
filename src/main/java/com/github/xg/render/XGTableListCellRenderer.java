@@ -1,10 +1,10 @@
-package com.xg.render;
+package com.github.xg.render;
 
 import com.intellij.icons.AllIcons;
 import com.intellij.ui.JBColor;
 import com.intellij.util.ui.JBUI;
-import com.xg.model.XGXmlElementTable;
-import com.xg.ui.XGCodeGeneratorUI;
+import com.github.xg.model.XGXmlElementTable;
+import com.github.xg.ui.XGCodeGeneratorUI;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;

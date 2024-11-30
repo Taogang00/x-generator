@@ -1,4 +1,4 @@
-package com.xg.action;
+package com.github.xg.action;
 
 import cn.hutool.core.collection.CollUtil;
 import com.intellij.notification.Notification;
@@ -9,7 +9,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.MessageType;
-import com.xg.ui.XGMainDialog;
+import com.github.xg.ui.XGMainDialog;
 import org.jetbrains.idea.maven.project.MavenProjectsManager;
 
 public class XGeneratorAction extends AnAction {

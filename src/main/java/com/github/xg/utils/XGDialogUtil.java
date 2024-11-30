@@ -1,4 +1,4 @@
-package com.xg.utils;
+package com.github.xg.utils;
 
 import javax.swing.*;
 import java.awt.*;

@@ -1,4 +1,4 @@
-package com.xg.constant;
+package com.github.xg.constant;
 
 /**
  * 常量

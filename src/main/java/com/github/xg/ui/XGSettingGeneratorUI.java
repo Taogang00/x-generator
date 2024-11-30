@@ -8,12 +8,16 @@ import javax.swing.*;
 
 @Getter
 public class XGSettingGeneratorUI {
-    private JTextField textField1;
     private JPanel rootJPanel;
+    private JTabbedPane tabbedPane1;
     private JButton backBtn;
+    private JButton importBtn;
+    private JButton exportBtn;
+    private JButton resetBtn;
+    private JTextPane jt;
 
     public XGSettingGeneratorUI(Project project, XGMainDialog xgMainDialog) {
-        this.backBtn.setIcon(AllIcons.Actions.Exit);
+        this.backBtn.setIcon(AllIcons.Actions.Back);
         // 设置按钮事件
         backBtn.addActionListener(e -> {
             xgMainDialog.switchPage(0);

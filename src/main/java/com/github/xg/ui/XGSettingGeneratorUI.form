@@ -1,42 +1,129 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.github.xg.ui.XGSettingGeneratorUI">
-  <grid id="27dc6" binding="rootJPanel" layout-manager="GridLayoutManager" row-count="3" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+  <grid id="27dc6" binding="rootJPanel" layout-manager="GridLayoutManager" row-count="2" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="0" left="0" bottom="0" right="0"/>
     <constraints>
-      <xy x="20" y="20" width="500" height="400"/>
+      <xy x="20" y="20" width="500" height="440"/>
     </constraints>
     <properties/>
     <border type="none"/>
     <children>
-      <component id="36d45" class="javax.swing.JTextField" binding="textField1" default-binding="true">
+      <grid id="21f6f" layout-manager="GridLayoutManager" row-count="1" column-count="5" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+        <margin top="0" left="0" bottom="0" right="0"/>
         <constraints>
-          <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
-            <preferred-size width="150" height="-1"/>
-          </grid>
+          <grid row="0" column="0" row-span="1" col-span="2" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties/>
-      </component>
-      <vspacer id="e0017">
+        <border type="none"/>
+        <children>
+          <component id="58697" class="javax.swing.JButton" binding="backBtn">
+            <constraints>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="上一步"/>
+            </properties>
+          </component>
+          <hspacer id="87527">
+            <constraints>
+              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+          </hspacer>
+          <component id="4560e" class="javax.swing.JButton" binding="importBtn">
+            <constraints>
+              <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="导入"/>
+            </properties>
+          </component>
+          <component id="8e326" class="javax.swing.JButton" binding="exportBtn">
+            <constraints>
+              <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="导出"/>
+            </properties>
+          </component>
+          <component id="d3fd0" class="javax.swing.JButton" binding="resetBtn">
+            <constraints>
+              <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="重置"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+      <vspacer id="e6a9a">
         <constraints>
-          <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+          <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
         </constraints>
       </vspacer>
-      <component id="155d4" class="javax.swing.JLabel">
+      <grid id="704f4" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+        <margin top="0" left="0" bottom="0" right="0"/>
         <constraints>
-          <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
         </constraints>
-        <properties>
-          <text value="testestests"/>
-        </properties>
-      </component>
-      <component id="c3eef" class="javax.swing.JButton" binding="backBtn">
-        <constraints>
-          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <text value="返回"/>
-        </properties>
-      </component>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <tabbedpane id="6b79f" binding="tabbedPane1" default-binding="true">
+            <constraints>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                <preferred-size width="200" height="200"/>
+              </grid>
+            </constraints>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <grid id="e057a" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                <margin top="0" left="0" bottom="0" right="0"/>
+                <constraints>
+                  <tabbedpane title="基本配置"/>
+                </constraints>
+                <properties/>
+                <border type="none"/>
+                <children/>
+              </grid>
+              <grid id="6be33" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                <margin top="0" left="0" bottom="0" right="0"/>
+                <constraints>
+                  <tabbedpane title="模板配置"/>
+                </constraints>
+                <properties/>
+                <border type="none"/>
+                <children/>
+              </grid>
+              <grid id="3d1a3" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                <margin top="0" left="0" bottom="0" right="0"/>
+                <constraints>
+                  <tabbedpane title="帮助"/>
+                </constraints>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <scrollpane id="9b1c0">
+                    <constraints>
+                      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties/>
+                    <border type="none"/>
+                    <children>
+                      <component id="6caaa" class="javax.swing.JTextPane" binding="jt">
+                        <constraints/>
+                        <properties>
+                          <text value="生活中，我们常常迷失在纷繁复杂的世界里，忽略了那些平凡而深刻的真理。我们追求成功、财富、地位，却常常忽视了内心的平静和真正的幸福。今天，或许是时候放慢脚步，重新审视一下自己的人生，找到那份源自内心的平和与满足。  1. 生活的意义不在于拥有多少，而在于感知多少 现代社会的快节奏让我们每个人都像是赶路的行者，总是不断追逐着下一个目标，仿佛只有实现了某个“成就”，生活才会有意义。然而，真正的幸福往往藏在那些细微的瞬间里。你是否曾停下来，感受过阳光洒在脸上的温暖？你是否曾在忙碌的工作中抽出一点时间，静静地听听自己的心跳？生活的意义从来不是拥有多少，而是你能够感知多少，能够在日复一日的生活中发现那些微小而宝贵的美好。  2. 成功不是终点，而是过程 很多人都把“成功”视为人生的终极目标，似乎只有达到某个社会标准的成就，才能证明自己的价值。但其实，成功从来都不是一个固定的终点，而是一个持续的过程。每一步的成长，都是成功的一部分。走得快不如走得稳，走得稳不如走得踏实。不要总是焦虑地盯着前方的“终点”，忽略了你身后已经走过的路。人生的意义正是在于不断超越自我、不断挑战和创造，不断在过程的积淀中找到属于自己的那份满足和自豪。  3. 坚持自己的初心，做最真实的自己 每个人都有自己的梦想和追求，但随着时间的流逝，我们有时会受到外界压力的影响，渐渐迷失方向，甚至放弃曾经的梦想。这时，最重要的是回归初心，问问自己：“我为什么出发？我真正想要的是什么？”不管外界如何变化，保持内心的坚定，做最真实的自己，是我们追求幸福的核心。不要为了迎合他人而迷失自我，别让世俗的评价左右了你对生活的态度和方向。只有真正坚持自己内心的声音，才能活出生命的精彩。  4. 失败并非终结，而是另一次开始 我们总是害怕失败，甚至把失败看作是对自己价值的否定。每一次失败，都仿佛是一种沉重的打击，令我们对未来感到迷茫和无力。然而，失败并非终结，它往往是另一次开始的契机。在人生的道路上，没有人能够一帆风顺。失败是成长的一部分，它告诉你哪里做得不对，哪里还需要改进。失败并不可怕，真正可怕的是从失败中汲取不到教训，停滞不前。每一次跌倒，都是重新站起来的机会。勇敢地面对失败，学会从中汲取力量，你会发现，失败和成功往往只有一线之隔。  5. 珍惜当下，活在“现在” 人常常活在过去的回忆中，或是担忧未来的未知。过去的遗憾和未来的焦虑让我们无法真正享受当下。然而，真正的生活只有在“现在”才存在。过去已经无法改变，未来尚未到来，唯有当下，才是我们唯一能够把握的时光。学会放下过去的痛苦和未来的担忧，珍惜当下的每一分每一秒，才是获得内心平静和满足的最佳方式。无论你正在经历什么，记住：每一刻都值得你去珍惜和感悟。  6. 感恩生命中的每一个人 人际关系是我们生活中不可或缺的一部分。无论是亲人、朋友，还是同事、陌生人，每个人的出现都有它的意义。在忙碌的日常中，我们往往忽视了感恩，而这一份感恩会让我们的人生更加丰富和有意义。感谢那些支持我们、陪伴我们的人，他们的每一句鼓励、每一次帮助，都是我们走下去的动力。而那些给我们带来挑战和磨砺的人，也值得感谢。正是他们的存在，让我们更加坚强、成熟。感恩生命中的每一个人，因为正是他们的存在，才让我们的世界变得更加温暖。"/>
+                        </properties>
+                      </component>
+                    </children>
+                  </scrollpane>
+                </children>
+              </grid>
+            </children>
+          </tabbedpane>
+        </children>
+      </grid>
     </children>
   </grid>
 </form>

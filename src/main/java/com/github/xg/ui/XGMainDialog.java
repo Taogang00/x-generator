@@ -8,14 +8,20 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class XGMainDialog extends DialogWrapper {
 
-    private JPanel contentPane;
+    private JPanel rootPanel;
 
     private final Project project;
 
-    private XGCodeGeneratorUI codeGeneratorUI;
+    private final XGCodeGeneratorUI codeGeneratorUI;
+
+    private final XGSettingGeneratorUI xgSettingGeneratorUI;
+
+    private final List<JPanel> containerPanelList = new ArrayList<>();
 
     public XGMainDialog(Project project) {
         super(project);
@@ -24,26 +30,39 @@ public class XGMainDialog extends DialogWrapper {
         this.project = project;
 
         this.setTitle("X-代码生成器 0.0.5");
-        this.setSize(990, 450);
+        this.setSize(990, 680);
         this.setResizable(false);
+
+        codeGeneratorUI = new XGCodeGeneratorUI(project, this);
+        xgSettingGeneratorUI = new XGSettingGeneratorUI(project, this);
+        containerPanelList.add(codeGeneratorUI.getRootJPanel());
+        containerPanelList.add(xgSettingGeneratorUI.getRootJPanel());
+        // 默认切换到第一页
+        switchPage(0);
         init();
+    }
+
+    public void switchPage(int page) {
+        super.setOKActionEnabled(page != 1);
+        rootPanel.removeAll();
+        JPanel jPanel = containerPanelList.get(page);
+        rootPanel.add(jPanel);
+        rootPanel.repaint();//刷新页面，重绘面板
+        rootPanel.validate();//使重绘的面板确认生效
     }
 
     @Override
     protected @Nullable JComponent createCenterPanel() {
-        codeGeneratorUI = new XGCodeGeneratorUI(project);
-        return codeGeneratorUI.getRootJPanel();
+        return rootPanel;
     }
 
     @Override
     protected void doOKAction() {
         // 在这里调用 XGCodeGeneratorUI 中的方法
-        if (codeGeneratorUI != null) {
-            try {
-                codeGeneratorUI.generateCodeAction(project, this);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+        try {
+            codeGeneratorUI.generateCodeAction(project, this);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 

@@ -7,6 +7,10 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.XmlUtil;
+import com.github.xg.model.*;
+import com.github.xg.render.XGTableListCellRenderer;
+import com.github.xg.utils.XGFileUtil;
+import com.github.xg.utils.XGMavenUtil;
 import com.intellij.icons.AllIcons;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationGroupManager;
@@ -17,10 +21,6 @@ import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.DocumentAdapter;
 import com.intellij.ui.components.fields.ExpandableTextField;
-import com.github.xg.model.*;
-import com.github.xg.render.XGTableListCellRenderer;
-import com.github.xg.utils.XGFileUtil;
-import com.github.xg.utils.XGMavenUtil;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import lombok.Getter;
@@ -98,12 +98,12 @@ public class XGCodeGeneratorUI {
     private final XGGeneratorGlobalObj xgGeneratorGlobalObj;
     private final Map<String, Tuple> columnJavaTypeMapping = new HashMap<>();
 
-    public XGCodeGeneratorUI(Project project) {
+    public XGCodeGeneratorUI(Project project, XGMainDialog xgMainDialog) {
         this.xgGeneratorGlobalObj = new XGGeneratorGlobalObj();
         this.skipRadioButton.setActionCommand("0");
         this.overrideRadioButton.setActionCommand("1");
 
-        this.settingBtn.setIcon(AllIcons.General.GearPlain);
+        this.settingBtn.setIcon(AllIcons.Actions.Compile);
         this.importBtn.setIcon(AllIcons.General.OpenDisk);
         this.runInfoLabel.setIcon(AllIcons.General.Information);
         this.authorTextField.setText(System.getProperty("user.name"));
@@ -182,10 +182,7 @@ public class XGCodeGeneratorUI {
 
         // 设置按钮事件
         settingBtn.addActionListener(e -> {
-            NotificationGroupManager groupManager = NotificationGroupManager.getInstance();
-            Notification notification = groupManager.getNotificationGroup("NotificationXg")
-                    .createNotification("等待后续更新", MessageType.INFO).setTitle("X-Generator");
-            Notifications.Bus.notify(notification, project);
+            xgMainDialog.switchPage(1);
         });
 
         // 6.导入xml按钮事件

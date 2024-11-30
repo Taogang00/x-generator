@@ -1,5 +1,6 @@
 package com.github.xg.ui;
 
+import com.intellij.ide.BrowserUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import org.jetbrains.annotations.NonNls;
@@ -10,6 +11,7 @@ import javax.swing.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class XGMainDialog extends DialogWrapper {
 
@@ -67,8 +69,14 @@ public class XGMainDialog extends DialogWrapper {
     }
 
     @Override
+    public void doHelpAction() {
+        // 获取 HelpManager 并打开指定的帮助链接
+        BrowserUtil.browse(Objects.requireNonNull(getHelpId()));
+    }
+
+    @Override
     protected @NonNls @Nullable String getHelpId() {
-        return "helpId";
+        return "https://github.com/Taogang00/x-generator";
     }
 
     @Override

@@ -2,6 +2,8 @@ package com.github.xg.ui;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
@@ -16,7 +18,7 @@ public class XGMainDialog extends DialogWrapper {
     private XGCodeGeneratorUI codeGeneratorUI;
 
     public XGMainDialog(Project project) {
-        super(true); // 使用当前窗口作为父窗口
+        super(project);
         this.setOKButtonText("生成");
         this.setCancelButtonText("取消");
         this.project = project;
@@ -44,4 +46,15 @@ public class XGMainDialog extends DialogWrapper {
             }
         }
     }
+
+    @Override
+    protected @NonNls @Nullable String getHelpId() {
+        return "helpId";
+    }
+
+    @Override
+    protected Action @NotNull [] createActions() {
+        return super.createActions();
+    }
+
 }

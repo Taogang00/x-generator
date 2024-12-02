@@ -2,7 +2,7 @@ package com.github.xg.ui;
 
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
-import com.github.xg.persistent.XGGeneratorSettingManager;
+import com.github.xg.persistent.XGSettingManager;
 import com.github.xg.utils.XGFileUtil;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.project.Project;
@@ -11,7 +11,7 @@ import lombok.Getter;
 import javax.swing.*;
 
 @Getter
-public class XGGeneratorSettingUI {
+public class XGSettingUI {
     private JPanel rootJPanel;
     private JTabbedPane tabbedPane1;
     private JButton backBtn;
@@ -20,12 +20,12 @@ public class XGGeneratorSettingUI {
     private JButton resetBtn;
     private JTextPane jt;
 
-    public XGGeneratorSettingUI(Project project, XGGeneratorDialog xgGeneratorDialog) {
+    public XGSettingUI(Project project, XGMainDialog xgMainDialog) {
         this.backBtn.setIcon(AllIcons.Actions.Back);
 
         // 设置按钮事件
         backBtn.addActionListener(e -> {
-            xgGeneratorDialog.switchPage(0);
+            xgMainDialog.switchPage(0);
         });
 
         // 导入配置
@@ -34,7 +34,7 @@ public class XGGeneratorSettingUI {
             if (ObjectUtil.isNull(exportPath)) {
                 return;
             }
-            XGGeneratorSettingManager.importConfig(exportPath);
+            XGSettingManager.importConfig(exportPath);
         });
 
         // 导出配置
@@ -43,7 +43,7 @@ public class XGGeneratorSettingUI {
             if (StrUtil.isEmpty(exportPath)) {
                 return;
             }
-            XGGeneratorSettingManager.export(exportPath);
+            XGSettingManager.export(exportPath);
         });
     }
 }

@@ -9,7 +9,7 @@ import lombok.Data;
  * @date 2024/11/14
  */
 @Data
-public class XGGeneratorTableFieldsObj {
+public class XGTableFieldsObj {
 
     /**
      * 字段名

@@ -1,7 +1,7 @@
 package com.github.xg.action;
 
 import cn.hutool.core.collection.CollUtil;
-import com.github.xg.ui.XGGeneratorDialog;
+import com.github.xg.ui.XGMainDialog;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationGroupManager;
 import com.intellij.notification.Notifications;
@@ -12,7 +12,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.MessageType;
 import org.jetbrains.idea.maven.project.MavenProjectsManager;
 
-public class XGeneratorAction extends AnAction {
+public class XGAnAction extends AnAction {
 
     @Override
     public void actionPerformed(AnActionEvent e) {
@@ -23,7 +23,7 @@ public class XGeneratorAction extends AnAction {
                 MavenProjectsManager manager = MavenProjectsManager.getInstance(project);
                 if (CollUtil.isNotEmpty(manager.getProjects())) {
                     ApplicationManager.getApplication().invokeLater(() -> {
-                        XGGeneratorDialog dialog = new XGGeneratorDialog(project);
+                        XGMainDialog dialog = new XGMainDialog(project);
                         dialog.show();
                     });
                 } else {

@@ -1,11 +1,9 @@
 package com.github.xg.config;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-public class XGGeneratorConfig {
+public class XGConfig {
     /**
      * 下拉配置项名字
      */

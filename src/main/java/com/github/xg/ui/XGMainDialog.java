@@ -13,19 +13,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class XGGeneratorDialog extends DialogWrapper {
+public class XGMainDialog extends DialogWrapper {
 
     private JPanel rootPanel;
 
     private final Project project;
 
-    private final XGGeneratorCodeUI codeGeneratorUI;
+    private final XGCodeUI codeGeneratorUI;
 
-    private final XGGeneratorSettingUI xgGeneratorSettingUI;
+    private final XGSettingUI xgSettingUI;
 
     private final List<JPanel> containerPanelList = new ArrayList<>();
 
-    public XGGeneratorDialog(Project project) {
+    public XGMainDialog(Project project) {
         super(project);
         this.setOKButtonText("生成");
         this.setCancelButtonText("取消");
@@ -35,10 +35,10 @@ public class XGGeneratorDialog extends DialogWrapper {
         this.setSize(990, 680);
         this.setResizable(false);
 
-        codeGeneratorUI = new XGGeneratorCodeUI(project, this);
-        xgGeneratorSettingUI = new XGGeneratorSettingUI(project, this);
+        codeGeneratorUI = new XGCodeUI(project, this);
+        xgSettingUI = new XGSettingUI(project, this);
         containerPanelList.add(codeGeneratorUI.getRootJPanel());
-        containerPanelList.add(xgGeneratorSettingUI.getRootJPanel());
+        containerPanelList.add(xgSettingUI.getRootJPanel());
         // 默认切换到第一页
         switchPage(0);
         init();

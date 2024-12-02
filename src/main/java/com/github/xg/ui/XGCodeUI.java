@@ -7,9 +7,9 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.XmlUtil;
-import com.github.xg.config.XGGeneratorConfig;
+import com.github.xg.config.XGConfig;
 import com.github.xg.model.*;
-import com.github.xg.persistent.XGGeneratorSettingManager;
+import com.github.xg.persistent.XGSettingManager;
 import com.github.xg.render.XGTableListCellRenderer;
 import com.github.xg.utils.XGFileUtil;
 import com.github.xg.utils.XGMavenUtil;
@@ -55,7 +55,7 @@ import static com.github.xg.utils.XGFreemarkerUtil.getFreemarkerTemplate;
  * @author taogang
  * @date 2024/11/19
  */
-public class XGGeneratorCodeUI {
+public class XGCodeUI {
 
     @Getter
     private JPanel rootJPanel;
@@ -96,12 +96,12 @@ public class XGGeneratorCodeUI {
     private JTextField authorTextField;
     private List<XGXmlElementTable> tableInfoList;
 
-    private final List<XgGeneratorTableObj> xgGeneratorSelectedTableObjList;
-    private final XGGeneratorGlobalObj xgGeneratorGlobalObj;
+    private final List<XgTableObj> xgGeneratorSelectedTableObjList;
+    private final XGGlobalObj xgGlobalObj;
     private final Map<String, Tuple> columnJavaTypeMapping = new HashMap<>();
 
-    public XGGeneratorCodeUI(Project project, XGGeneratorDialog xgGeneratorDialog) {
-        this.xgGeneratorGlobalObj = new XGGeneratorGlobalObj();
+    public XGCodeUI(Project project, XGMainDialog xgMainDialog) {
+        this.xgGlobalObj = new XGGlobalObj();
         this.skipRadioButton.setActionCommand("0");
         this.overrideRadioButton.setActionCommand("1");
 
@@ -111,17 +111,17 @@ public class XGGeneratorCodeUI {
         this.authorTextField.setText(System.getProperty("user.name"));
         this.packageAllBtn.setText("全不选");
         this.xgGeneratorSelectedTableObjList = new ArrayList<>();
-        this.xgGeneratorGlobalObj.setDateTime(DateUtil.formatDateTime(new Date()));
-        this.xgGeneratorGlobalObj.setAuthor(authorTextField.getText());
-        this.xgGeneratorGlobalObj.setFileOverride(false);
+        this.xgGlobalObj.setDateTime(DateUtil.formatDateTime(new Date()));
+        this.xgGlobalObj.setAuthor(authorTextField.getText());
+        this.xgGlobalObj.setFileOverride(false);
 
-        Map<String, XGGeneratorConfig> xgGeneratorConfigMap = new HashMap<>();
-        XGGeneratorConfig xgGeneratorConfig = new XGGeneratorConfig();
-        xgGeneratorConfig.setAuthor(xgGeneratorGlobalObj.getAuthor());
-        xgGeneratorConfig.setName("默认");
-        xgGeneratorConfig.setIsDefault(true);
-        xgGeneratorConfigMap.put("default", xgGeneratorConfig);
-        Objects.requireNonNull(XGGeneratorSettingManager.getInstance().getState()).setXgGeneratorConfigMap(xgGeneratorConfigMap);
+        Map<String, XGConfig> xgGeneratorConfigMap = new HashMap<>();
+        XGConfig xgConfig = new XGConfig();
+        xgConfig.setAuthor(xgGlobalObj.getAuthor());
+        xgConfig.setName("默认");
+        xgConfig.setIsDefault(true);
+        xgGeneratorConfigMap.put("default", xgConfig);
+        Objects.requireNonNull(XGSettingManager.getInstance().getState()).setXgGeneratorConfigMap(xgGeneratorConfigMap);
 
         // 1.项目模块加载
         List<String> mavenArtifactIds = XGMavenUtil.getMavenArtifactId(project);
@@ -161,23 +161,23 @@ public class XGGeneratorCodeUI {
         });
 
         // 3.生成Java对象生成与否的单选事件
-        controllerCheckBox.addItemListener(e -> this.xgGeneratorGlobalObj.setGenerateController(e.getStateChange() == ItemEvent.SELECTED));
-        serviceCheckBox.addItemListener(e -> this.xgGeneratorGlobalObj.setGenerateService(e.getStateChange() == ItemEvent.SELECTED));
-        entityCheckBox.addItemListener(e -> this.xgGeneratorGlobalObj.setGenerateEntity(e.getStateChange() == ItemEvent.SELECTED));
-        dtoCheckBox.addItemListener(e -> this.xgGeneratorGlobalObj.setGenerateDTO(e.getStateChange() == ItemEvent.SELECTED));
-        queryCheckBox.addItemListener(e -> this.xgGeneratorGlobalObj.setGenerateQuery(e.getStateChange() == ItemEvent.SELECTED));
-        mapStructCheckBox.addItemListener(e -> this.xgGeneratorGlobalObj.setGenerateMapStruct(e.getStateChange() == ItemEvent.SELECTED));
-        mapperCheckBox.addItemListener(e -> this.xgGeneratorGlobalObj.setGenerateMapper(e.getStateChange() == ItemEvent.SELECTED));
-        mapperXmlCheckBox.addItemListener(e -> this.xgGeneratorGlobalObj.setGenerateMapperXml(e.getStateChange() == ItemEvent.SELECTED));
+        controllerCheckBox.addItemListener(e -> this.xgGlobalObj.setGenerateController(e.getStateChange() == ItemEvent.SELECTED));
+        serviceCheckBox.addItemListener(e -> this.xgGlobalObj.setGenerateService(e.getStateChange() == ItemEvent.SELECTED));
+        entityCheckBox.addItemListener(e -> this.xgGlobalObj.setGenerateEntity(e.getStateChange() == ItemEvent.SELECTED));
+        dtoCheckBox.addItemListener(e -> this.xgGlobalObj.setGenerateDTO(e.getStateChange() == ItemEvent.SELECTED));
+        queryCheckBox.addItemListener(e -> this.xgGlobalObj.setGenerateQuery(e.getStateChange() == ItemEvent.SELECTED));
+        mapStructCheckBox.addItemListener(e -> this.xgGlobalObj.setGenerateMapStruct(e.getStateChange() == ItemEvent.SELECTED));
+        mapperCheckBox.addItemListener(e -> this.xgGlobalObj.setGenerateMapper(e.getStateChange() == ItemEvent.SELECTED));
+        mapperXmlCheckBox.addItemListener(e -> this.xgGlobalObj.setGenerateMapperXml(e.getStateChange() == ItemEvent.SELECTED));
 
         // 4.添加ActionListener来监听文件冲突时按钮的状态变化
         ActionListener actionListener = e -> {
             // 获取选中的 JRadioButton
             JRadioButton selectedButton = (JRadioButton) e.getSource();
             if ("1".equals(selectedButton.getActionCommand())) {
-                this.xgGeneratorGlobalObj.setFileOverride(true);
+                this.xgGlobalObj.setFileOverride(true);
             } else if ("0".equals(selectedButton.getActionCommand())) {
-                this.xgGeneratorGlobalObj.setFileOverride(false);
+                this.xgGlobalObj.setFileOverride(false);
             }
         };
         skipRadioButton.addActionListener(actionListener);
@@ -192,7 +192,7 @@ public class XGGeneratorCodeUI {
 
         // 设置按钮事件
         settingBtn.addActionListener(e -> {
-            xgGeneratorDialog.switchPage(1);
+            xgMainDialog.switchPage(1);
         });
 
         // 6.导入xml按钮事件
@@ -233,79 +233,79 @@ public class XGGeneratorCodeUI {
         authorTextField.getDocument().addDocumentListener(new DocumentAdapter() {
             @Override
             protected void textChanged(@NotNull DocumentEvent e) {
-                xgGeneratorGlobalObj.setAuthor(authorTextField.getText());
+                xgGlobalObj.setAuthor(authorTextField.getText());
             }
         });
         removeClassNamePrefixTextField.getDocument().addDocumentListener(new DocumentAdapter() {
             @Override
             protected void textChanged(@NotNull DocumentEvent e) {
-                xgGeneratorGlobalObj.setRemoveClassNamePrefix(removeClassNamePrefixTextField.getText());
+                xgGlobalObj.setRemoveClassNamePrefix(removeClassNamePrefixTextField.getText());
             }
         });
         addClassNamePrefixTextFieldTextField.getDocument().addDocumentListener(new DocumentAdapter() {
             @Override
             protected void textChanged(@NotNull DocumentEvent e) {
-                xgGeneratorGlobalObj.setAddClassNamePrefix(addClassNamePrefixTextFieldTextField.getText());
+                xgGlobalObj.setAddClassNamePrefix(addClassNamePrefixTextFieldTextField.getText());
             }
         });
         sourceCodeGeneratorPathTextField.getDocument().addDocumentListener(new DocumentAdapter() {
             @Override
             protected void textChanged(@NotNull DocumentEvent e) {
-                xgGeneratorGlobalObj.setSourceCodeGeneratorPath(sourceCodeGeneratorPathTextField.getText());
+                xgGlobalObj.setSourceCodeGeneratorPath(sourceCodeGeneratorPathTextField.getText());
             }
         });
         resourcesCodeGeneratorPathTextField.getDocument().addDocumentListener(new DocumentAdapter() {
             @Override
             protected void textChanged(@NotNull DocumentEvent e) {
-                xgGeneratorGlobalObj.setResourcesCodeGeneratorPath(resourcesCodeGeneratorPathTextField.getText());
+                xgGlobalObj.setResourcesCodeGeneratorPath(resourcesCodeGeneratorPathTextField.getText());
             }
         });
         controllerPathTextField.getDocument().addDocumentListener(new DocumentAdapter() {
             @Override
             protected void textChanged(@NotNull DocumentEvent e) {
-                xgGeneratorGlobalObj.setControllerPackagePath(controllerPathTextField.getText());
+                xgGlobalObj.setControllerPackagePath(controllerPathTextField.getText());
             }
         });
         servicePathTextField.getDocument().addDocumentListener(new DocumentAdapter() {
             @Override
             protected void textChanged(@NotNull DocumentEvent e) {
-                xgGeneratorGlobalObj.setServicePackagePath(servicePathTextField.getText());
+                xgGlobalObj.setServicePackagePath(servicePathTextField.getText());
             }
         });
         entityPathTextField.getDocument().addDocumentListener(new DocumentAdapter() {
             @Override
             protected void textChanged(@NotNull DocumentEvent e) {
-                xgGeneratorGlobalObj.setEntityPackagePath(entityPathTextField.getText());
+                xgGlobalObj.setEntityPackagePath(entityPathTextField.getText());
             }
         });
         dtoPathTextField.getDocument().addDocumentListener(new DocumentAdapter() {
             @Override
             protected void textChanged(@NotNull DocumentEvent e) {
-                xgGeneratorGlobalObj.setDtoPackagePath(dtoPathTextField.getText());
+                xgGlobalObj.setDtoPackagePath(dtoPathTextField.getText());
             }
         });
         queryPathTextField.getDocument().addDocumentListener(new DocumentAdapter() {
             @Override
             protected void textChanged(@NotNull DocumentEvent e) {
-                xgGeneratorGlobalObj.setQueryPackagePath(queryPathTextField.getText());
+                xgGlobalObj.setQueryPackagePath(queryPathTextField.getText());
             }
         });
         mapStructPathTextField.getDocument().addDocumentListener(new DocumentAdapter() {
             @Override
             protected void textChanged(@NotNull DocumentEvent e) {
-                xgGeneratorGlobalObj.setMapstructPackagePath(mapStructPathTextField.getText());
+                xgGlobalObj.setMapstructPackagePath(mapStructPathTextField.getText());
             }
         });
         mapperPathTextField.getDocument().addDocumentListener(new DocumentAdapter() {
             @Override
             protected void textChanged(@NotNull DocumentEvent e) {
-                xgGeneratorGlobalObj.setMapperPackagePath(mapperPathTextField.getText());
+                xgGlobalObj.setMapperPackagePath(mapperPathTextField.getText());
             }
         });
         mapperXmlPathTextField.getDocument().addDocumentListener(new DocumentAdapter() {
             @Override
             protected void textChanged(@NotNull DocumentEvent e) {
-                xgGeneratorGlobalObj.setMapperXmlPackagePath(mapperXmlPathTextField.getText());
+                xgGlobalObj.setMapperXmlPackagePath(mapperXmlPathTextField.getText());
             }
         });
     }
@@ -384,8 +384,8 @@ public class XGGeneratorCodeUI {
 
         this.sourceCodeGeneratorPathTextField.setText(sourceDirectoryAbsolutePath);
         this.resourcesCodeGeneratorPathTextField.setText(resourceDirectoryAbsolutePath);
-        this.xgGeneratorGlobalObj.setSourceCodeGeneratorPath(sourceDirectoryAbsolutePath);
-        this.xgGeneratorGlobalObj.setResourcesCodeGeneratorPath(resourceDirectoryAbsolutePath);
+        this.xgGlobalObj.setSourceCodeGeneratorPath(sourceDirectoryAbsolutePath);
+        this.xgGlobalObj.setResourcesCodeGeneratorPath(resourceDirectoryAbsolutePath);
 
         File file = XGFileUtil.walkFiles(sourceDirectory);
         String outputFilePath = file.getAbsolutePath();
@@ -418,23 +418,23 @@ public class XGGeneratorCodeUI {
         queryPackagePath = StrUtil.removePrefix(queryPackagePath, DOT);
         mapStructPackagePath = StrUtil.removePrefix(mapStructPackagePath, DOT);
 
-        this.xgGeneratorGlobalObj.setControllerPackagePath(controllerPackagePath);
-        this.xgGeneratorGlobalObj.setServicePackagePath(servicePackagePath);
-        this.xgGeneratorGlobalObj.setMapperPackagePath(mapperPackagePath);
-        this.xgGeneratorGlobalObj.setEntityPackagePath(entityPackagePath);
-        this.xgGeneratorGlobalObj.setDtoPackagePath(dtoPackagePath);
-        this.xgGeneratorGlobalObj.setQueryPackagePath(queryPackagePath);
-        this.xgGeneratorGlobalObj.setMapstructPackagePath(mapStructPackagePath);
-        this.xgGeneratorGlobalObj.setMapperXmlPackagePath("mapper");
+        this.xgGlobalObj.setControllerPackagePath(controllerPackagePath);
+        this.xgGlobalObj.setServicePackagePath(servicePackagePath);
+        this.xgGlobalObj.setMapperPackagePath(mapperPackagePath);
+        this.xgGlobalObj.setEntityPackagePath(entityPackagePath);
+        this.xgGlobalObj.setDtoPackagePath(dtoPackagePath);
+        this.xgGlobalObj.setQueryPackagePath(queryPackagePath);
+        this.xgGlobalObj.setMapstructPackagePath(mapStructPackagePath);
+        this.xgGlobalObj.setMapperXmlPackagePath("mapper");
 
         this.controllerPathTextField.setText(controllerPackagePath);
-        this.servicePathTextField.setText(this.xgGeneratorGlobalObj.getServicePackagePath());
-        this.mapperPathTextField.setText(this.xgGeneratorGlobalObj.getMapperPackagePath());
-        this.entityPathTextField.setText(this.xgGeneratorGlobalObj.getEntityPackagePath());
-        this.dtoPathTextField.setText(this.xgGeneratorGlobalObj.getDtoPackagePath());
-        this.queryPathTextField.setText(this.xgGeneratorGlobalObj.getQueryPackagePath());
-        this.mapStructPathTextField.setText(this.xgGeneratorGlobalObj.getMapstructPackagePath());
-        this.mapperXmlPathTextField.setText(this.xgGeneratorGlobalObj.getMapperXmlPackagePath());
+        this.servicePathTextField.setText(this.xgGlobalObj.getServicePackagePath());
+        this.mapperPathTextField.setText(this.xgGlobalObj.getMapperPackagePath());
+        this.entityPathTextField.setText(this.xgGlobalObj.getEntityPackagePath());
+        this.dtoPathTextField.setText(this.xgGlobalObj.getDtoPackagePath());
+        this.queryPathTextField.setText(this.xgGlobalObj.getQueryPackagePath());
+        this.mapStructPathTextField.setText(this.xgGlobalObj.getMapstructPackagePath());
+        this.mapperXmlPathTextField.setText(this.xgGlobalObj.getMapperXmlPackagePath());
     }
 
     /**
@@ -448,67 +448,67 @@ public class XGGeneratorCodeUI {
             XGXmlElementTable xgXmlElementTable = tableInfoMap.get(s);
             String elementTableName = xgXmlElementTable.getName();
 
-            XgGeneratorTableObj xgGeneratorTableObj = new XgGeneratorTableObj();
-            xgGeneratorTableObj.setTableName(elementTableName);
-            xgGeneratorTableObj.setTableComment(xgXmlElementTable.getComment());
+            XgTableObj xgTableObj = new XgTableObj();
+            xgTableObj.setTableName(elementTableName);
+            xgTableObj.setTableComment(xgXmlElementTable.getComment());
             //entity
-            xgGeneratorTableObj.setEntityClassName(elementTableName);
-            xgGeneratorTableObj.setEntityPackagePath(xgGeneratorGlobalObj.getEntityPackagePath());
-            xgGeneratorTableObj.setEntityAbsolutePath(xgGeneratorGlobalObj.getOutputEntityPath() + File.separator + xgGeneratorTableObj.getEntityClassName() + ".java");
+            xgTableObj.setEntityClassName(elementTableName);
+            xgTableObj.setEntityPackagePath(xgGlobalObj.getEntityPackagePath());
+            xgTableObj.setEntityAbsolutePath(xgGlobalObj.getOutputEntityPath() + File.separator + xgTableObj.getEntityClassName() + ".java");
             //mapper
-            xgGeneratorTableObj.setMapperClassName(elementTableName + "Mapper");
-            xgGeneratorTableObj.setMapperPackagePath(xgGeneratorGlobalObj.getMapperPackagePath());
-            xgGeneratorTableObj.setMapperAbsolutePath(xgGeneratorGlobalObj.getOutputEntityPath() + File.separator + xgGeneratorTableObj.getMapstructClassName() + ".java");
+            xgTableObj.setMapperClassName(elementTableName + "Mapper");
+            xgTableObj.setMapperPackagePath(xgGlobalObj.getMapperPackagePath());
+            xgTableObj.setMapperAbsolutePath(xgGlobalObj.getOutputEntityPath() + File.separator + xgTableObj.getMapstructClassName() + ".java");
             //mapper-xml
-            xgGeneratorTableObj.setMapperXml(elementTableName + "Mapper");
-            xgGeneratorTableObj.setMapperXmlPackagePath(xgGeneratorGlobalObj.getOutputMapperXmlPath());
-            xgGeneratorTableObj.setMapperXmlAbsolutePath(xgGeneratorGlobalObj.getOutputMapperXmlPath() + File.separator + xgGeneratorTableObj.getMapperXml() + ".xml");
+            xgTableObj.setMapperXml(elementTableName + "Mapper");
+            xgTableObj.setMapperXmlPackagePath(xgGlobalObj.getOutputMapperXmlPath());
+            xgTableObj.setMapperXmlAbsolutePath(xgGlobalObj.getOutputMapperXmlPath() + File.separator + xgTableObj.getMapperXml() + ".xml");
             //service
-            xgGeneratorTableObj.setServiceClassName(elementTableName + "Service");
-            xgGeneratorTableObj.setServicePackagePath(xgGeneratorGlobalObj.getServicePackagePath());
-            xgGeneratorTableObj.setServiceAbsolutePath(xgGeneratorGlobalObj.getOutputServicePath() + File.separator + xgGeneratorTableObj.getServiceClassName() + ".java");
+            xgTableObj.setServiceClassName(elementTableName + "Service");
+            xgTableObj.setServicePackagePath(xgGlobalObj.getServicePackagePath());
+            xgTableObj.setServiceAbsolutePath(xgGlobalObj.getOutputServicePath() + File.separator + xgTableObj.getServiceClassName() + ".java");
             //service-impl
-            xgGeneratorTableObj.setServiceImplClassName(elementTableName + "ServiceImpl");
-            xgGeneratorTableObj.setServiceImplPackagePath(xgGeneratorGlobalObj.getServiceImplPackagePath());
-            xgGeneratorTableObj.setServiceImplAbsolutePath(xgGeneratorGlobalObj.getOutputServiceImplPath() + File.separator + xgGeneratorTableObj.getServiceImplClassName() + ".java");
+            xgTableObj.setServiceImplClassName(elementTableName + "ServiceImpl");
+            xgTableObj.setServiceImplPackagePath(xgGlobalObj.getServiceImplPackagePath());
+            xgTableObj.setServiceImplAbsolutePath(xgGlobalObj.getOutputServiceImplPath() + File.separator + xgTableObj.getServiceImplClassName() + ".java");
             //dto
-            xgGeneratorTableObj.setDtoClassName(elementTableName + "DTO");
-            xgGeneratorTableObj.setDtoPackagePath(xgGeneratorGlobalObj.getDtoPackagePath());
-            xgGeneratorTableObj.setDtoAbsolutePath(xgGeneratorGlobalObj.getOutputDTOPath() + File.separator + xgGeneratorTableObj.getDtoClassName() + ".java");
+            xgTableObj.setDtoClassName(elementTableName + "DTO");
+            xgTableObj.setDtoPackagePath(xgGlobalObj.getDtoPackagePath());
+            xgTableObj.setDtoAbsolutePath(xgGlobalObj.getOutputDTOPath() + File.separator + xgTableObj.getDtoClassName() + ".java");
             //query
-            xgGeneratorTableObj.setQueryClassName(elementTableName + "Query");
-            xgGeneratorTableObj.setQueryPackagePath(xgGeneratorGlobalObj.getQueryPackagePath());
-            xgGeneratorTableObj.setQueryAbsolutePath(xgGeneratorGlobalObj.getOutputQueryPath() + File.separator + xgGeneratorTableObj.getQueryClassName() + ".java");
+            xgTableObj.setQueryClassName(elementTableName + "Query");
+            xgTableObj.setQueryPackagePath(xgGlobalObj.getQueryPackagePath());
+            xgTableObj.setQueryAbsolutePath(xgGlobalObj.getOutputQueryPath() + File.separator + xgTableObj.getQueryClassName() + ".java");
             //controller
-            xgGeneratorTableObj.setControllerClassName(elementTableName + "Controller");
-            xgGeneratorTableObj.setControllerPackagePath(xgGeneratorGlobalObj.getControllerPackagePath());
-            xgGeneratorTableObj.setControllerAbsolutePath(xgGeneratorGlobalObj.getOutputControllerPath() + File.separator + xgGeneratorTableObj.getControllerClassName() + ".java");
+            xgTableObj.setControllerClassName(elementTableName + "Controller");
+            xgTableObj.setControllerPackagePath(xgGlobalObj.getControllerPackagePath());
+            xgTableObj.setControllerAbsolutePath(xgGlobalObj.getOutputControllerPath() + File.separator + xgTableObj.getControllerClassName() + ".java");
             //mapstruct
-            xgGeneratorTableObj.setMapstructClassName(elementTableName + "Mapstruct");
-            xgGeneratorTableObj.setMapstructPackagePath(xgGeneratorGlobalObj.getMapstructPackagePath());
-            xgGeneratorTableObj.setMapstructAbsolutePath(xgGeneratorGlobalObj.getOutputMapStructPath() + File.separator + xgGeneratorTableObj.getMapstructClassName() + ".java");
+            xgTableObj.setMapstructClassName(elementTableName + "Mapstruct");
+            xgTableObj.setMapstructPackagePath(xgGlobalObj.getMapstructPackagePath());
+            xgTableObj.setMapstructAbsolutePath(xgGlobalObj.getOutputMapStructPath() + File.separator + xgTableObj.getMapstructClassName() + ".java");
 
-            List<XGGeneratorTableFieldsObj> tableFields = new ArrayList<>();
+            List<XGTableFieldsObj> tableFields = new ArrayList<>();
             for (XGXmlElementColumn columnInfo : xgXmlElementTable.getColumnList()) {
-                XGGeneratorTableFieldsObj xgGeneratorTableFieldsObj = new XGGeneratorTableFieldsObj();
-                xgGeneratorTableFieldsObj.setComment(columnInfo.getName());
-                xgGeneratorTableFieldsObj.setPrimaryKey(columnInfo.getPrimaryKey());
-                xgGeneratorTableFieldsObj.setNullOption(columnInfo.getNullOption());
-                xgGeneratorTableFieldsObj.setDataLength(columnInfo.getDataLength());
-                xgGeneratorTableFieldsObj.setPropertyName(StrUtil.lowerFirst(columnInfo.getFieldName()));
-                xgGeneratorTableFieldsObj.setPropertyType(columnInfo.getFieldType());
+                XGTableFieldsObj xgTableFieldsObj = new XGTableFieldsObj();
+                xgTableFieldsObj.setComment(columnInfo.getName());
+                xgTableFieldsObj.setPrimaryKey(columnInfo.getPrimaryKey());
+                xgTableFieldsObj.setNullOption(columnInfo.getNullOption());
+                xgTableFieldsObj.setDataLength(columnInfo.getDataLength());
+                xgTableFieldsObj.setPropertyName(StrUtil.lowerFirst(columnInfo.getFieldName()));
+                xgTableFieldsObj.setPropertyType(columnInfo.getFieldType());
                 //重新赋值
                 for (Map.Entry<String, Tuple> regexEntry : this.columnJavaTypeMapping.entrySet()) {
                     boolean match = ReUtil.isMatch(regexEntry.getKey(), columnInfo.getFieldType().toLowerCase());
                     if (match) {
-                        xgGeneratorTableFieldsObj.setPropertyType(regexEntry.getValue().get(0));
-                        xgGeneratorTableFieldsObj.setPropertyClass(regexEntry.getValue().get(1));
+                        xgTableFieldsObj.setPropertyType(regexEntry.getValue().get(0));
+                        xgTableFieldsObj.setPropertyClass(regexEntry.getValue().get(1));
                     }
                 }
-                tableFields.add(xgGeneratorTableFieldsObj);
+                tableFields.add(xgTableFieldsObj);
             }
-            xgGeneratorTableObj.setTableFields(tableFields);
-            xgGeneratorSelectedTableObjList.add(xgGeneratorTableObj);
+            xgTableObj.setTableFields(tableFields);
+            xgGeneratorSelectedTableObjList.add(xgTableObj);
         }
     }
 
@@ -538,11 +538,11 @@ public class XGGeneratorCodeUI {
      * 生成代码-点击生成按钮事件
      *
      * @param project           项目
-     * @param xgGeneratorDialog 项目
+     * @param xgMainDialog 项目
      * @throws IOException io异常
      */
     @SuppressWarnings("all")
-    public void generateCodeAction(Project project, XGGeneratorDialog xgGeneratorDialog) throws IOException {
+    public void generateCodeAction(Project project, XGMainDialog xgMainDialog) throws IOException {
         if (this.tableInfoList == null || this.tableInfoList.isEmpty()) {
             Messages.showDialog("请先导入表实体数据！", "操作提示", new String[]{"确定"}, -1, Messages.getInformationIcon());
             return;
@@ -559,56 +559,56 @@ public class XGGeneratorCodeUI {
         }
 
         //去掉统一前缀
-        for (XgGeneratorTableObj xgGeneratorTableObj : xgGeneratorSelectedTableObjList) {
-            String controllerName = StrUtil.removePrefix(xgGeneratorTableObj.getControllerClassName(), this.xgGeneratorGlobalObj.getRemoveClassNamePrefix());
-            controllerName = this.xgGeneratorGlobalObj.getAddClassNamePrefix() + controllerName;
-            xgGeneratorTableObj.setControllerClassName(controllerName);
+        for (XgTableObj xgTableObj : xgGeneratorSelectedTableObjList) {
+            String controllerName = StrUtil.removePrefix(xgTableObj.getControllerClassName(), this.xgGlobalObj.getRemoveClassNamePrefix());
+            controllerName = this.xgGlobalObj.getAddClassNamePrefix() + controllerName;
+            xgTableObj.setControllerClassName(controllerName);
 
-            String serviceName = StrUtil.removePrefix(xgGeneratorTableObj.getServiceClassName(), this.xgGeneratorGlobalObj.getRemoveClassNamePrefix());
-            serviceName = this.xgGeneratorGlobalObj.getAddClassNamePrefix() + serviceName;
-            xgGeneratorTableObj.setServiceClassName(serviceName);
+            String serviceName = StrUtil.removePrefix(xgTableObj.getServiceClassName(), this.xgGlobalObj.getRemoveClassNamePrefix());
+            serviceName = this.xgGlobalObj.getAddClassNamePrefix() + serviceName;
+            xgTableObj.setServiceClassName(serviceName);
 
-            String serviceImplName = StrUtil.removePrefix(xgGeneratorTableObj.getServiceImplClassName(), this.xgGeneratorGlobalObj.getRemoveClassNamePrefix());
-            serviceImplName = this.xgGeneratorGlobalObj.getAddClassNamePrefix() + serviceImplName;
-            xgGeneratorTableObj.setServiceImplClassName(serviceImplName);
+            String serviceImplName = StrUtil.removePrefix(xgTableObj.getServiceImplClassName(), this.xgGlobalObj.getRemoveClassNamePrefix());
+            serviceImplName = this.xgGlobalObj.getAddClassNamePrefix() + serviceImplName;
+            xgTableObj.setServiceImplClassName(serviceImplName);
 
-            String mapperName = StrUtil.removePrefix(xgGeneratorTableObj.getMapperClassName(), this.xgGeneratorGlobalObj.getRemoveClassNamePrefix());
-            mapperName = this.xgGeneratorGlobalObj.getAddClassNamePrefix() + mapperName;
-            xgGeneratorTableObj.setMapperClassName(mapperName);
+            String mapperName = StrUtil.removePrefix(xgTableObj.getMapperClassName(), this.xgGlobalObj.getRemoveClassNamePrefix());
+            mapperName = this.xgGlobalObj.getAddClassNamePrefix() + mapperName;
+            xgTableObj.setMapperClassName(mapperName);
 
-            String dtoName = StrUtil.removePrefix(xgGeneratorTableObj.getDtoClassName(), this.xgGeneratorGlobalObj.getRemoveClassNamePrefix());
-            dtoName = this.xgGeneratorGlobalObj.getAddClassNamePrefix() + dtoName;
-            xgGeneratorTableObj.setDtoClassName(dtoName);
+            String dtoName = StrUtil.removePrefix(xgTableObj.getDtoClassName(), this.xgGlobalObj.getRemoveClassNamePrefix());
+            dtoName = this.xgGlobalObj.getAddClassNamePrefix() + dtoName;
+            xgTableObj.setDtoClassName(dtoName);
 
-            String entityName = StrUtil.removePrefix(xgGeneratorTableObj.getEntityClassName(), this.xgGeneratorGlobalObj.getRemoveClassNamePrefix());
-            entityName = this.xgGeneratorGlobalObj.getAddClassNamePrefix() + entityName;
-            xgGeneratorTableObj.setEntityClassName(entityName);
+            String entityName = StrUtil.removePrefix(xgTableObj.getEntityClassName(), this.xgGlobalObj.getRemoveClassNamePrefix());
+            entityName = this.xgGlobalObj.getAddClassNamePrefix() + entityName;
+            xgTableObj.setEntityClassName(entityName);
 
-            String queryName = StrUtil.removePrefix(xgGeneratorTableObj.getQueryClassName(), this.xgGeneratorGlobalObj.getRemoveClassNamePrefix());
-            queryName = this.xgGeneratorGlobalObj.getAddClassNamePrefix() + queryName;
-            xgGeneratorTableObj.setQueryClassName(queryName);
+            String queryName = StrUtil.removePrefix(xgTableObj.getQueryClassName(), this.xgGlobalObj.getRemoveClassNamePrefix());
+            queryName = this.xgGlobalObj.getAddClassNamePrefix() + queryName;
+            xgTableObj.setQueryClassName(queryName);
 
-            String mapStructName = StrUtil.removePrefix(xgGeneratorTableObj.getMapstructClassName(), this.xgGeneratorGlobalObj.getRemoveClassNamePrefix());
-            mapStructName = this.xgGeneratorGlobalObj.getAddClassNamePrefix() + mapStructName;
-            xgGeneratorTableObj.setMapstructClassName(mapStructName);
+            String mapStructName = StrUtil.removePrefix(xgTableObj.getMapstructClassName(), this.xgGlobalObj.getRemoveClassNamePrefix());
+            mapStructName = this.xgGlobalObj.getAddClassNamePrefix() + mapStructName;
+            xgTableObj.setMapstructClassName(mapStructName);
 
-            String xmlName = StrUtil.removePrefix(xgGeneratorTableObj.getMapperXml(), this.xgGeneratorGlobalObj.getRemoveClassNamePrefix());
-            xmlName = this.xgGeneratorGlobalObj.getAddClassNamePrefix() + xmlName;
-            xgGeneratorTableObj.setMapperXml(xmlName);
+            String xmlName = StrUtil.removePrefix(xgTableObj.getMapperXml(), this.xgGlobalObj.getRemoveClassNamePrefix());
+            xmlName = this.xgGlobalObj.getAddClassNamePrefix() + xmlName;
+            xgTableObj.setMapperXml(xmlName);
 
-            xgGeneratorTableObj.setDtoAbsolutePath(xgGeneratorGlobalObj.getOutputDTOPath() + File.separator + xgGeneratorTableObj.getDtoClassName() + ".java");
-            xgGeneratorTableObj.setControllerAbsolutePath(xgGeneratorGlobalObj.getOutputControllerPath() + File.separator + xgGeneratorTableObj.getControllerClassName() + ".java");
-            xgGeneratorTableObj.setEntityAbsolutePath(xgGeneratorGlobalObj.getOutputEntityPath() + File.separator + xgGeneratorTableObj.getEntityClassName() + ".java");
-            xgGeneratorTableObj.setServiceImplAbsolutePath(xgGeneratorGlobalObj.getOutputServiceImplPath() + File.separator + xgGeneratorTableObj.getServiceImplClassName() + ".java");
-            xgGeneratorTableObj.setServiceAbsolutePath(xgGeneratorGlobalObj.getOutputServicePath() + File.separator + xgGeneratorTableObj.getServiceClassName() + ".java");
-            xgGeneratorTableObj.setQueryAbsolutePath(xgGeneratorGlobalObj.getOutputQueryPath() + File.separator + xgGeneratorTableObj.getQueryClassName() + ".java");
-            xgGeneratorTableObj.setMapstructAbsolutePath(xgGeneratorGlobalObj.getOutputMapStructPath() + File.separator + xgGeneratorTableObj.getMapstructClassName() + ".java");
-            xgGeneratorTableObj.setMapperAbsolutePath(xgGeneratorGlobalObj.getOutputMapperPath() + File.separator + xgGeneratorTableObj.getMapperClassName() + ".java");
-            xgGeneratorTableObj.setMapperXmlAbsolutePath(xgGeneratorGlobalObj.getOutputMapperXmlPath() + File.separator + xgGeneratorTableObj.getMapperXml() + ".xml");
+            xgTableObj.setDtoAbsolutePath(xgGlobalObj.getOutputDTOPath() + File.separator + xgTableObj.getDtoClassName() + ".java");
+            xgTableObj.setControllerAbsolutePath(xgGlobalObj.getOutputControllerPath() + File.separator + xgTableObj.getControllerClassName() + ".java");
+            xgTableObj.setEntityAbsolutePath(xgGlobalObj.getOutputEntityPath() + File.separator + xgTableObj.getEntityClassName() + ".java");
+            xgTableObj.setServiceImplAbsolutePath(xgGlobalObj.getOutputServiceImplPath() + File.separator + xgTableObj.getServiceImplClassName() + ".java");
+            xgTableObj.setServiceAbsolutePath(xgGlobalObj.getOutputServicePath() + File.separator + xgTableObj.getServiceClassName() + ".java");
+            xgTableObj.setQueryAbsolutePath(xgGlobalObj.getOutputQueryPath() + File.separator + xgTableObj.getQueryClassName() + ".java");
+            xgTableObj.setMapstructAbsolutePath(xgGlobalObj.getOutputMapStructPath() + File.separator + xgTableObj.getMapstructClassName() + ".java");
+            xgTableObj.setMapperAbsolutePath(xgGlobalObj.getOutputMapperPath() + File.separator + xgTableObj.getMapperClassName() + ".java");
+            xgTableObj.setMapperXmlAbsolutePath(xgGlobalObj.getOutputMapperXmlPath() + File.separator + xgTableObj.getMapperXml() + ".xml");
         }
 
         Map<String, Object> map = new HashMap<>();
-        Map<String, Object> xgGlobalInfoMap = BeanUtil.beanToMap(this.xgGeneratorGlobalObj);
+        Map<String, Object> xgGlobalInfoMap = BeanUtil.beanToMap(this.xgGlobalObj);
         map.put("global", xgGlobalInfoMap);
 
         int count = 0;
@@ -687,7 +687,7 @@ public class XGGeneratorCodeUI {
         NotificationGroupManager groupManager = NotificationGroupManager.getInstance();
         Notification notification = groupManager.getNotificationGroup("NotificationXg").createNotification("生成成功，共有 " + count + " 个文件发生变化", MessageType.INFO).setTitle("X-Generator");
         Notifications.Bus.notify(notification, project);
-        xgGeneratorDialog.doCancelAction();
+        xgMainDialog.doCancelAction();
     }
 
     /**
@@ -698,19 +698,19 @@ public class XGGeneratorCodeUI {
      */
     public int generateControllerCode(Template template, Map<String, Object> map) throws IOException {
         int count = 0;
-        if (xgGeneratorGlobalObj.getGenerateController()) {
-            Path path = Paths.get(xgGeneratorGlobalObj.getOutputControllerPath());
+        if (xgGlobalObj.getGenerateController()) {
+            Path path = Paths.get(xgGlobalObj.getOutputControllerPath());
             // 在使用 FileOutputStream 时，如果文件的父目录不存在（即文件所在的文件夹），Java 会抛出 FileNotFoundException，即使你尝试创建一个新的文件。
             // 为了避免这个问题，你需要确保文件的父目录已经存在。如果目录不存在，你需要手动创建它。
             Files.createDirectories(path);
 
-            for (XgGeneratorTableObj xgGeneratorTableObj : xgGeneratorSelectedTableObjList) {
-                Path filePath = Paths.get(xgGeneratorTableObj.getControllerAbsolutePath());
+            for (XgTableObj xgTableObj : xgGeneratorSelectedTableObjList) {
+                Path filePath = Paths.get(xgTableObj.getControllerAbsolutePath());
                 // 检查文件是否存在并且是否允许覆盖
-                boolean shouldProcess = Files.exists(filePath) && this.xgGeneratorGlobalObj.getFileOverride() || !Files.exists(filePath);
+                boolean shouldProcess = Files.exists(filePath) && this.xgGlobalObj.getFileOverride() || !Files.exists(filePath);
                 if (shouldProcess) {
-                    try (FileOutputStream fileOutputStream = new FileOutputStream(xgGeneratorTableObj.getControllerAbsolutePath())) {
-                        Map<String, Object> stringObjectMap = BeanUtil.beanToMap(xgGeneratorTableObj);
+                    try (FileOutputStream fileOutputStream = new FileOutputStream(xgTableObj.getControllerAbsolutePath())) {
+                        Map<String, Object> stringObjectMap = BeanUtil.beanToMap(xgTableObj);
                         map.put("table", stringObjectMap);
                         template.process(map, new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8));
                         count++;
@@ -731,17 +731,17 @@ public class XGGeneratorCodeUI {
      */
     public int generateEntityCode(Template template, Map<String, Object> map) throws IOException {
         int count = 0;
-        if (xgGeneratorGlobalObj.getGenerateEntity()) {
-            Path path = Paths.get(xgGeneratorGlobalObj.getOutputEntityPath());
+        if (xgGlobalObj.getGenerateEntity()) {
+            Path path = Paths.get(xgGlobalObj.getOutputEntityPath());
             Files.createDirectories(path);
 
-            for (XgGeneratorTableObj xgGeneratorTableObj : xgGeneratorSelectedTableObjList) {
-                Path filePath = Paths.get(xgGeneratorTableObj.getEntityAbsolutePath());
+            for (XgTableObj xgTableObj : xgGeneratorSelectedTableObjList) {
+                Path filePath = Paths.get(xgTableObj.getEntityAbsolutePath());
                 // 检查文件是否存在并且是否允许覆盖
-                boolean shouldProcess = Files.exists(filePath) && this.xgGeneratorGlobalObj.getFileOverride() || !Files.exists(filePath);
+                boolean shouldProcess = Files.exists(filePath) && this.xgGlobalObj.getFileOverride() || !Files.exists(filePath);
                 if (shouldProcess) {
-                    try (FileOutputStream fileOutputStream = new FileOutputStream(xgGeneratorTableObj.getEntityAbsolutePath())) {
-                        Map<String, Object> stringObjectMap = BeanUtil.beanToMap(xgGeneratorTableObj);
+                    try (FileOutputStream fileOutputStream = new FileOutputStream(xgTableObj.getEntityAbsolutePath())) {
+                        Map<String, Object> stringObjectMap = BeanUtil.beanToMap(xgTableObj);
                         map.put("table", stringObjectMap);
                         template.process(map, new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8));
                         count++;
@@ -762,17 +762,17 @@ public class XGGeneratorCodeUI {
      */
     public int generateDTOCode(Template template, Map<String, Object> map) throws IOException {
         int count = 0;
-        if (xgGeneratorGlobalObj.getGenerateDTO()) {
-            Path path = Paths.get(xgGeneratorGlobalObj.getOutputDTOPath());
+        if (xgGlobalObj.getGenerateDTO()) {
+            Path path = Paths.get(xgGlobalObj.getOutputDTOPath());
             Files.createDirectories(path);
 
-            for (XgGeneratorTableObj xgGeneratorTableObj : xgGeneratorSelectedTableObjList) {
-                Path filePath = Paths.get(xgGeneratorTableObj.getDtoAbsolutePath());
+            for (XgTableObj xgTableObj : xgGeneratorSelectedTableObjList) {
+                Path filePath = Paths.get(xgTableObj.getDtoAbsolutePath());
                 // 检查文件是否存在并且是否允许覆盖
-                boolean shouldProcess = Files.exists(filePath) && this.xgGeneratorGlobalObj.getFileOverride() || !Files.exists(filePath);
+                boolean shouldProcess = Files.exists(filePath) && this.xgGlobalObj.getFileOverride() || !Files.exists(filePath);
                 if (shouldProcess) {
-                    try (FileOutputStream fileOutputStream = new FileOutputStream(xgGeneratorTableObj.getDtoAbsolutePath())) {
-                        Map<String, Object> stringObjectMap = BeanUtil.beanToMap(xgGeneratorTableObj);
+                    try (FileOutputStream fileOutputStream = new FileOutputStream(xgTableObj.getDtoAbsolutePath())) {
+                        Map<String, Object> stringObjectMap = BeanUtil.beanToMap(xgTableObj);
                         map.put("table", stringObjectMap);
                         template.process(map, new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8));
                         count++;
@@ -793,17 +793,17 @@ public class XGGeneratorCodeUI {
      */
     public int generateQueryCode(Template template, Map<String, Object> map) throws IOException {
         int count = 0;
-        if (xgGeneratorGlobalObj.getGenerateQuery()) {
-            Path path = Paths.get(xgGeneratorGlobalObj.getOutputQueryPath());
+        if (xgGlobalObj.getGenerateQuery()) {
+            Path path = Paths.get(xgGlobalObj.getOutputQueryPath());
             Files.createDirectories(path);
 
-            for (XgGeneratorTableObj xgGeneratorTableObj : xgGeneratorSelectedTableObjList) {
-                Path filePath = Paths.get(xgGeneratorTableObj.getQueryAbsolutePath());
+            for (XgTableObj xgTableObj : xgGeneratorSelectedTableObjList) {
+                Path filePath = Paths.get(xgTableObj.getQueryAbsolutePath());
                 // 检查文件是否存在并且是否允许覆盖
-                boolean shouldProcess = Files.exists(filePath) && this.xgGeneratorGlobalObj.getFileOverride() || !Files.exists(filePath);
+                boolean shouldProcess = Files.exists(filePath) && this.xgGlobalObj.getFileOverride() || !Files.exists(filePath);
                 if (shouldProcess) {
-                    try (FileOutputStream fileOutputStream = new FileOutputStream(xgGeneratorTableObj.getQueryAbsolutePath())) {
-                        Map<String, Object> stringObjectMap = BeanUtil.beanToMap(xgGeneratorTableObj);
+                    try (FileOutputStream fileOutputStream = new FileOutputStream(xgTableObj.getQueryAbsolutePath())) {
+                        Map<String, Object> stringObjectMap = BeanUtil.beanToMap(xgTableObj);
                         map.put("table", stringObjectMap);
                         template.process(map, new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8));
                         count++;
@@ -824,17 +824,17 @@ public class XGGeneratorCodeUI {
      */
     public int generateServiceCode(Template template, Map<String, Object> map) throws IOException {
         int count = 0;
-        if (xgGeneratorGlobalObj.getGenerateService()) {
-            Path path = Paths.get(xgGeneratorGlobalObj.getOutputServicePath());
+        if (xgGlobalObj.getGenerateService()) {
+            Path path = Paths.get(xgGlobalObj.getOutputServicePath());
             Files.createDirectories(path);
 
-            for (XgGeneratorTableObj xgGeneratorTableObj : xgGeneratorSelectedTableObjList) {
-                Path filePath = Paths.get(xgGeneratorTableObj.getServiceAbsolutePath());
+            for (XgTableObj xgTableObj : xgGeneratorSelectedTableObjList) {
+                Path filePath = Paths.get(xgTableObj.getServiceAbsolutePath());
                 // 检查文件是否存在并且是否允许覆盖
-                boolean shouldProcess = Files.exists(filePath) && this.xgGeneratorGlobalObj.getFileOverride() || !Files.exists(filePath);
+                boolean shouldProcess = Files.exists(filePath) && this.xgGlobalObj.getFileOverride() || !Files.exists(filePath);
                 if (shouldProcess) {
-                    try (FileOutputStream fileOutputStream = new FileOutputStream(xgGeneratorTableObj.getServiceAbsolutePath())) {
-                        Map<String, Object> stringObjectMap = BeanUtil.beanToMap(xgGeneratorTableObj);
+                    try (FileOutputStream fileOutputStream = new FileOutputStream(xgTableObj.getServiceAbsolutePath())) {
+                        Map<String, Object> stringObjectMap = BeanUtil.beanToMap(xgTableObj);
                         map.put("table", stringObjectMap);
                         template.process(map, new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8));
                         count++;
@@ -855,17 +855,17 @@ public class XGGeneratorCodeUI {
      */
     public int generateServiceImplCode(Template template, Map<String, Object> map) throws IOException {
         int count = 0;
-        if (xgGeneratorGlobalObj.getGenerateService()) {
-            Path path = Paths.get(xgGeneratorGlobalObj.getOutputServiceImplPath());
+        if (xgGlobalObj.getGenerateService()) {
+            Path path = Paths.get(xgGlobalObj.getOutputServiceImplPath());
             Files.createDirectories(path);
 
-            for (XgGeneratorTableObj xgGeneratorTableObj : xgGeneratorSelectedTableObjList) {
-                Path filePath = Paths.get(xgGeneratorTableObj.getServiceImplAbsolutePath());
+            for (XgTableObj xgTableObj : xgGeneratorSelectedTableObjList) {
+                Path filePath = Paths.get(xgTableObj.getServiceImplAbsolutePath());
                 // 检查文件是否存在并且是否允许覆盖
-                boolean shouldProcess = Files.exists(filePath) && this.xgGeneratorGlobalObj.getFileOverride() || !Files.exists(filePath);
+                boolean shouldProcess = Files.exists(filePath) && this.xgGlobalObj.getFileOverride() || !Files.exists(filePath);
                 if (shouldProcess) {
-                    try (FileOutputStream fileOutputStream = new FileOutputStream(xgGeneratorTableObj.getServiceImplAbsolutePath())) {
-                        Map<String, Object> stringObjectMap = BeanUtil.beanToMap(xgGeneratorTableObj);
+                    try (FileOutputStream fileOutputStream = new FileOutputStream(xgTableObj.getServiceImplAbsolutePath())) {
+                        Map<String, Object> stringObjectMap = BeanUtil.beanToMap(xgTableObj);
                         map.put("table", stringObjectMap);
                         template.process(map, new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8));
                         count++;
@@ -886,17 +886,17 @@ public class XGGeneratorCodeUI {
      */
     public int generateMapperCode(Template template, Map<String, Object> map) throws IOException {
         int count = 0;
-        if (xgGeneratorGlobalObj.getGenerateMapper()) {
-            Path path = Paths.get(xgGeneratorGlobalObj.getOutputMapperPath());
+        if (xgGlobalObj.getGenerateMapper()) {
+            Path path = Paths.get(xgGlobalObj.getOutputMapperPath());
             Files.createDirectories(path);
 
-            for (XgGeneratorTableObj xgGeneratorTableObj : xgGeneratorSelectedTableObjList) {
-                Path filePath = Paths.get(xgGeneratorTableObj.getMapperAbsolutePath());
+            for (XgTableObj xgTableObj : xgGeneratorSelectedTableObjList) {
+                Path filePath = Paths.get(xgTableObj.getMapperAbsolutePath());
                 // 检查文件是否存在并且是否允许覆盖
-                boolean shouldProcess = Files.exists(filePath) && this.xgGeneratorGlobalObj.getFileOverride() || !Files.exists(filePath);
+                boolean shouldProcess = Files.exists(filePath) && this.xgGlobalObj.getFileOverride() || !Files.exists(filePath);
                 if (shouldProcess) {
-                    try (FileOutputStream fileOutputStream = new FileOutputStream(xgGeneratorTableObj.getMapperAbsolutePath())) {
-                        Map<String, Object> stringObjectMap = BeanUtil.beanToMap(xgGeneratorTableObj);
+                    try (FileOutputStream fileOutputStream = new FileOutputStream(xgTableObj.getMapperAbsolutePath())) {
+                        Map<String, Object> stringObjectMap = BeanUtil.beanToMap(xgTableObj);
                         map.put("table", stringObjectMap);
                         template.process(map, new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8));
                         count++;
@@ -917,17 +917,17 @@ public class XGGeneratorCodeUI {
      */
     public int generateMapperXmlCode(Template template, Map<String, Object> map) throws IOException {
         int count = 0;
-        if (xgGeneratorGlobalObj.getGenerateMapperXml()) {
-            Path path = Paths.get(xgGeneratorGlobalObj.getOutputMapperXmlPath());
+        if (xgGlobalObj.getGenerateMapperXml()) {
+            Path path = Paths.get(xgGlobalObj.getOutputMapperXmlPath());
             Files.createDirectories(path);
 
-            for (XgGeneratorTableObj xgGeneratorTableObj : xgGeneratorSelectedTableObjList) {
-                Path filePath = Paths.get(xgGeneratorTableObj.getMapperXmlAbsolutePath());
+            for (XgTableObj xgTableObj : xgGeneratorSelectedTableObjList) {
+                Path filePath = Paths.get(xgTableObj.getMapperXmlAbsolutePath());
                 // 检查文件是否存在并且是否允许覆盖
-                boolean shouldProcess = Files.exists(filePath) && this.xgGeneratorGlobalObj.getFileOverride() || !Files.exists(filePath);
+                boolean shouldProcess = Files.exists(filePath) && this.xgGlobalObj.getFileOverride() || !Files.exists(filePath);
                 if (shouldProcess) {
-                    try (FileOutputStream fileOutputStream = new FileOutputStream(xgGeneratorTableObj.getMapperXmlAbsolutePath())) {
-                        Map<String, Object> stringObjectMap = BeanUtil.beanToMap(xgGeneratorTableObj);
+                    try (FileOutputStream fileOutputStream = new FileOutputStream(xgTableObj.getMapperXmlAbsolutePath())) {
+                        Map<String, Object> stringObjectMap = BeanUtil.beanToMap(xgTableObj);
                         map.put("table", stringObjectMap);
                         template.process(map, new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8));
                         count++;
@@ -948,17 +948,17 @@ public class XGGeneratorCodeUI {
      */
     public int generateMapStructCode(Template template, Map<String, Object> map) throws IOException {
         int count = 0;
-        if (xgGeneratorGlobalObj.getGenerateMapStruct()) {
-            Path path = Paths.get(xgGeneratorGlobalObj.getOutputMapStructPath());
+        if (xgGlobalObj.getGenerateMapStruct()) {
+            Path path = Paths.get(xgGlobalObj.getOutputMapStructPath());
             Files.createDirectories(path);
 
-            for (XgGeneratorTableObj xgGeneratorTableObj : xgGeneratorSelectedTableObjList) {
-                Path filePath = Paths.get(xgGeneratorTableObj.getMapstructAbsolutePath());
+            for (XgTableObj xgTableObj : xgGeneratorSelectedTableObjList) {
+                Path filePath = Paths.get(xgTableObj.getMapstructAbsolutePath());
                 // 检查文件是否存在并且是否允许覆盖
-                boolean shouldProcess = Files.exists(filePath) && this.xgGeneratorGlobalObj.getFileOverride() || !Files.exists(filePath);
+                boolean shouldProcess = Files.exists(filePath) && this.xgGlobalObj.getFileOverride() || !Files.exists(filePath);
                 if (shouldProcess) {
-                    try (FileOutputStream fileOutputStream = new FileOutputStream(xgGeneratorTableObj.getMapstructAbsolutePath())) {
-                        Map<String, Object> stringObjectMap = BeanUtil.beanToMap(xgGeneratorTableObj);
+                    try (FileOutputStream fileOutputStream = new FileOutputStream(xgTableObj.getMapstructAbsolutePath())) {
+                        Map<String, Object> stringObjectMap = BeanUtil.beanToMap(xgTableObj);
                         map.put("table", stringObjectMap);
                         template.process(map, new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8));
                         count++;

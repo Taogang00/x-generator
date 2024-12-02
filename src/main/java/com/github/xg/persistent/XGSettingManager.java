@@ -1,7 +1,7 @@
 package com.github.xg.persistent;
 
 import cn.hutool.core.io.FileUtil;
-import com.github.xg.config.XGGeneratorConfig;
+import com.github.xg.config.XGConfig;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.Service;
@@ -27,12 +27,12 @@ import java.util.Map;
 @SuppressWarnings("DialogTitleCapitalization")
 @Service
 @State(name = "x-generator", storages = {@Storage("plugin.x-generator.xml")})
-public final class XGGeneratorSettingManager implements PersistentStateComponent<XGGeneratorSettingManager.State> {
+public final class XGSettingManager implements PersistentStateComponent<XGSettingManager.State> {
 
     private State myState = new State();
 
-    public static XGGeneratorSettingManager getInstance() {
-        return ApplicationManager.getApplication().getService(XGGeneratorSettingManager.class);
+    public static XGSettingManager getInstance() {
+        return ApplicationManager.getApplication().getService(XGSettingManager.class);
     }
 
     /**
@@ -85,6 +85,6 @@ public final class XGGeneratorSettingManager implements PersistentStateComponent
          * 配置映射
          * key=default、mybatis3、mybatisPlus、custom1、...
          */
-        public Map<String, XGGeneratorConfig> xgGeneratorConfigMap;
+        public Map<String, XGConfig> xgGeneratorConfigMap;
     }
 }

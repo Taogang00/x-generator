@@ -1,7 +1,7 @@
 package com.github.xg.render;
 
 import com.github.xg.model.XGXmlElementTable;
-import com.github.xg.ui.XGGeneratorCodeUI;
+import com.github.xg.ui.XGCodeUI;
 import com.intellij.icons.AllIcons;
 import com.intellij.ui.JBColor;
 import com.intellij.util.ui.JBUI;
@@ -21,12 +21,12 @@ import java.util.List;
 public class XGTableListCellRenderer extends JLabel implements ListCellRenderer<String> {
     private final JLabel rowStartLabel;
     private final JLabel rowEndLabel;
-    private final XGGeneratorCodeUI xgGeneratorCodeUI;
+    private final XGCodeUI xgCodeUI;
 
-    public XGTableListCellRenderer(XGGeneratorCodeUI xgGeneratorCodeUI) {
+    public XGTableListCellRenderer(XGCodeUI xgCodeUI) {
         setOpaque(true);
         setLayout(new BorderLayout());
-        this.xgGeneratorCodeUI = xgGeneratorCodeUI;
+        this.xgCodeUI = xgCodeUI;
 
         rowStartLabel = new JLabel();
         rowStartLabel.setIcon(AllIcons.Javaee.PersistenceEntity);
@@ -42,13 +42,13 @@ public class XGTableListCellRenderer extends JLabel implements ListCellRenderer<
 
     @Override
     public Component getListCellRendererComponent(JList<? extends String> list, String value, int index, boolean isSelected, boolean cellHasFocus) {
-        XGXmlElementTable XGXmlElementTable = xgGeneratorCodeUI.getTableInfoMap().get(value);
+        XGXmlElementTable XGXmlElementTable = xgCodeUI.getTableInfoMap().get(value);
         rowStartLabel.setText(value);
         rowEndLabel.setText(XGXmlElementTable.getComment());
         if (isSelected) {
             List<? extends String> selectedValuesList = list.getSelectedValuesList();
-            xgGeneratorCodeUI.getRunInfoLabel().setText("已选择" + selectedValuesList.size() + "张表");
-            xgGeneratorCodeUI.initXgGeneratorSelectedTableObjList(selectedValuesList);
+            xgCodeUI.getRunInfoLabel().setText("已选择" + selectedValuesList.size() + "张表");
+            xgCodeUI.initXgGeneratorSelectedTableObjList(selectedValuesList);
         }
         if (isSelected) {
             setBackground(list.getSelectionBackground());

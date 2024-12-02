@@ -6,7 +6,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class XgGeneratorTableObj {
+public class XgTableObj {
 
     private String tableName;
 
@@ -68,7 +68,7 @@ public class XgGeneratorTableObj {
 
     private String mapstructAbsolutePath;
 
-    private List<XGGeneratorTableFieldsObj> tableFields;
+    private List<XGTableFieldsObj> tableFields;
 
     @SuppressWarnings("unused")
     public String getControllerMapping() {

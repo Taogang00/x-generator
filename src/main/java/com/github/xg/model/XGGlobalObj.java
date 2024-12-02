@@ -14,7 +14,7 @@ import static cn.hutool.core.text.StrPool.DOT;
  * @date 2024/11/19
  */
 @Data
-public class XGGeneratorGlobalObj {
+public class XGGlobalObj {
 
     private String author;
     private String dateTime;

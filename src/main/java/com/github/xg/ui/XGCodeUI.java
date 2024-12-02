@@ -115,13 +115,14 @@ public class XGCodeUI {
         this.xgGlobalObj.setAuthor(authorTextField.getText());
         this.xgGlobalObj.setFileOverride(false);
 
-        Map<String, XGConfig> xgGeneratorConfigMap = new HashMap<>();
+        Map<String, XGConfig> xgConfigMap = new HashMap<>();
         XGConfig xgConfig = new XGConfig();
         xgConfig.setAuthor(xgGlobalObj.getAuthor());
         xgConfig.setName("默认");
+        xgConfig.setCreateTime(DateUtil.formatDateTime(new Date()));
         xgConfig.setIsDefault(true);
-        xgGeneratorConfigMap.put("default", xgConfig);
-        Objects.requireNonNull(XGSettingManager.getInstance().getState()).setXgGeneratorConfigMap(xgGeneratorConfigMap);
+        xgConfigMap.put("default", xgConfig);
+        Objects.requireNonNull(XGSettingManager.getInstance().getState()).setXgConfigMap(xgConfigMap);
 
         // 1.项目模块加载
         List<String> mavenArtifactIds = XGMavenUtil.getMavenArtifactId(project);
@@ -537,7 +538,7 @@ public class XGCodeUI {
     /**
      * 生成代码-点击生成按钮事件
      *
-     * @param project           项目
+     * @param project      项目
      * @param xgMainDialog 项目
      * @throws IOException io异常
      */

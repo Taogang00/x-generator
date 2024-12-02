@@ -1,10 +1,15 @@
 package com.github.xg.utils;
 
+import cn.hutool.core.util.StrUtil;
+import com.intellij.ide.fileTemplates.impl.UrlUtil;
+import com.intellij.openapi.util.text.StringUtil;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 public class XGFreemarkerUtil {
@@ -29,6 +34,19 @@ public class XGFreemarkerUtil {
 
         // 创建模板并加载\ templateName 是模板的名称，可以任意指定
         return new Template(templateName, stringReader, cfg);
+    }
+
+    @NotNull
+    public static String getTemplateContent(String templateName) {
+        URL resource = XGFreemarkerUtil.class.getResource(StrUtil.format("/template/author/{}.ftl", templateName));
+        String templateContent = null;
+        try {
+            assert resource != null;
+            templateContent = StringUtil.convertLineSeparators(UrlUtil.loadText(resource));
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+        return templateContent;
     }
 
 }

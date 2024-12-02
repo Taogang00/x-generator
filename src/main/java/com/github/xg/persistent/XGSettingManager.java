@@ -85,6 +85,6 @@ public final class XGSettingManager implements PersistentStateComponent<XGSettin
          * 配置映射
          * key=default、mybatis3、mybatisPlus、custom1、...
          */
-        public Map<String, XGConfig> xgGeneratorConfigMap;
+        public Map<String, XGConfig> xgConfigMap;
     }
 }

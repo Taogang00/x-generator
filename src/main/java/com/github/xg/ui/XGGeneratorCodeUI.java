@@ -103,7 +103,7 @@ public class XGGeneratorCodeUI {
         this.skipRadioButton.setActionCommand("0");
         this.overrideRadioButton.setActionCommand("1");
 
-        this.settingBtn.setIcon(AllIcons.Actions.Compile);
+        this.settingBtn.setIcon(AllIcons.General.GearPlain);
         this.importBtn.setIcon(AllIcons.General.OpenDisk);
         this.runInfoLabel.setIcon(AllIcons.General.Information);
         this.authorTextField.setText(System.getProperty("user.name"));

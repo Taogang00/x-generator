@@ -25,11 +25,6 @@ public class XGConfig {
     private Boolean isDefault;
 
     /**
-     * 作者
-     */
-    private String author;
-
-    /**
      * 创建时间
      */
     private String createTime;

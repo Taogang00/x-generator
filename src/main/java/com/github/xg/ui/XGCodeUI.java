@@ -117,7 +117,6 @@ public class XGCodeUI {
 
         Map<String, XGConfig> xgConfigMap = new HashMap<>();
         XGConfig xgConfig = new XGConfig();
-        xgConfig.setAuthor(xgGlobalObj.getAuthor());
         xgConfig.setName("默认");
         xgConfig.setCreateTime(DateUtil.formatDateTime(new Date()));
         xgConfig.setIsDefault(true);

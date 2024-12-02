@@ -6,13 +6,12 @@ import com.github.xg.persistent.XGGeneratorSettingManager;
 import com.github.xg.utils.XGFileUtil;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
 import lombok.Getter;
 
 import javax.swing.*;
 
 @Getter
-public class XGSettingGeneratorUI {
+public class XGGeneratorSettingUI {
     private JPanel rootJPanel;
     private JTabbedPane tabbedPane1;
     private JButton backBtn;
@@ -21,22 +20,21 @@ public class XGSettingGeneratorUI {
     private JButton resetBtn;
     private JTextPane jt;
 
-    public XGSettingGeneratorUI(Project project, XGMainDialog xgMainDialog) {
+    public XGGeneratorSettingUI(Project project, XGGeneratorDialog xgGeneratorDialog) {
         this.backBtn.setIcon(AllIcons.Actions.Back);
 
         // 设置按钮事件
         backBtn.addActionListener(e -> {
-            xgMainDialog.switchPage(0);
+            xgGeneratorDialog.switchPage(0);
         });
 
         // 导入配置
         importBtn.addActionListener(e -> {
-            VirtualFile virtualFile = XGFileUtil.chooseFileVirtual(project);
-            if (ObjectUtil.isNull(virtualFile)) {
+            String exportPath = XGFileUtil.chooseDirectory(project);
+            if (ObjectUtil.isNull(exportPath)) {
                 return;
             }
-            String path = virtualFile.getPath();
-            XGGeneratorSettingManager.importConfig(path);
+            XGGeneratorSettingManager.importConfig(exportPath);
         });
 
         // 导出配置

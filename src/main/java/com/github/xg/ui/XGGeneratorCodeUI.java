@@ -53,7 +53,7 @@ import static com.github.xg.utils.XGFreemarkerUtil.getFreemarkerTemplate;
  * @author taogang
  * @date 2024/11/19
  */
-public class XGCodeGeneratorUI {
+public class XGGeneratorCodeUI {
 
     @Getter
     private JPanel rootJPanel;
@@ -98,7 +98,7 @@ public class XGCodeGeneratorUI {
     private final XGGeneratorGlobalObj xgGeneratorGlobalObj;
     private final Map<String, Tuple> columnJavaTypeMapping = new HashMap<>();
 
-    public XGCodeGeneratorUI(Project project, XGMainDialog xgMainDialog) {
+    public XGGeneratorCodeUI(Project project, XGGeneratorDialog xgGeneratorDialog) {
         this.xgGeneratorGlobalObj = new XGGeneratorGlobalObj();
         this.skipRadioButton.setActionCommand("0");
         this.overrideRadioButton.setActionCommand("1");
@@ -182,7 +182,7 @@ public class XGCodeGeneratorUI {
 
         // 设置按钮事件
         settingBtn.addActionListener(e -> {
-            xgMainDialog.switchPage(1);
+            xgGeneratorDialog.switchPage(1);
         });
 
         // 6.导入xml按钮事件
@@ -528,11 +528,11 @@ public class XGCodeGeneratorUI {
      * 生成代码-点击生成按钮事件
      *
      * @param project      项目
-     * @param xgMainDialog 项目
+     * @param xgGeneratorDialog 项目
      * @throws IOException io异常
      */
     @SuppressWarnings("all")
-    public void generateCodeAction(Project project, XGMainDialog xgMainDialog) throws IOException {
+    public void generateCodeAction(Project project, XGGeneratorDialog xgGeneratorDialog) throws IOException {
         if (this.tableInfoList == null || this.tableInfoList.isEmpty()) {
             Messages.showDialog("请先导入表实体数据！", "操作提示", new String[]{"确定"}, -1, Messages.getInformationIcon());
             return;
@@ -677,7 +677,7 @@ public class XGCodeGeneratorUI {
         NotificationGroupManager groupManager = NotificationGroupManager.getInstance();
         Notification notification = groupManager.getNotificationGroup("NotificationXg").createNotification("生成成功，共有 " + count + " 个文件发生变化", MessageType.INFO).setTitle("X-Generator");
         Notifications.Bus.notify(notification, project);
-        xgMainDialog.doCancelAction();
+        xgGeneratorDialog.doCancelAction();
     }
 
     /**

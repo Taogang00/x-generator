@@ -30,11 +30,11 @@ public class ${table.controllerClassName} {
     private final ${table.mapstructClassName} ${table.mapstructClassName?uncap_first};
 
     /**
-    * 获取一条记录
-    *
-    * @param id 数据标识
-    * @return {@link R}<{@link ${table.dtoClassName}}> 通用返回对象
-    */
+     * 获取一条记录
+     *
+     * @param id 数据标识
+     * @return {@link R}<{@link ${table.dtoClassName}}> 通用返回对象
+     */
     @GetMapping("/{id}")
     public R<${table.dtoClassName}> get(@PathVariable String id) {
         ${table.dtoClassName} dto = ${table.mapstructClassName?uncap_first}.toTarget(${table.serviceClassName?uncap_first}.getOne(id));

@@ -29,7 +29,7 @@ import java.util.Map;
 @State(name = "x-generator", storages = {@Storage("plugin.x-generator.xml")})
 public final class XGGeneratorSettingManager implements PersistentStateComponent<XGGeneratorSettingManager.State> {
 
-    private State myState;
+    private State myState = new State();
 
     public static XGGeneratorSettingManager getInstance() {
         return ApplicationManager.getApplication().getService(XGGeneratorSettingManager.class);

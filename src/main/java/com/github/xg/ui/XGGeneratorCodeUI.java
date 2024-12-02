@@ -7,7 +7,9 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.XmlUtil;
+import com.github.xg.config.XGGeneratorConfig;
 import com.github.xg.model.*;
+import com.github.xg.persistent.XGGeneratorSettingManager;
 import com.github.xg.render.XGTableListCellRenderer;
 import com.github.xg.utils.XGFileUtil;
 import com.github.xg.utils.XGMavenUtil;
@@ -112,6 +114,14 @@ public class XGGeneratorCodeUI {
         this.xgGeneratorGlobalObj.setDateTime(DateUtil.formatDateTime(new Date()));
         this.xgGeneratorGlobalObj.setAuthor(authorTextField.getText());
         this.xgGeneratorGlobalObj.setFileOverride(false);
+
+        Map<String, XGGeneratorConfig> xgGeneratorConfigMap = new HashMap<>();
+        XGGeneratorConfig xgGeneratorConfig = new XGGeneratorConfig();
+        xgGeneratorConfig.setAuthor(xgGeneratorGlobalObj.getAuthor());
+        xgGeneratorConfig.setName("默认");
+        xgGeneratorConfig.setIsDefault(true);
+        xgGeneratorConfigMap.put("default", xgGeneratorConfig);
+        Objects.requireNonNull(XGGeneratorSettingManager.getInstance().getState()).setXgGeneratorConfigMap(xgGeneratorConfigMap);
 
         // 1.项目模块加载
         List<String> mavenArtifactIds = XGMavenUtil.getMavenArtifactId(project);
@@ -527,7 +537,7 @@ public class XGGeneratorCodeUI {
     /**
      * 生成代码-点击生成按钮事件
      *
-     * @param project      项目
+     * @param project           项目
      * @param xgGeneratorDialog 项目
      * @throws IOException io异常
      */
@@ -603,7 +613,7 @@ public class XGGeneratorCodeUI {
 
         int count = 0;
         //默认-生成controller
-        try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("template/controller.java.ftl")) {
+        try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("template/author/controller.java.ftl")) {
             assert resourceAsStream != null;
             String templateContent = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
             Template template = getFreemarkerTemplate(templateContent, "controller");
@@ -611,7 +621,7 @@ public class XGGeneratorCodeUI {
         }
 
         //默认-生成entity
-        try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("template/entity.java.ftl")) {
+        try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("template/author/entity.java.ftl")) {
             assert resourceAsStream != null;
             String templateContent = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
             Template template = getFreemarkerTemplate(templateContent, "entity");
@@ -619,7 +629,7 @@ public class XGGeneratorCodeUI {
         }
 
         //默认-生成dto
-        try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("template/dto.java.ftl")) {
+        try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("template/author/dto.java.ftl")) {
             assert resourceAsStream != null;
             String templateContent = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
             Template template = getFreemarkerTemplate(templateContent, "dto");
@@ -627,7 +637,7 @@ public class XGGeneratorCodeUI {
         }
 
         //默认-生成query
-        try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("template/query.java.ftl")) {
+        try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("template/author/query.java.ftl")) {
             assert resourceAsStream != null;
             String templateContent = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
             Template template = getFreemarkerTemplate(templateContent, "query");
@@ -635,7 +645,7 @@ public class XGGeneratorCodeUI {
         }
 
         //默认-生成service
-        try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("template/service.java.ftl")) {
+        try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("template/author/service.java.ftl")) {
             assert resourceAsStream != null;
             String templateContent = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
             Template template = getFreemarkerTemplate(templateContent, "service");
@@ -643,7 +653,7 @@ public class XGGeneratorCodeUI {
         }
 
         //默认-生成serviceImpl
-        try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("template/serviceImpl.java.ftl")) {
+        try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("template/author/serviceImpl.java.ftl")) {
             assert resourceAsStream != null;
             String templateContent = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
             Template template = getFreemarkerTemplate(templateContent, "serviceImpl");
@@ -651,7 +661,7 @@ public class XGGeneratorCodeUI {
         }
 
         //默认-生成mapper
-        try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("template/mapper.java.ftl")) {
+        try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("template/author/mapper.java.ftl")) {
             assert resourceAsStream != null;
             String templateContent = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
             Template template = getFreemarkerTemplate(templateContent, "mapper");
@@ -659,7 +669,7 @@ public class XGGeneratorCodeUI {
         }
 
         //默认-生成mapper-xml
-        try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("template/mapper.xml.ftl")) {
+        try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("template/author/mapper.xml.ftl")) {
             assert resourceAsStream != null;
             String templateContent = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
             Template template = getFreemarkerTemplate(templateContent, "mapper-xml");
@@ -667,7 +677,7 @@ public class XGGeneratorCodeUI {
         }
 
         //默认-生成mapstruct
-        try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("template/mapstruct.java.ftl")) {
+        try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("template/author/mapstruct.java.ftl")) {
             assert resourceAsStream != null;
             String templateContent = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
             Template template = getFreemarkerTemplate(templateContent, "mapstruct");

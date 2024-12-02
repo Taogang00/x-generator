@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.util.Map;
 
 /**
  * IntelliJ 平台的数据持久化是将对象数据序列化后存储数据到本地文件，序列化协议采用的是 XML。
@@ -23,22 +24,22 @@ import java.io.File;
  * @author taogang
  * @date 2024/12/01
  */
+@SuppressWarnings("DialogTitleCapitalization")
 @Service
 @State(name = "x-generator", storages = {@Storage("plugin.x-generator.xml")})
-public final class XGGeneratorSetting implements PersistentStateComponent<XGGeneratorSetting.State> {
+public final class XGGeneratorSettingManager implements PersistentStateComponent<XGGeneratorSettingManager.State> {
 
     private State myState;
 
-    public static XGGeneratorSetting getInstance() {
-        return ApplicationManager.getApplication().getService(XGGeneratorSetting.class);
+    public static XGGeneratorSettingManager getInstance() {
+        return ApplicationManager.getApplication().getService(XGGeneratorSettingManager.class);
     }
 
     /**
      * 将配置数据进行持久化，持久化过程是通过XML序列化实现的，
      * 具体的序列化过程IDE直接都帮忙完成了，程序员不必关心
      * <p>
-     * getState() 方法在每次修改数据被保存时都会调用，该方法返回配置对象，
-     * 以 XML 协议序列化后存储到文件中
+     * getState() 方法在每次修改数据被保存时都会调用，该方法返回配置对象，以XML协议序列化后存储到文件中
      * <p>
      *
      * @return {@link State }
@@ -74,15 +75,16 @@ public final class XGGeneratorSetting implements PersistentStateComponent<XGGene
             Messages.showDialog("文件不存在", "提示", new String[]{"确定"}, -1, Messages.getInformationIcon());
             return;
         }
-        String content = FileUtil.readString(file, "UTF-8");
         Messages.showDialog("导入成功", "提示", new String[]{"确定"}, -1, Messages.getInformationIcon());
     }
 
     @Data
     public static class State {
+
         /**
-         * 配置
+         * 配置映射
+         * key=default、mybatis3、mybatisPlus、custom1、...
          */
-        public XGGeneratorConfig xgGeneratorConfig;
+        public Map<String, XGGeneratorConfig> xgGeneratorConfigMap;
     }
 }

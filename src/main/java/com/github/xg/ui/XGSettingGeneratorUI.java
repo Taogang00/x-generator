@@ -2,7 +2,7 @@ package com.github.xg.ui;
 
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
-import com.github.xg.persistent.XGGeneratorSetting;
+import com.github.xg.persistent.XGGeneratorSettingManager;
 import com.github.xg.utils.XGFileUtil;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.project.Project;
@@ -36,7 +36,7 @@ public class XGSettingGeneratorUI {
                 return;
             }
             String path = virtualFile.getPath();
-            XGGeneratorSetting.importConfig(path);
+            XGGeneratorSettingManager.importConfig(path);
         });
 
         // 导出配置
@@ -45,7 +45,7 @@ public class XGSettingGeneratorUI {
             if (StrUtil.isEmpty(exportPath)) {
                 return;
             }
-            XGGeneratorSetting.export(exportPath);
+            XGGeneratorSettingManager.export(exportPath);
         });
     }
 }

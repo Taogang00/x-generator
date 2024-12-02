@@ -1,7 +1,6 @@
-package com.github.xg.persistent;
+package com.github.xg.config;
 
 import cn.hutool.core.io.FileUtil;
-import com.github.xg.config.XGConfig;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.Service;

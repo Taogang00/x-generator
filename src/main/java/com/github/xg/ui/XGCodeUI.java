@@ -115,14 +115,6 @@ public class XGCodeUI {
         this.xgGlobalObj.setAuthor(authorTextField.getText());
         this.xgGlobalObj.setFileOverride(false);
 
-        Map<String, XGConfig> xgConfigMap = new HashMap<>();
-        XGConfig xgConfig = new XGConfig();
-        xgConfig.setName("默认");
-        xgConfig.setCreateTime(DateUtil.formatDateTime(new Date()));
-        xgConfig.setIsDefault(true);
-        xgConfigMap.put("default", xgConfig);
-        Objects.requireNonNull(XGSettingManager.getInstance().getState()).setXgConfigMap(xgConfigMap);
-
         // 1.项目模块加载
         List<String> mavenArtifactIds = XGMavenUtil.getMavenArtifactId(project);
         for (String item : mavenArtifactIds) {
@@ -193,6 +185,14 @@ public class XGCodeUI {
         // 设置按钮事件
         settingBtn.addActionListener(e -> {
             xgMainDialog.switchPage(1);
+
+            Map<String, XGConfig> xgConfigMap = new HashMap<>();
+            XGConfig xgConfig = new XGConfig();
+            xgConfig.setName("默认");
+            xgConfig.setCreateTime(DateUtil.formatDateTime(new Date()));
+            xgConfig.setIsDefault(true);
+            xgConfigMap.put("default", xgConfig);
+            Objects.requireNonNull(XGSettingManager.getInstance().getState()).setXgConfigMap(xgConfigMap);
         });
 
         // 6.导入xml按钮事件

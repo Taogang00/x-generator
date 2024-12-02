@@ -32,7 +32,7 @@ public class XGMainDialog extends DialogWrapper {
         this.project = project;
 
         this.setTitle("X-代码生成器 0.0.5");
-        this.setSize(990, 680);
+        this.setSize(980, 700);
         this.setResizable(false);
 
         codeGeneratorUI = new XGCodeUI(project, this);

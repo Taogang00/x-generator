@@ -20,11 +20,12 @@ public class XGConstants {
     public static final String XML_ELEMENT_COLUMN_ATTRIBUTE_DATA_LENGTH = "DataLength";
 
     public static final String CONTROLLER = "Controller";
-    public static final String ENTITY = "Entity";
-    public static final String DOMAIN = "domain";
     public static final String SERVICE = "Service";
     public static final String SERVICE_IMPL = "ServiceImpl";
-    public static final String IMPL = "impl";
     public static final String MAPPER = "Mapper";
     public static final String XML = "Xml";
+    public static final String ENTITY = "Entity";
+    public static final String DTO = "DTO";
+    public static final String QUERY = "Query";
+    public static final String MAPSTRUCT = "MapStruct";
 }

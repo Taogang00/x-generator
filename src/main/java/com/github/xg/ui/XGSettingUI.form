@@ -100,7 +100,9 @@
                         <children>
                           <component id="1d162" class="javax.swing.JList" binding="list1" default-binding="true">
                             <constraints/>
-                            <properties/>
+                            <properties>
+                              <alignmentX value="0.5"/>
+                            </properties>
                           </component>
                         </children>
                       </scrollpane>

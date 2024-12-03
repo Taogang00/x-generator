@@ -37,12 +37,15 @@ public class XGConfig {
     public static List<XGTabInfo> getTabList() {
         List<XGTabInfo> infoList = new ArrayList<>();
         if (CollUtil.isEmpty(infoList) || infoList.size() < 6) {
-            infoList.add(0, new XGTabInfo(XGConstants.CONTROLLER, XGFreemarkerUtil.getTemplateContent("controller.java"), 1));
-            infoList.add(0, new XGTabInfo(XGConstants.SERVICE, XGFreemarkerUtil.getTemplateContent("service.java"), 2));
-            infoList.add(0, new XGTabInfo(XGConstants.SERVICE_IMPL, XGFreemarkerUtil.getTemplateContent("serviceImpl.java"), 3));
-            infoList.add(0, new XGTabInfo(XGConstants.ENTITY, XGFreemarkerUtil.getTemplateContent("entity.java"), 4));
-            infoList.add(0, new XGTabInfo(XGConstants.MAPPER, XGFreemarkerUtil.getTemplateContent("mapper.java"), 5));
-            infoList.add(0, new XGTabInfo(XGConstants.XML, XGFreemarkerUtil.getTemplateContent("mapper.xml"), 6));
+            infoList.add(new XGTabInfo(XGConstants.CONTROLLER, XGFreemarkerUtil.getTemplateContent("controller.java"), 1));
+            infoList.add(new XGTabInfo(XGConstants.SERVICE, XGFreemarkerUtil.getTemplateContent("service.java"), 2));
+            infoList.add(new XGTabInfo(XGConstants.SERVICE_IMPL, XGFreemarkerUtil.getTemplateContent("serviceImpl.java"), 3));
+            infoList.add(new XGTabInfo(XGConstants.ENTITY, XGFreemarkerUtil.getTemplateContent("entity.java"), 4));
+            infoList.add(new XGTabInfo(XGConstants.MAPPER, XGFreemarkerUtil.getTemplateContent("mapper.java"), 5));
+            infoList.add(new XGTabInfo(XGConstants.XML, XGFreemarkerUtil.getTemplateContent("mapper.xml"), 6));
+            infoList.add(new XGTabInfo(XGConstants.QUERY, XGFreemarkerUtil.getTemplateContent("query.java"), 7));
+            infoList.add(new XGTabInfo(XGConstants.DTO, XGFreemarkerUtil.getTemplateContent("dto.java"), 8));
+            infoList.add(new XGTabInfo(XGConstants.MAPSTRUCT, XGFreemarkerUtil.getTemplateContent("mapstruct.java"), 9));
         }
         return infoList;
     }

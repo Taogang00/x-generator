@@ -14,11 +14,7 @@ import com.github.xg.render.XGTableListCellRenderer;
 import com.github.xg.utils.XGFileUtil;
 import com.github.xg.utils.XGMavenUtil;
 import com.intellij.icons.AllIcons;
-import com.intellij.notification.Notification;
-import com.intellij.notification.NotificationGroupManager;
-import com.intellij.notification.Notifications;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.MessageType;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.DocumentAdapter;
@@ -26,7 +22,6 @@ import com.intellij.ui.components.fields.ExpandableTextField;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import lombok.Getter;
-import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.NotNull;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -36,7 +31,10 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -115,6 +113,18 @@ public class XGCodeUI {
         this.xgGlobalObj.setAuthor(authorTextField.getText());
         this.xgGlobalObj.setFileOverride(false);
 
+        //配置的选项
+        XGSettingManager.State state = XGSettingManager.getInstance().getState();
+        assert state != null;
+        List<XGConfig> valuesList = state.getXgConfigs();
+        for (int i = 0; i < valuesList.size(); i++) {
+            XGConfig config = valuesList.get(i);
+            configComboBox.addItem(config.getName());
+            if (config.getIsDefault()) {
+                configComboBox.setSelectedIndex(i);
+            }
+        }
+
         // 1.项目模块加载
         List<String> mavenArtifactIds = XGMavenUtil.getMavenArtifactId(project);
         for (String item : mavenArtifactIds) {
@@ -185,14 +195,6 @@ public class XGCodeUI {
         // 设置按钮事件
         settingBtn.addActionListener(e -> {
             xgMainDialog.switchPage(1);
-
-            Map<String, XGConfig> xgConfigMap = new HashMap<>();
-            XGConfig xgConfig = new XGConfig();
-            xgConfig.setName("默认");
-            xgConfig.setCreateTime(DateUtil.formatDateTime(new Date()));
-            xgConfig.setIsDefault(true);
-            xgConfigMap.put("default", xgConfig);
-            Objects.requireNonNull(XGSettingManager.getInstance().getState()).setXgConfigMap(xgConfigMap);
         });
 
         // 6.导入xml按钮事件
@@ -613,80 +615,47 @@ public class XGCodeUI {
 
         int count = 0;
         //默认-生成controller
-        try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("template/author/controller.java.ftl")) {
-            assert resourceAsStream != null;
-            String templateContent = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
-            Template template = getFreemarkerTemplate(templateContent, "controller");
-            count += generateControllerCode(template, map);
+        XGConfig selectXGConfig = XGSettingManager.getSelectXGConfig(configComboBox.getSelectedItem().toString());
+        List<XGTabInfo> xgTabInfoList = selectXGConfig.getXgTabInfoList();
+        for (XGTabInfo xgTabInfo : xgTabInfoList) {
+            if (CONTROLLER.equals(xgTabInfo.getType())) {
+                Template template = getFreemarkerTemplate(xgTabInfo.getContent(), xgTabInfo.getType());
+                count += generateControllerCode(template, map);
+            }
+            if (ENTITY.equals(xgTabInfo.getType())) {
+                Template template = getFreemarkerTemplate(xgTabInfo.getContent(), xgTabInfo.getType());
+                count += generateEntityCode(template, map);
+            }
+            if (DTO.equals(xgTabInfo.getType())) {
+                Template template = getFreemarkerTemplate(xgTabInfo.getContent(), xgTabInfo.getType());
+                count += generateDTOCode(template, map);
+            }
+            if (QUERY.equals(xgTabInfo.getType())) {
+                Template template = getFreemarkerTemplate(xgTabInfo.getContent(), xgTabInfo.getType());
+                count += generateQueryCode(template, map);
+            }
+            if (SERVICE.equals(xgTabInfo.getType())) {
+                Template template = getFreemarkerTemplate(xgTabInfo.getContent(), xgTabInfo.getType());
+                count += generateServiceCode(template, map);
+            }
+            if (SERVICE_IMPL.equals(xgTabInfo.getType())) {
+                Template template = getFreemarkerTemplate(xgTabInfo.getContent(), xgTabInfo.getType());
+                count += generateServiceImplCode(template, map);
+            }
+            if (MAPPER.equals(xgTabInfo.getType())) {
+                Template template = getFreemarkerTemplate(xgTabInfo.getContent(), xgTabInfo.getType());
+                count += generateMapperCode(template, map);
+            }
+            if (XML.equals(xgTabInfo.getType())) {
+                Template template = getFreemarkerTemplate(xgTabInfo.getContent(), xgTabInfo.getType());
+                count += generateMapperXmlCode(template, map);
+            }
+            if (MAPSTRUCT.equals(xgTabInfo.getType())) {
+                Template template = getFreemarkerTemplate(xgTabInfo.getContent(), xgTabInfo.getType());
+                count += generateMapStructCode(template, map);
+            }
         }
-
-        //默认-生成entity
-        try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("template/author/entity.java.ftl")) {
-            assert resourceAsStream != null;
-            String templateContent = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
-            Template template = getFreemarkerTemplate(templateContent, "entity");
-            count += generateEntityCode(template, map);
-        }
-
-        //默认-生成dto
-        try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("template/author/dto.java.ftl")) {
-            assert resourceAsStream != null;
-            String templateContent = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
-            Template template = getFreemarkerTemplate(templateContent, "dto");
-            count += generateDTOCode(template, map);
-        }
-
-        //默认-生成query
-        try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("template/author/query.java.ftl")) {
-            assert resourceAsStream != null;
-            String templateContent = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
-            Template template = getFreemarkerTemplate(templateContent, "query");
-            count += generateQueryCode(template, map);
-        }
-
-        //默认-生成service
-        try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("template/author/service.java.ftl")) {
-            assert resourceAsStream != null;
-            String templateContent = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
-            Template template = getFreemarkerTemplate(templateContent, "service");
-            count += generateServiceCode(template, map);
-        }
-
-        //默认-生成serviceImpl
-        try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("template/author/serviceImpl.java.ftl")) {
-            assert resourceAsStream != null;
-            String templateContent = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
-            Template template = getFreemarkerTemplate(templateContent, "serviceImpl");
-            count += generateServiceImplCode(template, map);
-        }
-
-        //默认-生成mapper
-        try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("template/author/mapper.java.ftl")) {
-            assert resourceAsStream != null;
-            String templateContent = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
-            Template template = getFreemarkerTemplate(templateContent, "mapper");
-            count += generateMapperCode(template, map);
-        }
-
-        //默认-生成mapper-xml
-        try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("template/author/mapper.xml.ftl")) {
-            assert resourceAsStream != null;
-            String templateContent = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
-            Template template = getFreemarkerTemplate(templateContent, "mapper-xml");
-            count += generateMapperXmlCode(template, map);
-        }
-
-        //默认-生成mapstruct
-        try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("template/author/mapstruct.java.ftl")) {
-            assert resourceAsStream != null;
-            String templateContent = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
-            Template template = getFreemarkerTemplate(templateContent, "mapstruct");
-            count += generateMapStructCode(template, map);
-        }
-
-        NotificationGroupManager groupManager = NotificationGroupManager.getInstance();
-        Notification notification = groupManager.getNotificationGroup("NotificationXg").createNotification("生成成功，共有 " + count + " 个文件发生变化", MessageType.INFO).setTitle("X-Generator");
-        Notifications.Bus.notify(notification, project);
+        Messages.showInfoMessage("生成成功，共有 " + count + " 个文件发生变化", "X-Generator");
         xgMainDialog.doCancelAction();
     }
 

@@ -37,8 +37,8 @@ public class XGFreemarkerUtil {
     }
 
     @NotNull
-    public static String getTemplateContent(String templateName) {
-        URL resource = XGFreemarkerUtil.class.getResource(StrUtil.format("/template/author/{}.ftl", templateName));
+    public static String getTemplateContent(String directory, String templateName) {
+        URL resource = XGFreemarkerUtil.class.getResource(StrUtil.format("{}/{}.ftl", directory, templateName));
         String templateContent = null;
         try {
             assert resource != null;

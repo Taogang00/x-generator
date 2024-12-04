@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.util.Map;
+import java.util.List;
 
 /**
  * IntelliJ 平台的数据持久化是将对象数据序列化后存储数据到本地文件，序列化协议采用的是 XML。
@@ -77,6 +77,13 @@ public final class XGSettingManager implements PersistentStateComponent<XGSettin
         Messages.showDialog("导入成功", "提示", new String[]{"确定"}, -1, Messages.getInformationIcon());
     }
 
+    public static XGConfig getSelectXGConfig(String selectedName) {
+        State state = getInstance().getState();
+        assert state != null;
+        List<XGConfig> xgConfigs = state.getXgConfigs();
+        return xgConfigs.stream().filter(xgConfig -> xgConfig.getName().equals(selectedName)).findFirst().orElse(null);
+    }
+
     @Data
     public static class State {
 
@@ -84,6 +91,6 @@ public final class XGSettingManager implements PersistentStateComponent<XGSettin
          * 配置映射
          * key=default、mybatis3、mybatisPlus、custom1、...
          */
-        public Map<String, XGConfig> xgConfigMap;
+        public List<XGConfig> xgConfigs;
     }
 }

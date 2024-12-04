@@ -1,13 +1,10 @@
 package com.github.xg.config;
 
-import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.Tuple;
-import com.github.xg.constant.XGConstants;
 import com.github.xg.model.XGTabInfo;
-import com.github.xg.utils.XGFreemarkerUtil;
 import lombok.Data;
 
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -27,26 +24,15 @@ public class XGConfig {
     /**
      * 创建时间
      */
-    private String createTime;
+    private Date createTime;
+
+    /**
+     * 代码模板
+     */
+    private List<XGTabInfo> xgTabInfoList;
 
     /**
      * 数据库列与Java类型映射
      */
     private Map<String, Tuple> columnJavaTypeMapping;
-
-    public static List<XGTabInfo> getTabList() {
-        List<XGTabInfo> infoList = new ArrayList<>();
-        if (CollUtil.isEmpty(infoList) || infoList.size() < 6) {
-            infoList.add(new XGTabInfo(XGConstants.CONTROLLER, XGFreemarkerUtil.getTemplateContent("controller.java"), 1));
-            infoList.add(new XGTabInfo(XGConstants.SERVICE, XGFreemarkerUtil.getTemplateContent("service.java"), 2));
-            infoList.add(new XGTabInfo(XGConstants.SERVICE_IMPL, XGFreemarkerUtil.getTemplateContent("serviceImpl.java"), 3));
-            infoList.add(new XGTabInfo(XGConstants.ENTITY, XGFreemarkerUtil.getTemplateContent("entity.java"), 4));
-            infoList.add(new XGTabInfo(XGConstants.MAPPER, XGFreemarkerUtil.getTemplateContent("mapper.java"), 5));
-            infoList.add(new XGTabInfo(XGConstants.XML, XGFreemarkerUtil.getTemplateContent("mapper.xml"), 6));
-            infoList.add(new XGTabInfo(XGConstants.QUERY, XGFreemarkerUtil.getTemplateContent("query.java"), 7));
-            infoList.add(new XGTabInfo(XGConstants.DTO, XGFreemarkerUtil.getTemplateContent("dto.java"), 8));
-            infoList.add(new XGTabInfo(XGConstants.MAPSTRUCT, XGFreemarkerUtil.getTemplateContent("mapstruct.java"), 9));
-        }
-        return infoList;
-    }
 }

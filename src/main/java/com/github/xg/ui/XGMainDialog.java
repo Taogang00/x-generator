@@ -1,5 +1,10 @@
 package com.github.xg.ui;
 
+import com.github.xg.config.XGConfig;
+import com.github.xg.config.XGSettingManager;
+import com.github.xg.constant.XGConstants;
+import com.github.xg.model.XGTabInfo;
+import com.github.xg.utils.XGFreemarkerUtil;
 import com.intellij.ide.BrowserUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
@@ -10,6 +15,7 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -27,6 +33,8 @@ public class XGMainDialog extends DialogWrapper {
 
     public XGMainDialog(Project project) {
         super(project);
+        initXGSettingManager();
+
         this.setOKButtonText("生成");
         this.setCancelButtonText("取消");
         this.project = project;
@@ -84,4 +92,42 @@ public class XGMainDialog extends DialogWrapper {
         return super.createActions();
     }
 
+    public void initXGSettingManager() {
+        XGSettingManager.State state = XGSettingManager.getInstance().getState();
+        assert state != null;
+        if (state.getXgConfigs() == null) {
+            List<XGConfig> list = new ArrayList<>();
+            //第一种，作者公司默认的配置
+            XGConfig authorXGConfig = new XGConfig();
+            authorXGConfig.setCreateTime(new Date());
+            authorXGConfig.setIsDefault(false);
+            authorXGConfig.setName("作者公司");
+
+            List<XGTabInfo> authorXGTabInfoList = new ArrayList<>();
+            authorXGTabInfoList.add(new XGTabInfo(XGConstants.CONTROLLER, XGFreemarkerUtil.getTemplateContent("/template/author", "controller.java"), 1));
+            authorXGTabInfoList.add(new XGTabInfo(XGConstants.SERVICE, XGFreemarkerUtil.getTemplateContent("/template/author", "service.java"), 2));
+            authorXGTabInfoList.add(new XGTabInfo(XGConstants.SERVICE_IMPL, XGFreemarkerUtil.getTemplateContent("/template/author", "serviceImpl.java"), 3));
+            authorXGTabInfoList.add(new XGTabInfo(XGConstants.ENTITY, XGFreemarkerUtil.getTemplateContent("/template/author", "entity.java"), 4));
+            authorXGTabInfoList.add(new XGTabInfo(XGConstants.MAPPER, XGFreemarkerUtil.getTemplateContent("/template/author", "mapper.java"), 5));
+            authorXGTabInfoList.add(new XGTabInfo(XGConstants.XML, XGFreemarkerUtil.getTemplateContent("/template/author", "mapper.xml"), 6));
+            authorXGTabInfoList.add(new XGTabInfo(XGConstants.QUERY, XGFreemarkerUtil.getTemplateContent("/template/author", "query.java"), 7));
+            authorXGTabInfoList.add(new XGTabInfo(XGConstants.DTO, XGFreemarkerUtil.getTemplateContent("/template/author", "dto.java"), 8));
+            authorXGTabInfoList.add(new XGTabInfo(XGConstants.MAPSTRUCT, XGFreemarkerUtil.getTemplateContent("/template/author", "mapstruct.java"), 9));
+            authorXGConfig.setXgTabInfoList(authorXGTabInfoList);
+            list.add(authorXGConfig);
+
+            //第二种，mybatisPlus配置
+            XGConfig mpXGConfig = new XGConfig();
+            mpXGConfig.setCreateTime(new Date());
+            mpXGConfig.setIsDefault(true);
+            mpXGConfig.setName("MybatisPlus3");
+            List<XGTabInfo> mpXGTabInfoList = new ArrayList<>();
+            mpXGTabInfoList.add(new XGTabInfo(XGConstants.ENTITY, XGFreemarkerUtil.getTemplateContent("/template/mybatisplus", "entity.java"), 4));
+            mpXGConfig.setXgTabInfoList(mpXGTabInfoList);
+            list.add(mpXGConfig);
+
+            state.setXgConfigs(list);
+            XGSettingManager.getInstance().loadState(state);
+        }
+    }
 }

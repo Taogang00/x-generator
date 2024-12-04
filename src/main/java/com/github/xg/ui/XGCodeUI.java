@@ -125,6 +125,12 @@ public class XGCodeUI {
             }
         }
 
+        // 0.选中的配置是哪个
+        configComboBox.addActionListener(e -> {
+            String selectedItem = (String) configComboBox.getSelectedItem();
+            xgMainDialog.getXgSettingUI().initXGTabInfo(selectedItem);
+        });
+
         // 1.项目模块加载
         List<String> mavenArtifactIds = XGMavenUtil.getMavenArtifactId(project);
         for (String item : mavenArtifactIds) {
@@ -614,7 +620,6 @@ public class XGCodeUI {
         map.put("global", xgGlobalInfoMap);
 
         int count = 0;
-        //默认-生成controller
         XGConfig selectXGConfig = XGSettingManager.getSelectXGConfig(configComboBox.getSelectedItem().toString());
         List<XGTabInfo> xgTabInfoList = selectXGConfig.getXgTabInfoList();
         for (XGTabInfo xgTabInfo : xgTabInfoList) {

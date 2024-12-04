@@ -8,6 +8,7 @@ import com.github.xg.utils.XGTemplateUtil;
 import com.intellij.ide.BrowserUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
+import lombok.Getter;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -27,6 +28,7 @@ public class XGMainDialog extends DialogWrapper {
 
     private final XGCodeUI codeGeneratorUI;
 
+    @Getter
     private final XGSettingUI xgSettingUI;
 
     private final List<JPanel> containerPanelList = new ArrayList<>();
@@ -45,6 +47,7 @@ public class XGMainDialog extends DialogWrapper {
 
         codeGeneratorUI = new XGCodeUI(project, this);
         xgSettingUI = new XGSettingUI(project, this);
+//        xgSettingUI.initXGTabInfo(codeGeneratorUI.getc());
         containerPanelList.add(codeGeneratorUI.getRootJPanel());
         containerPanelList.add(xgSettingUI.getRootJPanel());
         // 默认切换到第一页
@@ -100,7 +103,7 @@ public class XGMainDialog extends DialogWrapper {
             //第一种，作者公司默认的配置
             XGConfig authorXGConfig = new XGConfig();
             authorXGConfig.setCreateTime(new Date());
-            authorXGConfig.setIsDefault(false);
+            authorXGConfig.setIsDefault(true);
             authorXGConfig.setName("作者公司");
 
             List<XGTabInfo> authorXGTabInfoList = new ArrayList<>();
@@ -117,6 +120,14 @@ public class XGMainDialog extends DialogWrapper {
             list.add(authorXGConfig);
 
             //第二种，mybatisPlus配置...TODO
+            XGConfig mpXGConfig = new XGConfig();
+            mpXGConfig.setCreateTime(new Date());
+            mpXGConfig.setIsDefault(true);
+            mpXGConfig.setName("MybatisPlus3");
+            List<XGTabInfo> mpXGTabInfoList = new ArrayList<>();
+            mpXGTabInfoList.add(new XGTabInfo(XGConstants.ENTITY, XGTemplateUtil.getTemplateContent("/template/mybatisplus", "entity.java"), 4));
+            mpXGConfig.setXgTabInfoList(mpXGTabInfoList);
+            list.add(mpXGConfig);
 
             state.setXgConfigs(list);
             XGSettingManager.getInstance().loadState(state);

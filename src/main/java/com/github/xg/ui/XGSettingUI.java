@@ -17,7 +17,6 @@ import java.awt.*;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -33,7 +32,7 @@ public class XGSettingUI {
     private JPanel templateList;
     private JPanel templateEditor;
     private JList<String> list1;
-    private final Map<String, XGTabInfo> tabMap;
+    private Map<String, XGTabInfo> tabMap;
 
     public XGSettingUI(Project project, XGMainDialog xgMainDialog) {
         this.backBtn.setIcon(AllIcons.Actions.Exit);
@@ -42,17 +41,6 @@ public class XGSettingUI {
         ActionToolbar actionToolbar = toolBar();
         actionToolbar.setTargetComponent(templateList);
         templateList.add(actionToolbar.getComponent(), BorderLayout.NORTH);
-
-        List<XGConfig> xgConfig = Objects.requireNonNull(XGSettingManager.getInstance().getState()).getXgConfigs();
-        List<XGTabInfo> infoList = xgConfig.get(0).getXgTabInfoList();
-        infoList.sort(Comparator.comparing(XGTabInfo::getOrderNo));
-
-        tabMap = infoList.stream().collect(Collectors.toMap(XGTabInfo::getType, Function.identity()));
-        DefaultListModel<String> model = new DefaultListModel<>();
-        model.addAll(infoList.stream().map(XGTabInfo::getType).toList());
-
-        list1.setModel(model);
-        list1.setSelectedIndex(0);
 
         // 设置按钮事件
         backBtn.addActionListener(e -> {
@@ -76,6 +64,19 @@ public class XGSettingUI {
             }
             XGSettingManager.export(exportPath);
         });
+    }
+
+    public void initXGTabInfo(String selectedConfigKey) {
+        XGConfig xgConfig = XGSettingManager.getSelectXGConfig(selectedConfigKey);
+        List<XGTabInfo> infoList = xgConfig.getXgTabInfoList();
+        infoList.sort(Comparator.comparing(XGTabInfo::getOrderNo));
+
+        tabMap = infoList.stream().collect(Collectors.toMap(XGTabInfo::getType, Function.identity()));
+        DefaultListModel<String> model = new DefaultListModel<>();
+        model.addAll(infoList.stream().map(XGTabInfo::getType).toList());
+
+        list1.setModel(model);
+        list1.setSelectedIndex(0);
     }
 
     private ActionToolbar toolBar() {

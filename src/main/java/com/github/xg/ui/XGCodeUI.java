@@ -1,7 +1,6 @@
 package com.github.xg.ui;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.Tuple;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.ReUtil;
@@ -98,8 +97,8 @@ public class XGCodeUI {
     private final XGGlobalObj xgGlobalObj;
     private final Map<String, Tuple> columnJavaTypeMapping = new HashMap<>();
 
-    public XGCodeUI(Project project, XGMainDialog xgMainDialog) {
-        this.xgGlobalObj = new XGGlobalObj();
+    public XGCodeUI(Project project, XGMainDialog xgMainDialog, XGGlobalObj xgGlobalObj) {
+        this.xgGlobalObj = xgGlobalObj;
         this.skipRadioButton.setActionCommand("0");
         this.overrideRadioButton.setActionCommand("1");
 
@@ -109,9 +108,7 @@ public class XGCodeUI {
         this.authorTextField.setText(System.getProperty("user.name"));
         this.packageAllBtn.setText("全不选");
         this.xgGeneratorSelectedTableObjList = new ArrayList<>();
-        this.xgGlobalObj.setDateTime(DateUtil.formatDateTime(new Date()));
-        this.xgGlobalObj.setAuthor(authorTextField.getText());
-        this.xgGlobalObj.setFileOverride(false);
+        xgGlobalObj.setAuthor(authorTextField.getText());
 
         //配置的选项
         XGSettingManager.State state = XGSettingManager.getInstance().getState();
@@ -122,12 +119,14 @@ public class XGCodeUI {
             configComboBox.addItem(config.getName());
             if (config.getIsDefault()) {
                 configComboBox.setSelectedIndex(i);
+                xgGlobalObj.setSelectedConfigKey(config.getName());
             }
         }
 
         // 0.选中的配置是哪个
         configComboBox.addActionListener(e -> {
             String selectedItem = (String) configComboBox.getSelectedItem();
+            xgGlobalObj.setSelectedConfigKey(selectedItem);
             xgMainDialog.getXgSettingUI().initXGTabInfo(selectedItem);
         });
 

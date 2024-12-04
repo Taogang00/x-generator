@@ -4,6 +4,7 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.xg.config.XGConfig;
 import com.github.xg.config.XGSettingManager;
+import com.github.xg.model.XGGlobalObj;
 import com.github.xg.model.XGTabInfo;
 import com.github.xg.utils.XGFileUtil;
 import com.intellij.icons.AllIcons;
@@ -34,7 +35,7 @@ public class XGSettingUI {
     private JList<String> list1;
     private Map<String, XGTabInfo> tabMap;
 
-    public XGSettingUI(Project project, XGMainDialog xgMainDialog) {
+    public XGSettingUI(Project project, XGMainDialog xgMainDialog, XGGlobalObj xgGlobalObj) {
         this.backBtn.setIcon(AllIcons.Actions.Exit);
 
         // 添加到顶部

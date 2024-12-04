@@ -18,6 +18,7 @@ public class XGGlobalObj {
 
     private String author;
     private String dateTime;
+    private String selectedConfigKey;
     private String removeClassNamePrefix = ""; //需要初始化为空字符串
     private String addClassNamePrefix = ""; //需要初始化为空字符串
     private String sourceCodeGeneratorPath; //src/main/java

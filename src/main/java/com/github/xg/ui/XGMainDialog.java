@@ -1,8 +1,10 @@
 package com.github.xg.ui;
 
+import cn.hutool.core.date.DateUtil;
 import com.github.xg.config.XGConfig;
 import com.github.xg.config.XGSettingManager;
 import com.github.xg.constant.XGConstants;
+import com.github.xg.model.XGGlobalObj;
 import com.github.xg.model.XGTabInfo;
 import com.github.xg.utils.XGTemplateUtil;
 import com.intellij.ide.BrowserUtil;
@@ -35,6 +37,10 @@ public class XGMainDialog extends DialogWrapper {
 
     public XGMainDialog(Project project) {
         super(project);
+        XGGlobalObj xgGlobalObj = new XGGlobalObj();
+        xgGlobalObj.setDateTime(DateUtil.formatDateTime(new Date()));
+        xgGlobalObj.setFileOverride(false);
+
         initXGSettingManager();
 
         this.setOKButtonText("生成");
@@ -45,9 +51,9 @@ public class XGMainDialog extends DialogWrapper {
         this.setSize(980, 600);
         this.setResizable(false);
 
-        codeGeneratorUI = new XGCodeUI(project, this);
-        xgSettingUI = new XGSettingUI(project, this);
-//        xgSettingUI.initXGTabInfo(codeGeneratorUI.getc());
+        codeGeneratorUI = new XGCodeUI(project, this, xgGlobalObj);
+        xgSettingUI = new XGSettingUI(project, this, xgGlobalObj);
+
         containerPanelList.add(codeGeneratorUI.getRootJPanel());
         containerPanelList.add(xgSettingUI.getRootJPanel());
         // 默认切换到第一页

@@ -6,7 +6,7 @@ import ${table.entityPackagePath}.${table.entityClassName};
 import ${table.mapperPackagePath}.${table.mapperClassName};
 import ${table.queryPackagePath}.${table.queryClassName};
 import ${table.servicePackagePath}.${table.serviceClassName};
-import ${global.superServiceImplClassPackagePath}.${global.superServiceImplClass};
+import com.guanwei.mybatis.base.service.MBaseServiceImpl;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,7 +18,7 @@ import java.util.List;
  * @date ${global.dateTime}
  */
 @Service
-public class ${table.serviceImplClassName} extends ${global.superServiceImplClass}<${table.mapperClassName}, ${table.entityClassName}> implements ${table.serviceClassName} {
+public class ${table.serviceImplClassName} extends MBaseServiceImpl<${table.mapperClassName}, ${table.entityClassName}> implements ${table.serviceClassName} {
 
     @Override
     public List<${table.dtoClassName}> get${table.entityClassName}List(${table.queryClassName} query) {

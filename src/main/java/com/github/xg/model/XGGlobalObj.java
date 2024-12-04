@@ -18,7 +18,6 @@ public class XGGlobalObj {
 
     private String author;
     private String dateTime;
-    private String selectedConfigKey;
     private String removeClassNamePrefix = ""; //需要初始化为空字符串
     private String addClassNamePrefix = ""; //需要初始化为空字符串
     private String sourceCodeGeneratorPath; //src/main/java
@@ -34,22 +33,6 @@ public class XGGlobalObj {
     private String serviceImplPackagePath;
     private String mapperPackagePath;
     private String mapperXmlPackagePath;
-
-    private String superControllerClass;
-    private String superServiceClass = "MBaseService";
-    private String superServiceImplClass = "MBaseServiceImpl";
-    private String superEntityClass;
-    private String superMapperClass = "MBaseMapper";
-    private String superQueryClass;
-    private String superDTOClass;
-
-    private String superControllerClassPackagePath;
-    private String superServiceClassPackagePath = "com.guanwei.mybatis.base.service";
-    private String superServiceImplClassPackagePath = "com.guanwei.mybatis.base.service";
-    private String superMapperClassPackagePath = "com.guanwei.mybatis.base.mapper";
-    private String superEntityClassPackagePath;
-    private String superQueryClassPackagePath;
-    private String superDTOClassPackagePath;
 
     private Boolean generateController = true;
     private Boolean generateEntity = true;

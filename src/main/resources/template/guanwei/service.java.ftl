@@ -4,7 +4,7 @@ package ${global.servicePackagePath};
 import ${table.dtoPackagePath}.${table.dtoClassName};
 import ${table.entityPackagePath}.${table.entityClassName};
 import ${table.queryPackagePath}.${table.queryClassName};
-import ${global.superServiceClassPackagePath}.${global.superServiceClass};
+import com.guanwei.mybatis.base.service.MBaseService;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ import java.util.List;
  * @author ${global.author}
  * @date ${global.dateTime}
  */
-public interface ${table.serviceClassName} extends ${global.superServiceClass}<${table.entityClassName}> {
+public interface ${table.serviceClassName} extends MBaseService<${table.entityClassName}> {
 
     /**
      * 获取记录

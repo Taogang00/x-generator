@@ -4,7 +4,7 @@ package ${table.mapperPackagePath};
 import ${table.dtoPackagePath}.${table.dtoClassName};
 import ${table.entityPackagePath}.${table.entityClassName};
 import ${table.queryPackagePath}.${table.queryClassName};
-import ${global.superMapperClassPackagePath}.${global.superMapperClass};
+import com.guanwei.mybatis.base.mapper.MBaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -16,7 +16,7 @@ import java.util.List;
  * @date ${global.dateTime}
  */
 @Mapper
-public interface ${table.mapperClassName} extends ${global.superMapperClass}<${table.entityClassName}> {
+public interface ${table.mapperClassName} extends MBaseMapper<${table.entityClassName}> {
 
   /**
    * 获取记录

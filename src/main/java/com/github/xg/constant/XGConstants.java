@@ -6,6 +6,7 @@ package com.github.xg.constant;
  * @author taogang
  * @date 2024/11/27
  */
+@SuppressWarnings("ALL")
 public class XGConstants {
 
     public static final String XML_ELEMENT_TABLE_NAME = "Table";
@@ -28,4 +29,7 @@ public class XGConstants {
     public static final String DTO = "DTO";
     public static final String QUERY = "Query";
     public static final String MAPSTRUCT = "MapStruct";
+
+    public static final String TEMPLATE_GUANWEI = "GuanWei";
+    public static final String TEMPLATE_MYBATIS_PLUS = "MybatisPlus3";
 }

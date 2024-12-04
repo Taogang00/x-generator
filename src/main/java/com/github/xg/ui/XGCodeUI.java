@@ -119,14 +119,13 @@ public class XGCodeUI {
             configComboBox.addItem(config.getName());
             if (config.getIsDefault()) {
                 configComboBox.setSelectedIndex(i);
-                xgGlobalObj.setSelectedConfigKey(config.getName());
+                xgMainDialog.getXgSettingUI().initXGTabInfo(config.getName());
             }
         }
 
         // 0.选中的配置是哪个
         configComboBox.addActionListener(e -> {
             String selectedItem = (String) configComboBox.getSelectedItem();
-            xgGlobalObj.setSelectedConfigKey(selectedItem);
             xgMainDialog.getXgSettingUI().initXGTabInfo(selectedItem);
         });
 

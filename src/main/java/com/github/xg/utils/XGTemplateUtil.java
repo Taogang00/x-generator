@@ -12,7 +12,7 @@ import java.io.StringReader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
-public class XGFreemarkerUtil {
+public class XGTemplateUtil {
 
     /**
      * 从字符串获取模板
@@ -38,8 +38,8 @@ public class XGFreemarkerUtil {
 
     @NotNull
     public static String getTemplateContent(String directory, String templateName) {
-        URL resource = XGFreemarkerUtil.class.getResource(StrUtil.format("{}/{}.ftl", directory, templateName));
-        String templateContent = null;
+        URL resource = XGTemplateUtil.class.getResource(StrUtil.format("{}/{}.ftl", directory, templateName));
+        String templateContent;
         try {
             assert resource != null;
             templateContent = StringUtil.convertLineSeparators(UrlUtil.loadText(resource));

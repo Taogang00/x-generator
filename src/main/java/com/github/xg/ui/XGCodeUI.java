@@ -45,7 +45,7 @@ import java.util.stream.Collectors;
 
 import static cn.hutool.core.text.StrPool.DOT;
 import static com.github.xg.constant.XGConstants.*;
-import static com.github.xg.utils.XGFreemarkerUtil.getFreemarkerTemplate;
+import static com.github.xg.utils.XGTemplateUtil.getFreemarkerTemplate;
 
 /**
  * 代码生成器 主页的UI

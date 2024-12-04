@@ -26,9 +26,6 @@ public class XGSettingUI {
     private JPanel rootJPanel;
     private JTabbedPane tabbedPane1;
     private JButton backBtn;
-    private JButton importBtn;
-    private JButton exportBtn;
-    private JButton resetBtn;
     private JTextPane jt;
     private JPanel templateList;
     private JPanel templateEditor;
@@ -46,24 +43,6 @@ public class XGSettingUI {
         // 设置按钮事件
         backBtn.addActionListener(e -> {
             xgMainDialog.switchPage(0);
-        });
-
-        // 导入配置
-        importBtn.addActionListener(e -> {
-            String exportPath = XGFileUtil.chooseDirectory(project);
-            if (ObjectUtil.isNull(exportPath)) {
-                return;
-            }
-            XGSettingManager.importConfig(exportPath);
-        });
-
-        // 导出配置
-        exportBtn.addActionListener(e -> {
-            String exportPath = XGFileUtil.chooseDirectory(project);
-            if (StrUtil.isEmpty(exportPath)) {
-                return;
-            }
-            XGSettingManager.export(exportPath);
         });
     }
 
@@ -95,6 +74,5 @@ public class XGSettingUI {
         });
 
         return ActionManager.getInstance().createActionToolbar("Item Toolbar", actionGroup, true);
-
     }
 }

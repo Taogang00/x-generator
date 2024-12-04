@@ -30,7 +30,7 @@ public class XGMainDialog extends DialogWrapper {
 
     private final Project project;
 
-    private final XGCodeUI codeGeneratorUI;
+    private final XGCodeUI xgCodeUI;
 
     @Getter
     private final XGSettingUI xgSettingUI;
@@ -54,9 +54,9 @@ public class XGMainDialog extends DialogWrapper {
         this.setResizable(false);
 
         xgSettingUI = new XGSettingUI(project, this, xgGlobalObj);
-        codeGeneratorUI = new XGCodeUI(project, this, xgGlobalObj);
+        xgCodeUI = new XGCodeUI(project, this, xgGlobalObj);
 
-        containerPanelList.add(codeGeneratorUI.getRootJPanel());
+        containerPanelList.add(xgCodeUI.getRootJPanel());
         containerPanelList.add(xgSettingUI.getRootJPanel());
         // 默认切换到第一页
         switchPage(0);
@@ -81,7 +81,7 @@ public class XGMainDialog extends DialogWrapper {
     protected void doOKAction() {
         // 在这里调用 XGCodeGeneratorUI 中的方法
         try {
-            codeGeneratorUI.generateCodeAction(project, this);
+            xgCodeUI.generateCodeAction(project, this);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -1,12 +1,9 @@
 package com.github.xg.ui;
 
-import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.core.util.StrUtil;
 import com.github.xg.config.XGConfig;
 import com.github.xg.config.XGSettingManager;
 import com.github.xg.model.XGGlobalObj;
 import com.github.xg.model.XGTabInfo;
-import com.github.xg.utils.XGFileUtil;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.project.Project;
@@ -30,6 +27,8 @@ public class XGSettingUI {
     private JPanel templateList;
     private JPanel templateEditor;
     private JList<String> list1;
+    private JComboBox comboBox1;
+    private JCheckBox 设为默认CheckBox;
     private Map<String, XGTabInfo> tabMap;
 
     public XGSettingUI(Project project, XGMainDialog xgMainDialog, XGGlobalObj xgGlobalObj) {

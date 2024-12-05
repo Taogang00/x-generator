@@ -4,7 +4,6 @@ import cn.hutool.core.lang.Tuple;
 import com.github.xg.model.XGTabInfo;
 import lombok.Data;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -24,7 +23,7 @@ public class XGConfig {
     /**
      * 创建时间
      */
-    private Date createTime;
+    private String createTime;
 
     /**
      * 代码模板

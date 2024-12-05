@@ -109,7 +109,7 @@ public class XGMainDialog extends DialogWrapper {
             List<XGConfig> list = new ArrayList<>();
             //第一种，作者公司默认的配置
             XGConfig authorXGConfig = new XGConfig();
-            authorXGConfig.setCreateTime(new Date());
+            authorXGConfig.setCreateTime(DateUtil.formatDateTime(new Date()));
             authorXGConfig.setIsDefault(true);
             authorXGConfig.setName(TEMPLATE_GUANWEI);
 
@@ -128,8 +128,8 @@ public class XGMainDialog extends DialogWrapper {
 
             //第二种，mybatisPlus配置
             XGConfig mpXGConfig = new XGConfig();
-            mpXGConfig.setCreateTime(new Date());
-            mpXGConfig.setIsDefault(true);
+            mpXGConfig.setCreateTime(DateUtil.formatDateTime(new Date()));
+            mpXGConfig.setIsDefault(false);
             mpXGConfig.setName(TEMPLATE_MYBATIS_PLUS);
             List<XGTabInfo> mpXGTabInfoList = new ArrayList<>();
             mpXGTabInfoList.add(new XGTabInfo(CONTROLLER, getTemplateContent("/template/mybatisplus", "controller.java"), 1));

@@ -85,7 +85,6 @@ public class XGCodeUI {
     private JCheckBox mapperXmlCheckBox;
     private JButton importBtn;
     private JButton packageAllBtn;
-    private JButton settingBtn;
     private JComboBox<String> configComboBox;
     private JList<String> tableList;
     private JTextField removeClassNamePrefixTextField;
@@ -101,8 +100,6 @@ public class XGCodeUI {
         this.xgGlobalObj = xgGlobalObj;
         this.skipRadioButton.setActionCommand("0");
         this.overrideRadioButton.setActionCommand("1");
-
-        this.settingBtn.setIcon(AllIcons.General.GearPlain);
         this.importBtn.setIcon(AllIcons.General.OpenDisk);
         this.runInfoLabel.setIcon(AllIcons.General.Information);
         this.authorTextField.setText(System.getProperty("user.name"));
@@ -196,10 +193,6 @@ public class XGCodeUI {
             }
         });
 
-        // 设置按钮事件
-        settingBtn.addActionListener(e -> {
-            xgMainDialog.switchPage(1);
-        });
 
         // 6.导入xml按钮事件
         importBtn.addActionListener(e -> {

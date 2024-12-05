@@ -5,6 +5,7 @@ import com.github.xg.config.XGConfig;
 import com.github.xg.config.XGSettingManager;
 import com.github.xg.model.XGGlobalObj;
 import com.github.xg.model.XGTabInfo;
+import com.intellij.icons.AllIcons;
 import com.intellij.ide.BrowserUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
@@ -14,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -27,9 +29,13 @@ public class XGMainDialog extends DialogWrapper {
 
     private JPanel rootPanel;
 
+    private boolean currentPageSetting = true;
+
     private final Project project;
 
     private final XGCodeUI xgCodeUI;
+
+    private final Action settingAction;
 
     @Getter
     private final XGSettingUI xgSettingUI;
@@ -57,6 +63,23 @@ public class XGMainDialog extends DialogWrapper {
 
         containerPanelList.add(xgCodeUI.getRootJPanel());
         containerPanelList.add(xgSettingUI.getRootJPanel());
+
+        settingAction = new DialogWrapperAction("设置") {
+            @Override
+            protected void doAction(ActionEvent e) {
+                switchPage(currentPageSetting ? 1 : 0);
+                if (currentPageSetting) {
+                    settingAction.putValue(Action.SMALL_ICON, AllIcons.Actions.Exit);
+                    settingAction.putValue(Action.NAME, "返回");
+                } else {
+                    settingAction.putValue(Action.SMALL_ICON, AllIcons.General.GearPlain);
+                    settingAction.putValue(Action.NAME, "设置");
+                }
+                currentPageSetting = !currentPageSetting;
+            }
+        };
+        settingAction.putValue(Action.SMALL_ICON, AllIcons.General.GearPlain);
+
         // 默认切换到第一页
         switchPage(0);
         init();
@@ -99,7 +122,8 @@ public class XGMainDialog extends DialogWrapper {
 
     @Override
     protected Action @NotNull [] createActions() {
-        return super.createActions();
+        Action helpAction = getHelpAction();
+        return new Action[]{settingAction, getOKAction(), getCancelAction(), helpAction};
     }
 
     public void initXGDefaultTemplateManager() {

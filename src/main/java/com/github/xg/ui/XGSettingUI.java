@@ -22,27 +22,19 @@ import java.util.stream.Collectors;
 public class XGSettingUI {
     private JPanel rootJPanel;
     private JTabbedPane tabbedPane1;
-    private JButton backBtn;
     private JTextPane jt;
     private JPanel templateList;
     private JPanel templateEditor;
     private JList<String> list1;
-    private JComboBox comboBox1;
-    private JCheckBox 设为默认CheckBox;
+    private JComboBox<String> comboBox1;
+    private JCheckBox defaultSettingCheckBox;
     private Map<String, XGTabInfo> tabMap;
 
     public XGSettingUI(Project project, XGMainDialog xgMainDialog, XGGlobalObj xgGlobalObj) {
-        this.backBtn.setIcon(AllIcons.Actions.Exit);
-
         // 添加到顶部
         ActionToolbar actionToolbar = toolBar();
         actionToolbar.setTargetComponent(templateList);
         templateList.add(actionToolbar.getComponent(), BorderLayout.NORTH);
-
-        // 设置按钮事件
-        backBtn.addActionListener(e -> {
-            xgMainDialog.switchPage(0);
-        });
     }
 
     public void initXGTabInfo(String selectedConfigKey) {

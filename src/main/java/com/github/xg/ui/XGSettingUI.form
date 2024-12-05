@@ -22,7 +22,7 @@
             </constraints>
             <properties>
               <actionCommand value="主页"/>
-              <text value="主页"/>
+              <text value="返回"/>
             </properties>
           </component>
           <hspacer id="87527">

@@ -3,7 +3,6 @@ package com.github.xg.ui;
 import cn.hutool.core.date.DateUtil;
 import com.github.xg.config.XGConfig;
 import com.github.xg.config.XGSettingManager;
-import com.github.xg.constant.XGConstants;
 import com.github.xg.model.XGGlobalObj;
 import com.github.xg.model.XGTabInfo;
 import com.intellij.ide.BrowserUtil;
@@ -43,7 +42,7 @@ public class XGMainDialog extends DialogWrapper {
         xgGlobalObj.setDateTime(DateUtil.formatDateTime(new Date()));
         xgGlobalObj.setFileOverride(false);
 
-        initXGSettingManager();
+        initXGDefaultTemplateManager();
 
         this.setOKButtonText("生成");
         this.setCancelButtonText("取消");
@@ -103,7 +102,7 @@ public class XGMainDialog extends DialogWrapper {
         return super.createActions();
     }
 
-    public void initXGSettingManager() {
+    public void initXGDefaultTemplateManager() {
         XGSettingManager.State state = XGSettingManager.getInstance().getState();
         assert state != null;
         if (state.getXgConfigs() == null) {
@@ -114,26 +113,34 @@ public class XGMainDialog extends DialogWrapper {
             authorXGConfig.setIsDefault(true);
             authorXGConfig.setName(TEMPLATE_GUANWEI);
 
-            List<XGTabInfo> authorXGTabInfoList = new ArrayList<>();
-            authorXGTabInfoList.add(new XGTabInfo(CONTROLLER, getTemplateContent("/template/guanwei", "controller.java"), 1));
-            authorXGTabInfoList.add(new XGTabInfo(SERVICE, getTemplateContent("/template/guanwei", "service.java"), 2));
-            authorXGTabInfoList.add(new XGTabInfo(SERVICE_IMPL, getTemplateContent("/template/guanwei", "serviceImpl.java"), 3));
-            authorXGTabInfoList.add(new XGTabInfo(ENTITY, getTemplateContent("/template/guanwei", "entity.java"), 4));
-            authorXGTabInfoList.add(new XGTabInfo(MAPPER, getTemplateContent("/template/guanwei", "mapper.java"), 5));
-            authorXGTabInfoList.add(new XGTabInfo(XML, getTemplateContent("/template/guanwei", "mapper.xml"), 6));
-            authorXGTabInfoList.add(new XGTabInfo(QUERY, getTemplateContent("/template/guanwei", "query.java"), 7));
-            authorXGTabInfoList.add(new XGTabInfo(DTO, getTemplateContent("/template/guanwei", "dto.java"), 8));
-            authorXGTabInfoList.add(new XGTabInfo(MAPSTRUCT, getTemplateContent("/template/guanwei", "mapstruct.java"), 9));
-            authorXGConfig.setXgTabInfoList(authorXGTabInfoList);
+            List<XGTabInfo> guanweiXGTabInfoList = new ArrayList<>();
+            guanweiXGTabInfoList.add(new XGTabInfo(CONTROLLER, getTemplateContent("/template/guanwei", "controller.java"), 1));
+            guanweiXGTabInfoList.add(new XGTabInfo(SERVICE, getTemplateContent("/template/guanwei", "service.java"), 2));
+            guanweiXGTabInfoList.add(new XGTabInfo(SERVICE_IMPL, getTemplateContent("/template/guanwei", "serviceImpl.java"), 3));
+            guanweiXGTabInfoList.add(new XGTabInfo(ENTITY, getTemplateContent("/template/guanwei", "entity.java"), 4));
+            guanweiXGTabInfoList.add(new XGTabInfo(MAPPER, getTemplateContent("/template/guanwei", "mapper.java"), 5));
+            guanweiXGTabInfoList.add(new XGTabInfo(XML, getTemplateContent("/template/guanwei", "mapper.xml"), 6));
+            guanweiXGTabInfoList.add(new XGTabInfo(QUERY, getTemplateContent("/template/guanwei", "query.java"), 7));
+            guanweiXGTabInfoList.add(new XGTabInfo(DTO, getTemplateContent("/template/guanwei", "dto.java"), 8));
+            guanweiXGTabInfoList.add(new XGTabInfo(MAPSTRUCT, getTemplateContent("/template/guanwei", "mapstruct.java"), 9));
+            authorXGConfig.setXgTabInfoList(guanweiXGTabInfoList);
             list.add(authorXGConfig);
 
-            //第二种，mybatisPlus配置...TODO
+            //第二种，mybatisPlus配置
             XGConfig mpXGConfig = new XGConfig();
             mpXGConfig.setCreateTime(new Date());
             mpXGConfig.setIsDefault(true);
             mpXGConfig.setName(TEMPLATE_MYBATIS_PLUS);
             List<XGTabInfo> mpXGTabInfoList = new ArrayList<>();
-            mpXGTabInfoList.add(new XGTabInfo(XGConstants.ENTITY, getTemplateContent("/template/mybatisplus", "entity.java"), 4));
+            mpXGTabInfoList.add(new XGTabInfo(CONTROLLER, getTemplateContent("/template/mybatisplus", "controller.java"), 1));
+            mpXGTabInfoList.add(new XGTabInfo(SERVICE, getTemplateContent("/template/mybatisplus", "service.java"), 2));
+            mpXGTabInfoList.add(new XGTabInfo(SERVICE_IMPL, getTemplateContent("/template/mybatisplus", "serviceImpl.java"), 3));
+            mpXGTabInfoList.add(new XGTabInfo(ENTITY, getTemplateContent("/template/mybatisplus", "entity.java"), 4));
+            mpXGTabInfoList.add(new XGTabInfo(MAPPER, getTemplateContent("/template/mybatisplus", "mapper.java"), 5));
+            mpXGTabInfoList.add(new XGTabInfo(XML, getTemplateContent("/template/mybatisplus", "mapper.xml"), 6));
+            mpXGTabInfoList.add(new XGTabInfo(QUERY, getTemplateContent("/template/mybatisplus", "query.java"), 7));
+            mpXGTabInfoList.add(new XGTabInfo(DTO, getTemplateContent("/template/mybatisplus", "dto.java"), 8));
+            mpXGTabInfoList.add(new XGTabInfo(MAPSTRUCT, getTemplateContent("/template/mybatisplus", "mapstruct.java"), 9));
             mpXGConfig.setXgTabInfoList(mpXGTabInfoList);
             list.add(mpXGConfig);
 

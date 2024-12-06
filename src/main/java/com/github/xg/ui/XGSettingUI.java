@@ -2,7 +2,6 @@ package com.github.xg.ui;
 
 import com.github.xg.config.XGConfig;
 import com.github.xg.config.XGSettingManager;
-import com.github.xg.model.XGGlobalObj;
 import com.github.xg.model.XGTabInfo;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.*;
@@ -26,11 +25,22 @@ public class XGSettingUI {
     private JPanel templateList;
     private JPanel templateEditor;
     private JList<String> list1;
-    private JComboBox<String> comboBox1;
+    private JComboBox<String> configComboBox;
     private JCheckBox defaultSettingCheckBox;
     private Map<String, XGTabInfo> tabMap;
 
-    public XGSettingUI(Project project, XGMainDialog xgMainDialog, XGGlobalObj xgGlobalObj) {
+    public XGSettingUI(Project project, XGCodeUI xgCodeUI) {
+        //配置的选项
+        XGSettingManager.State state = XGSettingManager.getInstance().getState();
+        assert state != null;
+        List<XGConfig> valuesList = state.getXgConfigs();
+        for (XGConfig config : valuesList) {
+            configComboBox.addItem(config.getName());
+        }
+        configComboBox.setSelectedIndex(xgCodeUI.getConfigComboBox().getSelectedIndex());
+
+        initXGTabInfo((String) xgCodeUI.getConfigComboBox().getSelectedItem());
+
         // 添加到顶部
         ActionToolbar actionToolbar = toolBar();
         actionToolbar.setTargetComponent(templateList);

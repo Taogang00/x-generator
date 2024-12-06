@@ -15,7 +15,7 @@
         <properties/>
         <border type="none"/>
         <children>
-          <component id="88561" class="javax.swing.JComboBox" binding="comboBox1" default-binding="true">
+          <component id="88561" class="javax.swing.JComboBox" binding="configComboBox">
             <constraints/>
             <properties>
               <minimumSize width="192" height="34"/>

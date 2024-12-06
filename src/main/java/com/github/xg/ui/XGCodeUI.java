@@ -85,6 +85,7 @@ public class XGCodeUI {
     private JCheckBox mapperXmlCheckBox;
     private JButton importBtn;
     private JButton packageAllBtn;
+    @Getter
     private JComboBox<String> configComboBox;
     private JList<String> tableList;
     private JTextField removeClassNamePrefixTextField;
@@ -96,7 +97,7 @@ public class XGCodeUI {
     private final XGGlobalObj xgGlobalObj;
     private final Map<String, Tuple> columnJavaTypeMapping = new HashMap<>();
 
-    public XGCodeUI(Project project, XGMainDialog xgMainDialog, XGGlobalObj xgGlobalObj) {
+    public XGCodeUI(Project project, XGGlobalObj xgGlobalObj) {
         this.xgGlobalObj = xgGlobalObj;
         this.skipRadioButton.setActionCommand("0");
         this.overrideRadioButton.setActionCommand("1");
@@ -116,15 +117,8 @@ public class XGCodeUI {
             configComboBox.addItem(config.getName());
             if (config.getIsDefault()) {
                 configComboBox.setSelectedIndex(i);
-                xgMainDialog.getXgSettingUI().initXGTabInfo(config.getName());
             }
         }
-
-        // 0.选中的配置是哪个
-        configComboBox.addActionListener(e -> {
-            String selectedItem = (String) configComboBox.getSelectedItem();
-            xgMainDialog.getXgSettingUI().initXGTabInfo(selectedItem);
-        });
 
         // 1.项目模块加载
         List<String> mavenArtifactIds = XGMavenUtil.getMavenArtifactId(project);

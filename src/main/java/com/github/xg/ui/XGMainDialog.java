@@ -9,7 +9,6 @@ import com.intellij.icons.AllIcons;
 import com.intellij.ide.BrowserUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
-import lombok.Getter;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -37,13 +36,9 @@ public class XGMainDialog extends DialogWrapper {
 
     private final Action settingAction;
 
-    @Getter
-    private final XGSettingUI xgSettingUI;
-
-    private final List<JPanel> containerPanelList = new ArrayList<>();
-
     public XGMainDialog(Project project) {
         super(project);
+        this.project = project;
         XGGlobalObj xgGlobalObj = new XGGlobalObj();
         xgGlobalObj.setDateTime(DateUtil.formatDateTime(new Date()));
         xgGlobalObj.setFileOverride(false);
@@ -52,46 +47,38 @@ public class XGMainDialog extends DialogWrapper {
 
         this.setOKButtonText("生成");
         this.setCancelButtonText("取消");
-        this.project = project;
-
         this.setTitle("X-代码生成器 0.0.5");
         this.setSize(999, 666);
         this.setResizable(false);
 
-        xgSettingUI = new XGSettingUI(project, this, xgGlobalObj);
-        xgCodeUI = new XGCodeUI(project, this, xgGlobalObj);
-
-        containerPanelList.add(xgCodeUI.getRootJPanel());
-        containerPanelList.add(xgSettingUI.getRootJPanel());
+        xgCodeUI = new XGCodeUI(project, xgGlobalObj);
+        rootPanel.add(xgCodeUI.getRootJPanel());
 
         settingAction = new DialogWrapperAction("设置") {
             @Override
             protected void doAction(ActionEvent e) {
-                switchPage(currentPageSetting ? 1 : 0);
+                rootPanel.removeAll();
                 if (currentPageSetting) {
+                    XGSettingUI xgSettingUI = new XGSettingUI(project, xgCodeUI);
+                    rootPanel.add(xgSettingUI.getRootJPanel());
+
                     settingAction.putValue(Action.SMALL_ICON, AllIcons.Actions.Exit);
                     settingAction.putValue(Action.NAME, "返回");
+                    setOKActionEnabled(false);
                 } else {
+                    rootPanel.add(xgCodeUI.getRootJPanel());
+
                     settingAction.putValue(Action.SMALL_ICON, AllIcons.General.GearPlain);
                     settingAction.putValue(Action.NAME, "设置");
+                    setOKActionEnabled(true);
                 }
+                rootPanel.repaint();//刷新页面，重绘面板
+                rootPanel.validate();//使重绘的面板确认生效
                 currentPageSetting = !currentPageSetting;
             }
         };
         settingAction.putValue(Action.SMALL_ICON, AllIcons.General.GearPlain);
-
-        // 默认切换到第一页
-        switchPage(0);
         init();
-    }
-
-    public void switchPage(int page) {
-        super.setOKActionEnabled(page != 1);
-        rootPanel.removeAll();
-        JPanel jPanel = containerPanelList.get(page);
-        rootPanel.add(jPanel);
-        rootPanel.repaint();//刷新页面，重绘面板
-        rootPanel.validate();//使重绘的面板确认生效
     }
 
     @Override

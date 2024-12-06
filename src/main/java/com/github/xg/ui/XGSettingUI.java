@@ -6,6 +6,7 @@ import com.github.xg.model.XGTabInfo;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.project.Project;
+import com.intellij.util.ui.JBUI;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,6 +31,7 @@ public class XGSettingUI {
     private Map<String, XGTabInfo> tabMap;
 
     public XGSettingUI(Project project, XGCodeUI xgCodeUI) {
+        list1.setBorder(JBUI.Borders.empty(5));
         //配置的选项
         XGSettingManager.State state = XGSettingManager.getInstance().getState();
         assert state != null;

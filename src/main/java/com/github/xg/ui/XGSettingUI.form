@@ -19,10 +19,7 @@
             <constraints/>
             <properties>
               <minimumSize width="192" height="34"/>
-              <model>
-                <item value="GuanWei"/>
-                <item value="MybatisPlus"/>
-              </model>
+              <model/>
               <preferredSize width="250" height="34"/>
             </properties>
           </component>

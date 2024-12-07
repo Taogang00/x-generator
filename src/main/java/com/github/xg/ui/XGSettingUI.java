@@ -44,7 +44,8 @@ public class XGSettingUI {
     private final Editor templateEditor;
     private JList<String> list1;
     private JComboBox<String> configComboBox;
-    private JCheckBox defaultSettingCheckBox;
+    private JButton 重置Button;
+    private JCheckBox 设为默认CheckBox;
     private Map<String, XGTabInfo> tabMap;
     public static Key<Boolean> flexTemplate = Key.create("flexTemplate");
 

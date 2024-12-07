@@ -1,11 +1,13 @@
 package com.github.xg.ui;
 
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.xg.config.XGConfig;
 import com.github.xg.config.XGSettingManager;
 import com.github.xg.model.XGTabInfo;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.*;
+import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorFactory;
@@ -18,6 +20,7 @@ import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiFileFactory;
+import com.intellij.ui.tabs.TabInfo;
 import com.intellij.util.ui.JBUI;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
@@ -67,8 +70,22 @@ public class XGSettingUI {
 
         XGConfig xgConfig = XGSettingManager.getSelectXGConfig((String) xgCodeUI.getConfigComboBox().getSelectedItem());
         List<XGTabInfo> infoList = xgConfig.getXgTabInfoList();
-        templateEditor = createEditorWithText(project, infoList.get(0).getContent(), "java");
+        templateEditor = createEditorWithText(project, infoList.get(0).getContent(), "ftl");
         templateEditorJPanel.add(templateEditor.getComponent());
+
+        Document document = templateEditor.getDocument();
+        list1.addListSelectionListener(e -> {
+            if (e.getValueIsAdjusting() || ObjectUtil.isNull(list1.getSelectedValue())) {
+                return;
+            }
+            document.setReadOnly(false);
+            WriteCommandAction.runWriteCommandAction(project, () -> {
+                XGTabInfo xgTabInfo = tabMap.get(list1.getSelectedValue().toString());
+                String fileName = StrUtil.format("{}{}", xgTabInfo.getType(), ".vm");
+                ((EditorEx) templateEditor).setHighlighter(EditorHighlighterFactory.getInstance().createEditorHighlighter(project, fileName));
+                document.setText(xgTabInfo.getContent());
+            });
+        });
     }
 
     public Editor createEditorWithText(Project project, String text, String fileSuffix) {

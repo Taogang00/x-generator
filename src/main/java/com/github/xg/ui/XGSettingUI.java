@@ -45,7 +45,7 @@ public class XGSettingUI {
     private JList<String> list1;
     private JComboBox<String> configComboBox;
     private JButton 重置Button;
-    private JCheckBox 设为默认CheckBox;
+    private JCheckBox setDefaultConfigCheckBox;
     private Map<String, XGTabInfo> tabMap;
     public static Key<Boolean> flexTemplate = Key.create("flexTemplate");
 
@@ -71,9 +71,17 @@ public class XGSettingUI {
         templateEditorJPanel.setPreferredSize(new Dimension(550, 600));
 
         XGConfig xgConfig = XGSettingManager.getSelectXGConfig((String) xgCodeUI.getConfigComboBox().getSelectedItem());
+        setDefaultConfigCheckBox.setSelected(xgConfig.getIsDefault());
+
         List<XGTabInfo> infoList = xgConfig.getXgTabInfoList();
         templateEditor = createEditorWithText(project, infoList.get(0).getContent(), "ftl");
         templateEditorJPanel.add(templateEditor.getComponent());
+
+        configComboBox.addActionListener(e -> {
+            Object selectedItem = configComboBox.getSelectedItem();
+            XGConfig selectXGConfig = XGSettingManager.getSelectXGConfig((String) selectedItem);
+            setDefaultConfigCheckBox.setSelected(selectXGConfig.getIsDefault());
+        });
 
         Document document = templateEditor.getDocument();
         list1.addListSelectionListener(e -> {
@@ -107,6 +115,18 @@ public class XGSettingUI {
                 state.setXgConfigs(xgConfigs);
                 XGSettingManager.getInstance().loadState(state);
             }
+        });
+
+        setDefaultConfigCheckBox.addActionListener(e -> {
+            List<XGConfig> xgConfigs = state.getXgConfigs();
+            for (XGConfig config : xgConfigs) {
+                config.setIsDefault(false);
+                if (config.getName().equals(configComboBox.getSelectedItem())) {
+                    config.setIsDefault(true);
+                }
+            }
+            state.setXgConfigs(xgConfigs);
+            XGSettingManager.getInstance().loadState(state);
         });
     }
 

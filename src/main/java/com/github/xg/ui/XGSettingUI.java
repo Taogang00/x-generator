@@ -12,6 +12,8 @@ import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorFactory;
 import com.intellij.openapi.editor.EditorSettings;
+import com.intellij.openapi.editor.event.DocumentEvent;
+import com.intellij.openapi.editor.event.DocumentListener;
 import com.intellij.openapi.editor.ex.EditorEx;
 import com.intellij.openapi.editor.highlighter.EditorHighlighterFactory;
 import com.intellij.openapi.fileTypes.PlainTextLanguage;
@@ -20,7 +22,6 @@ import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiFileFactory;
-import com.intellij.ui.tabs.TabInfo;
 import com.intellij.util.ui.JBUI;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
@@ -80,11 +81,31 @@ public class XGSettingUI {
             }
             document.setReadOnly(false);
             WriteCommandAction.runWriteCommandAction(project, () -> {
-                XGTabInfo xgTabInfo = tabMap.get(list1.getSelectedValue().toString());
+                XGTabInfo xgTabInfo = tabMap.get(list1.getSelectedValue());
                 String fileName = StrUtil.format("{}{}", xgTabInfo.getType(), ".vm");
                 ((EditorEx) templateEditor).setHighlighter(EditorHighlighterFactory.getInstance().createEditorHighlighter(project, fileName));
                 document.setText(xgTabInfo.getContent());
             });
+        });
+
+        templateEditor.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void documentChanged(@NotNull DocumentEvent event) {
+                XGTabInfo xgTabInfo = tabMap.get(list1.getSelectedValue());
+                xgTabInfo.setContent(event.getDocument().getText());
+
+                List<XGConfig> xgConfigs = state.getXgConfigs();
+                for (XGConfig config : xgConfigs) {
+                    List<XGTabInfo> xgTabInfoList = config.getXgTabInfoList();
+                    for (XGTabInfo tabInfo : xgTabInfoList) {
+                        if (tabInfo.getType().equals(xgTabInfo.getType())) {
+                            tabInfo.setContent(event.getDocument().getText());
+                        }
+                    }
+                }
+                state.setXgConfigs(xgConfigs);
+                XGSettingManager.getInstance().loadState(state);
+            }
         });
     }
 

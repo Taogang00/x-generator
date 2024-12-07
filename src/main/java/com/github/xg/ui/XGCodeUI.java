@@ -537,17 +537,17 @@ public class XGCodeUI {
     @SuppressWarnings("all")
     public void generateCodeAction(Project project, XGMainDialog xgMainDialog) throws IOException {
         if (this.tableInfoList == null || this.tableInfoList.isEmpty()) {
-            Messages.showDialog("请先导入表实体数据！", "操作提示", new String[]{"确定"}, -1, Messages.getInformationIcon());
+            Messages.showInfoMessage("请先导入表实体数据！", "X-Generator");
             return;
         }
         if (this.xgGeneratorSelectedTableObjList.isEmpty()) {
-            Messages.showDialog("请先选择要生成的表实体！", "操作提示", new String[]{"确定"}, -1, Messages.getInformationIcon());
+            Messages.showInfoMessage("请先选择要生成的表实体！", "X-Generator");
             return;
         }
         if (!controllerCheckBox.isSelected() && !entityCheckBox.isSelected()
                 && !mapStructCheckBox.isSelected() && !queryCheckBox.isSelected() && !mapperXmlCheckBox.isSelected()
                 && !mapperCheckBox.isSelected() && !serviceCheckBox.isSelected() && !dtoCheckBox.isSelected()) {
-            Messages.showDialog("请先选择要生成的代码对象！", "操作提示", new String[]{"确定"}, -1, Messages.getInformationIcon());
+            Messages.showInfoMessage("请先选择要生成的代码对象！", "X-Generator");
             return;
         }
 

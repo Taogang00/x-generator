@@ -41,7 +41,6 @@ import java.util.List;
 public class XGSettingUI {
     private JPanel rootJPanel;
     private JTabbedPane tabbedPane1;
-    private JTextPane jt;
     private JPanel templateList;
     private JPanel templateEditorJPanel;
     private JList<String> xgTabInfoList;

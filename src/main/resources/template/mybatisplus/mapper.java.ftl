@@ -1,9 +1,7 @@
 <#--@formatter:off-->
 package ${table.mapperPackagePath};
 
-import ${table.dtoPackagePath}.${table.dtoClassName};
 import ${table.entityPackagePath}.${table.entityClassName};
-import ${table.queryPackagePath}.${table.queryClassName};
 import org.apache.ibatis.annotations.Mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 

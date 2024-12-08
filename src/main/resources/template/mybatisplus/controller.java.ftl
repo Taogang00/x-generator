@@ -1,10 +1,6 @@
 <#--@formatter:off-->
 package ${global.controllerPackagePath};
 
-import ${table.dtoPackagePath}.${table.dtoClassName};
-import ${table.queryPackagePath}.${table.queryClassName};
-import ${table.entityPackagePath}.${table.entityClassName};
-import ${table.mapstructPackagePath}.${table.mapstructClassName};
 import ${table.servicePackagePath}.${table.serviceClassName};
 import lombok.RequiredArgsConstructor;
 import org.springframework.util.Assert;
@@ -25,8 +21,6 @@ import java.util.List;
 public class ${table.controllerClassName} {
 
     private final ${table.serviceClassName} ${table.serviceClassName?uncap_first};
-
-    private final ${table.mapstructClassName} ${table.mapstructClassName?uncap_first};
 
 }
 <#--@formatter:on-->

@@ -1,9 +1,7 @@
 <#--@formatter:off-->
 package ${global.servicePackagePath};
 
-import ${table.dtoPackagePath}.${table.dtoClassName};
 import ${table.entityPackagePath}.${table.entityClassName};
-import ${table.queryPackagePath}.${table.queryClassName};
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;

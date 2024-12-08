@@ -1,10 +1,8 @@
 <#--@formatter:off-->
 package ${global.serviceImplPackagePath};
 
-import ${table.dtoPackagePath}.${table.dtoClassName};
 import ${table.entityPackagePath}.${table.entityClassName};
 import ${table.mapperPackagePath}.${table.mapperClassName};
-import ${table.queryPackagePath}.${table.queryClassName};
 import ${table.servicePackagePath}.${table.serviceClassName};
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;

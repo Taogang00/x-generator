@@ -18,6 +18,7 @@ import com.intellij.openapi.editor.ex.EditorEx;
 import com.intellij.openapi.editor.highlighter.EditorHighlighterFactory;
 import com.intellij.openapi.fileTypes.PlainTextLanguage;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
@@ -30,9 +31,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Getter
 public class XGSettingUI {
@@ -42,15 +40,14 @@ public class XGSettingUI {
     private JPanel templateList;
     private JPanel templateEditorJPanel;
     private final Editor templateEditor;
-    private JList<String> list1;
+    private JList<String> xgTabInfoList;
     private JComboBox<String> configComboBox;
-    private JButton 重置Button;
+    private JButton resetButton;
     private JCheckBox setDefaultConfigCheckBox;
-    private Map<String, XGTabInfo> tabMap;
     public static Key<Boolean> flexTemplate = Key.create("flexTemplate");
 
     public XGSettingUI(Project project, XGCodeUI xgCodeUI) {
-        list1.setBorder(JBUI.Borders.empty(5));
+        xgTabInfoList.setBorder(JBUI.Borders.emptyLeft(5));
         //配置的选项
         XGSettingManager.State state = XGSettingManager.getInstance().getState();
         assert state != null;
@@ -77,38 +74,86 @@ public class XGSettingUI {
         templateEditor = createEditorWithText(project, infoList.get(0).getContent(), "ftl");
         templateEditorJPanel.add(templateEditor.getComponent());
 
+        resetButton.addActionListener(e1 -> {
+            Object selectedItem = configComboBox.getSelectedItem();
+            if (selectedItem != null) {
+                int flag = Messages.showYesNoDialog("确定重置【" + selectedItem + "】模板配置吗？", "提示", AllIcons.General.QuestionDialog);
+                if (flag == 0) {
+                    XGConfig.initXGDefaultTemplateManager(selectedItem.toString());
+
+                    Document document = templateEditor.getDocument();
+                    document.setReadOnly(false);
+                    WriteCommandAction.runWriteCommandAction(project, () -> {
+                        XGConfig selectXGConfig = XGSettingManager.getSelectXGConfig(selectedItem.toString());
+
+                        List<XGTabInfo> xgTabInfoList = selectXGConfig.getXgTabInfoList();
+                        for (XGTabInfo tabInfo : xgTabInfoList) {
+                            if (tabInfo.getType().equals(this.xgTabInfoList.getSelectedValue())) {
+                                String fileName = StrUtil.format("{}{}", tabInfo.getType(), ".flt");
+                                ((EditorEx) templateEditor).setHighlighter(EditorHighlighterFactory.getInstance().createEditorHighlighter(project, fileName));
+                                document.setText(tabInfo.getContent());
+                            }
+                        }
+                    });
+                }
+            }
+        });
+
         configComboBox.addActionListener(e -> {
             Object selectedItem = configComboBox.getSelectedItem();
             XGConfig selectXGConfig = XGSettingManager.getSelectXGConfig((String) selectedItem);
             setDefaultConfigCheckBox.setSelected(selectXGConfig.getIsDefault());
-        });
 
-        Document document = templateEditor.getDocument();
-        list1.addListSelectionListener(e -> {
-            if (e.getValueIsAdjusting() || ObjectUtil.isNull(list1.getSelectedValue())) {
-                return;
-            }
+            initXGTabInfo(selectedItem.toString());
+
+            Document document = templateEditor.getDocument();
             document.setReadOnly(false);
             WriteCommandAction.runWriteCommandAction(project, () -> {
-                XGTabInfo xgTabInfo = tabMap.get(list1.getSelectedValue());
-                String fileName = StrUtil.format("{}{}", xgTabInfo.getType(), ".vm");
-                ((EditorEx) templateEditor).setHighlighter(EditorHighlighterFactory.getInstance().createEditorHighlighter(project, fileName));
-                document.setText(xgTabInfo.getContent());
+                List<XGTabInfo> xgTabInfoList = selectXGConfig.getXgTabInfoList();
+                for (XGTabInfo tabInfo : xgTabInfoList) {
+                    if (tabInfo.getType().equals(this.xgTabInfoList.getSelectedValue())) {
+                        String fileName = StrUtil.format("{}{}", tabInfo.getType(), ".flt");
+                        ((EditorEx) templateEditor).setHighlighter(EditorHighlighterFactory.getInstance().createEditorHighlighter(project, fileName));
+                        document.setText(tabInfo.getContent());
+                    }
+                }
+            });
+        });
+
+        xgTabInfoList.addListSelectionListener(e -> {
+            if (e.getValueIsAdjusting() || ObjectUtil.isNull(xgTabInfoList.getSelectedValue())) {
+                return;
+            }
+            Document document = templateEditor.getDocument();
+            document.setReadOnly(false);
+            WriteCommandAction.runWriteCommandAction(project, () -> {
+                Object selectedItem = configComboBox.getSelectedItem();
+                XGConfig selectXGConfig = XGSettingManager.getSelectXGConfig((String) selectedItem);
+                List<XGTabInfo> xgTabInfoList = selectXGConfig.getXgTabInfoList();
+
+                for (XGTabInfo tabInfo : xgTabInfoList) {
+                    if (tabInfo.getType().equals(this.xgTabInfoList.getSelectedValue())) {
+                        String fileName = StrUtil.format("{}{}", tabInfo.getType(), ".flt");
+                        ((EditorEx) templateEditor).setHighlighter(EditorHighlighterFactory.getInstance().createEditorHighlighter(project, fileName));
+                        document.setText(tabInfo.getContent());
+                    }
+                }
             });
         });
 
         templateEditor.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void documentChanged(@NotNull DocumentEvent event) {
-                XGTabInfo xgTabInfo = tabMap.get(list1.getSelectedValue());
-                xgTabInfo.setContent(event.getDocument().getText());
+                Object selectedItem = configComboBox.getSelectedItem();
 
                 List<XGConfig> xgConfigs = state.getXgConfigs();
                 for (XGConfig config : xgConfigs) {
-                    List<XGTabInfo> xgTabInfoList = config.getXgTabInfoList();
-                    for (XGTabInfo tabInfo : xgTabInfoList) {
-                        if (tabInfo.getType().equals(xgTabInfo.getType())) {
-                            tabInfo.setContent(event.getDocument().getText());
+                    if (config.getName().equals(selectedItem)) {
+                        List<XGTabInfo> xgTabInfos = config.getXgTabInfoList();
+                        for (XGTabInfo tabInfo : xgTabInfos) {
+                            if (tabInfo.getType().equals(xgTabInfoList.getSelectedValue())) {
+                                tabInfo.setContent(event.getDocument().getText());
+                            }
                         }
                     }
                 }
@@ -157,14 +202,14 @@ public class XGSettingUI {
         List<XGTabInfo> infoList = xgConfig.getXgTabInfoList();
         infoList.sort(Comparator.comparing(XGTabInfo::getOrderNo));
 
-        tabMap = infoList.stream().collect(Collectors.toMap(XGTabInfo::getType, Function.identity()));
         DefaultListModel<String> model = new DefaultListModel<>();
         model.addAll(infoList.stream().map(XGTabInfo::getType).toList());
 
-        list1.setModel(model);
-        list1.setSelectedIndex(0);
+        xgTabInfoList.setModel(model);
+        xgTabInfoList.setSelectedIndex(0);
     }
 
+    @SuppressWarnings("DialogTitleCapitalization")
     private ActionToolbar toolBar() {
         DefaultActionGroup actionGroup = new DefaultActionGroup();
         // 预览

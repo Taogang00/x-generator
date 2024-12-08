@@ -32,6 +32,12 @@ import java.awt.*;
 import java.util.Comparator;
 import java.util.List;
 
+/**
+ * 设置页面
+ *
+ * @author taogang
+ * @date 2024/12/08
+ */
 @Getter
 public class XGSettingUI {
     private JPanel rootJPanel;
@@ -39,12 +45,11 @@ public class XGSettingUI {
     private JTextPane jt;
     private JPanel templateList;
     private JPanel templateEditorJPanel;
-    private final Editor templateEditor;
     private JList<String> xgTabInfoList;
     private JComboBox<String> configComboBox;
     private JButton resetButton;
     private JCheckBox setDefaultConfigCheckBox;
-    public static Key<Boolean> flexTemplate = Key.create("flexTemplate");
+    private final Editor templateEditor;
 
     public XGSettingUI(Project project, XGCodeUI xgCodeUI) {
         xgTabInfoList.setBorder(JBUI.Borders.emptyLeft(5));
@@ -193,7 +198,6 @@ public class XGSettingUI {
         editorSettings.setFoldingOutlineShown(true);
         editorSettings.setGutterIconsShown(true);
         ((EditorEx) editor).setHighlighter(EditorHighlighterFactory.getInstance().createEditorHighlighter(project, StrUtil.format("demo.{}", fileSuffix)));
-        editor.putUserData(flexTemplate, true);
         return editor;
     }
 

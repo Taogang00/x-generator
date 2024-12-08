@@ -2,10 +2,7 @@ package com.github.xg.ui;
 
 import cn.hutool.core.date.DateUtil;
 import com.github.xg.config.XGConfig;
-import com.github.xg.config.XGSettingManager;
 import com.github.xg.model.XGGlobalObj;
-import com.github.xg.model.XGTabInfo;
-import com.intellij.icons.AllIcons;
 import com.intellij.ide.BrowserUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
@@ -16,13 +13,8 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
-
-import static com.github.xg.constant.XGConstants.*;
-import static com.github.xg.utils.XGTemplateUtil.getTemplateContent;
 
 public class XGMainDialog extends DialogWrapper {
 
@@ -43,7 +35,7 @@ public class XGMainDialog extends DialogWrapper {
         xgGlobalObj.setDateTime(DateUtil.formatDateTime(new Date()));
         xgGlobalObj.setFileOverride(false);
 
-        XGConfig.  initXGDefaultTemplateManager();
+        XGConfig.initXGDefaultTemplateManager();
 
         this.setOKButtonText("生成");
         this.setCancelButtonText("取消");
@@ -61,14 +53,10 @@ public class XGMainDialog extends DialogWrapper {
                 if (currentPageSetting) {
                     XGSettingUI xgSettingUI = new XGSettingUI(project, xgCodeUI);
                     rootPanel.add(xgSettingUI.getRootJPanel());
-
-                    settingAction.putValue(Action.SMALL_ICON, AllIcons.Actions.Exit);
-                    settingAction.putValue(Action.NAME, "返回");
+                    settingAction.putValue(Action.NAME, "上一步");
                     setOKActionEnabled(false);
                 } else {
                     rootPanel.add(xgCodeUI.getRootJPanel());
-
-                    settingAction.putValue(Action.SMALL_ICON, AllIcons.General.GearPlain);
                     settingAction.putValue(Action.NAME, "设置");
                     setOKActionEnabled(true);
                 }
@@ -77,7 +65,6 @@ public class XGMainDialog extends DialogWrapper {
                 currentPageSetting = !currentPageSetting;
             }
         };
-        settingAction.putValue(Action.SMALL_ICON, AllIcons.General.GearPlain);
         init();
     }
 
@@ -109,7 +96,6 @@ public class XGMainDialog extends DialogWrapper {
 
     @Override
     protected Action @NotNull [] createActions() {
-        Action helpAction = getHelpAction();
-        return new Action[]{settingAction, getOKAction(), getCancelAction(), helpAction};
+        return new Action[]{settingAction, getCancelAction(), getOKAction(), getHelpAction()};
     }
 }

@@ -19,7 +19,6 @@ import com.intellij.openapi.editor.highlighter.EditorHighlighterFactory;
 import com.intellij.openapi.fileTypes.PlainTextLanguage;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
-import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiFileFactory;
@@ -114,14 +113,11 @@ public class XGSettingUI {
             Document document = templateEditor.getDocument();
             document.setReadOnly(false);
             WriteCommandAction.runWriteCommandAction(project, () -> {
-                List<XGTabInfo> xgTabInfoList = selectXGConfig.getXgTabInfoList();
-                for (XGTabInfo tabInfo : xgTabInfoList) {
-                    if (tabInfo.getType().equals(this.xgTabInfoList.getSelectedValue())) {
-                        String fileName = StrUtil.format("{}{}", tabInfo.getType(), ".flt");
-                        ((EditorEx) templateEditor).setHighlighter(EditorHighlighterFactory.getInstance().createEditorHighlighter(project, fileName));
-                        document.setText(tabInfo.getContent());
-                    }
-                }
+                XGTabInfo tabInfo = XGSettingManager.getSelectXGConfig(selectXGConfig, this.xgTabInfoList.getSelectedValue());
+                assert tabInfo != null;
+                String fileName = StrUtil.format("{}{}", tabInfo.getType(), ".flt");
+                ((EditorEx) templateEditor).setHighlighter(EditorHighlighterFactory.getInstance().createEditorHighlighter(project, fileName));
+                document.setText(tabInfo.getContent());
             });
         });
 
@@ -134,15 +130,12 @@ public class XGSettingUI {
             WriteCommandAction.runWriteCommandAction(project, () -> {
                 Object selectedItem = configComboBox.getSelectedItem();
                 XGConfig selectXGConfig = XGSettingManager.getSelectXGConfig((String) selectedItem);
-                List<XGTabInfo> xgTabInfoList = selectXGConfig.getXgTabInfoList();
 
-                for (XGTabInfo tabInfo : xgTabInfoList) {
-                    if (tabInfo.getType().equals(this.xgTabInfoList.getSelectedValue())) {
-                        String fileName = StrUtil.format("{}{}", tabInfo.getType(), ".flt");
-                        ((EditorEx) templateEditor).setHighlighter(EditorHighlighterFactory.getInstance().createEditorHighlighter(project, fileName));
-                        document.setText(tabInfo.getContent());
-                    }
-                }
+                XGTabInfo tabInfo = XGSettingManager.getSelectXGConfig(selectXGConfig, this.xgTabInfoList.getSelectedValue());
+                assert tabInfo != null;
+                String fileName = StrUtil.format("{}{}", tabInfo.getType(), ".flt");
+                ((EditorEx) templateEditor).setHighlighter(EditorHighlighterFactory.getInstance().createEditorHighlighter(project, fileName));
+                document.setText(tabInfo.getContent());
             });
         });
 

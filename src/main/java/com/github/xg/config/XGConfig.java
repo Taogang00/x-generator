@@ -78,9 +78,6 @@ public class XGConfig {
             mpXGTabInfoList.add(new XGTabInfo(ENTITY, getTemplateContent("/template/mybatisplus", "entity.java"), 4));
             mpXGTabInfoList.add(new XGTabInfo(MAPPER, getTemplateContent("/template/mybatisplus", "mapper.java"), 5));
             mpXGTabInfoList.add(new XGTabInfo(XML, getTemplateContent("/template/mybatisplus", "mapper.xml"), 6));
-            mpXGTabInfoList.add(new XGTabInfo(QUERY, getTemplateContent("/template/mybatisplus", "query.java"), 7));
-            mpXGTabInfoList.add(new XGTabInfo(DTO, getTemplateContent("/template/mybatisplus", "dto.java"), 8));
-            mpXGTabInfoList.add(new XGTabInfo(MAPSTRUCT, getTemplateContent("/template/mybatisplus", "mapstruct.java"), 9));
             mpXGConfig.setXgTabInfoList(mpXGTabInfoList);
             list.add(mpXGConfig);
 
@@ -116,9 +113,6 @@ public class XGConfig {
                     mpXGTabInfoList.add(new XGTabInfo(ENTITY, getTemplateContent("/template/mybatisplus", "entity.java"), 4));
                     mpXGTabInfoList.add(new XGTabInfo(MAPPER, getTemplateContent("/template/mybatisplus", "mapper.java"), 5));
                     mpXGTabInfoList.add(new XGTabInfo(XML, getTemplateContent("/template/mybatisplus", "mapper.xml"), 6));
-                    mpXGTabInfoList.add(new XGTabInfo(QUERY, getTemplateContent("/template/mybatisplus", "query.java"), 7));
-                    mpXGTabInfoList.add(new XGTabInfo(DTO, getTemplateContent("/template/mybatisplus", "dto.java"), 8));
-                    mpXGTabInfoList.add(new XGTabInfo(MAPSTRUCT, getTemplateContent("/template/mybatisplus", "mapstruct.java"), 9));
                     xgConfig.setXgTabInfoList(mpXGTabInfoList);
                 }
             }

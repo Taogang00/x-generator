@@ -1,6 +1,7 @@
 package com.github.xg.config;
 
 import cn.hutool.core.io.FileUtil;
+import com.github.xg.model.XGTabInfo;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.Service;
@@ -82,6 +83,27 @@ public final class XGSettingManager implements PersistentStateComponent<XGSettin
         assert state != null;
         List<XGConfig> xgConfigs = state.getXgConfigs();
         return xgConfigs.stream().filter(xgConfig -> xgConfig.getName().equals(selectedName)).findFirst().orElse(null);
+    }
+
+    public static XGTabInfo getSelectXGConfig(XGConfig selectXGConfig, String tabInfoTypeName) {
+        List<XGTabInfo> xgTabInfoList = selectXGConfig.getXgTabInfoList();
+        for (XGTabInfo tabInfo : xgTabInfoList) {
+            if (tabInfo.getType().equals(tabInfoTypeName)) {
+                return tabInfo;
+            }
+        }
+        return null;
+    }
+
+    public static XGTabInfo getSelectXGConfig(String selectedName, String tabInfoTypeName) {
+        XGConfig selectXGConfig = XGSettingManager.getSelectXGConfig(selectedName);
+        List<XGTabInfo> xgTabInfoList = selectXGConfig.getXgTabInfoList();
+        for (XGTabInfo tabInfo : xgTabInfoList) {
+            if (tabInfo.getType().equals(tabInfoTypeName)) {
+                return tabInfo;
+            }
+        }
+        return null;
     }
 
     @Data

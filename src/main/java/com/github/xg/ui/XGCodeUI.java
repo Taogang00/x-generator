@@ -353,7 +353,7 @@ public class XGCodeUI {
             this.runInfoLabel.setText("已导入" + list.size() + "张表");
             this.runInfoLabel.setIcon(AllIcons.General.Information);
         } catch (Exception e) {
-            this.runInfoLabel.setText("文件解析错误，请选择正确格式的xml文件");
+            this.runInfoLabel.setText("XML文件解析错误!");
             this.runInfoLabel.setIcon(AllIcons.General.Warning);
         }
         return list;

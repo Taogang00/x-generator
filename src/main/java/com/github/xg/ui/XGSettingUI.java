@@ -51,6 +51,7 @@ public class XGSettingUI {
     private final Editor templateEditor;
 
     public XGSettingUI(Project project, XGCodeUI xgCodeUI) {
+        resetButton.setIcon(AllIcons.General.Reset);
         xgTabInfoList.setBorder(JBUI.Borders.emptyLeft(5));
         //配置的选项
         XGSettingManager.State state = XGSettingManager.getInstance().getState();
@@ -64,9 +65,9 @@ public class XGSettingUI {
         initXGTabInfo((String) xgCodeUI.getConfigComboBox().getSelectedItem());
 
         // 添加到顶部
-        ActionToolbar actionToolbar = toolBar();
-        actionToolbar.setTargetComponent(templateList);
-        templateList.add(actionToolbar.getComponent(), BorderLayout.NORTH);
+//        ActionToolbar actionToolbar = toolBar();
+//        actionToolbar.setTargetComponent(templateList);
+//        templateList.add(actionToolbar.getComponent(), BorderLayout.NORTH);
 
         templateEditorJPanel.setLayout(new GridLayout(1, 1));
         templateEditorJPanel.setPreferredSize(new Dimension(550, 600));
@@ -88,16 +89,11 @@ public class XGSettingUI {
                     Document document = templateEditor.getDocument();
                     document.setReadOnly(false);
                     WriteCommandAction.runWriteCommandAction(project, () -> {
-                        XGConfig selectXGConfig = XGSettingManager.getSelectXGConfig(selectedItem.toString());
-
-                        List<XGTabInfo> xgTabInfoList = selectXGConfig.getXgTabInfoList();
-                        for (XGTabInfo tabInfo : xgTabInfoList) {
-                            if (tabInfo.getType().equals(this.xgTabInfoList.getSelectedValue())) {
-                                String fileName = StrUtil.format("{}{}", tabInfo.getType(), ".flt");
-                                ((EditorEx) templateEditor).setHighlighter(EditorHighlighterFactory.getInstance().createEditorHighlighter(project, fileName));
-                                document.setText(tabInfo.getContent());
-                            }
-                        }
+                        XGTabInfo tabInfo = XGSettingManager.getSelectXGConfig(selectedItem.toString(), this.xgTabInfoList.getSelectedValue());
+                        assert tabInfo != null;
+                        String fileName = StrUtil.format("{}{}", tabInfo.getType(), ".flt");
+                        ((EditorEx) templateEditor).setHighlighter(EditorHighlighterFactory.getInstance().createEditorHighlighter(project, fileName));
+                        document.setText(tabInfo.getContent());
                     });
                 }
             }
@@ -105,9 +101,10 @@ public class XGSettingUI {
 
         configComboBox.addActionListener(e -> {
             Object selectedItem = configComboBox.getSelectedItem();
+            assert selectedItem != null;
+
             XGConfig selectXGConfig = XGSettingManager.getSelectXGConfig((String) selectedItem);
             setDefaultConfigCheckBox.setSelected(selectXGConfig.getIsDefault());
-
             initXGTabInfo(selectedItem.toString());
 
             Document document = templateEditor.getDocument();
@@ -130,9 +127,9 @@ public class XGSettingUI {
             WriteCommandAction.runWriteCommandAction(project, () -> {
                 Object selectedItem = configComboBox.getSelectedItem();
                 XGConfig selectXGConfig = XGSettingManager.getSelectXGConfig((String) selectedItem);
-
                 XGTabInfo tabInfo = XGSettingManager.getSelectXGConfig(selectXGConfig, this.xgTabInfoList.getSelectedValue());
                 assert tabInfo != null;
+
                 String fileName = StrUtil.format("{}{}", tabInfo.getType(), ".flt");
                 ((EditorEx) templateEditor).setHighlighter(EditorHighlighterFactory.getInstance().createEditorHighlighter(project, fileName));
                 document.setText(tabInfo.getContent());
@@ -206,21 +203,21 @@ public class XGSettingUI {
         xgTabInfoList.setSelectedIndex(0);
     }
 
-    @SuppressWarnings("DialogTitleCapitalization")
-    private ActionToolbar toolBar() {
-        DefaultActionGroup actionGroup = new DefaultActionGroup();
-        // 预览
-        actionGroup.add(new AnAction("预览", "预览", AllIcons.Actions.ShowCode) {
-            @Override
-            public void actionPerformed(@NotNull AnActionEvent e) {
-            }
-
-            @Override
-            public @NotNull ActionUpdateThread getActionUpdateThread() {
-                return ActionUpdateThread.BGT;
-            }
-        });
-
-        return ActionManager.getInstance().createActionToolbar("Item Toolbar", actionGroup, true);
-    }
+//    @SuppressWarnings("DialogTitleCapitalization")
+//    private ActionToolbar toolBar() {
+//        DefaultActionGroup actionGroup = new DefaultActionGroup();
+//        // 预览
+//        actionGroup.add(new AnAction("预览", "预览", AllIcons.Actions.ShowCode) {
+//            @Override
+//            public void actionPerformed(@NotNull AnActionEvent e) {
+//            }
+//
+//            @Override
+//            public @NotNull ActionUpdateThread getActionUpdateThread() {
+//                return ActionUpdateThread.BGT;
+//            }
+//        });
+//
+//        return ActionManager.getInstance().createActionToolbar("Item Toolbar", actionGroup, true);
+//    }
 }

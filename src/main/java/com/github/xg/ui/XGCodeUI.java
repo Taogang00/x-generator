@@ -95,7 +95,6 @@ public class XGCodeUI {
 
     private final List<XgTableObj> xgGeneratorSelectedTableObjList;
     private final XGGlobalObj xgGlobalObj;
-    private final Map<String, Tuple> columnJavaTypeMapping = new HashMap<>();
 
     public XGCodeUI(Project project, XGGlobalObj xgGlobalObj) {
         this.xgGlobalObj = xgGlobalObj;
@@ -218,9 +217,6 @@ public class XGCodeUI {
         if (ObjectUtil.isNotNull(projectModuleComboBox.getSelectedItem())) {
             initXgGeneratorGlobalOutputPathAndPackagePath(project, projectModuleComboBox.getSelectedItem().toString());
         }
-
-        // 8.初始化数据库类型映射
-        initColumnJavaTypeMapping();
 
         // 9. 表单元素输入监听
         authorTextField.getDocument().addDocumentListener(new DocumentAdapter() {
@@ -481,6 +477,7 @@ public class XGCodeUI {
             xgTableObj.setMapstructPackagePath(xgGlobalObj.getMapstructPackagePath());
             xgTableObj.setMapstructAbsolutePath(xgGlobalObj.getOutputMapStructPath() + File.separator + xgTableObj.getMapstructClassName() + ".java");
 
+            XGConfig selectXGConfig = XGSettingManager.getSelectXGConfig(configComboBox.getSelectedItem().toString());
             List<XGTableFieldsObj> tableFields = new ArrayList<>();
             for (XGXmlElementColumn columnInfo : xgXmlElementTable.getColumnList()) {
                 XGTableFieldsObj xgTableFieldsObj = new XGTableFieldsObj();
@@ -491,7 +488,7 @@ public class XGCodeUI {
                 xgTableFieldsObj.setPropertyName(StrUtil.lowerFirst(columnInfo.getFieldName()));
                 xgTableFieldsObj.setPropertyType(columnInfo.getFieldType());
                 //重新赋值
-                for (Map.Entry<String, Tuple> regexEntry : this.columnJavaTypeMapping.entrySet()) {
+                for (Map.Entry<String, Tuple> regexEntry : selectXGConfig.getColumnJavaTypeMapping().entrySet()) {
                     boolean match = ReUtil.isMatch(regexEntry.getKey(), columnInfo.getFieldType().toLowerCase());
                     if (match) {
                         xgTableFieldsObj.setPropertyType(regexEntry.getValue().get(0));
@@ -503,28 +500,6 @@ public class XGCodeUI {
             xgTableObj.setTableFields(tableFields);
             xgGeneratorSelectedTableObjList.add(xgTableObj);
         }
-    }
-
-    /**
-     * 初始化数据库类型映射
-     */
-    public void initColumnJavaTypeMapping() {
-        // 数据库类型映射
-        this.columnJavaTypeMapping.put("varchar(\\(\\d+\\))?", new Tuple("String", "java.lang.String"));
-        this.columnJavaTypeMapping.put("varchar2(\\(\\d+\\))?", new Tuple("String", "java.lang.String"));
-        this.columnJavaTypeMapping.put("nvarchar(\\(\\d+\\))?", new Tuple("String", "java.lang.String"));
-        this.columnJavaTypeMapping.put("nvarchar2(\\(\\d+\\))?", new Tuple("String", "java.lang.String"));
-        this.columnJavaTypeMapping.put("char(\\(\\d+\\))?", new Tuple("String", "java.lang.String"));
-        this.columnJavaTypeMapping.put("(tiny|medium|long)*text", new Tuple("String", "java.lang.String"));
-        this.columnJavaTypeMapping.put("numeric(\\(\\d+,\\d+\\))?", new Tuple("Double", "java.lang.Double"));
-        this.columnJavaTypeMapping.put("numericn(\\(\\d+,\\d+\\))?", new Tuple("Double", "java.lang.Double"));
-        this.columnJavaTypeMapping.put("numeric(\\(\\d+\\))?", new Tuple("Integer", "java.lang.Integer"));
-        this.columnJavaTypeMapping.put("decimal(\\(\\d+,\\d+\\))?", new Tuple("Double", "java.lang.Double"));
-        this.columnJavaTypeMapping.put("bigint(\\(\\d+\\))?", new Tuple("Long", "java.lang.Long"));
-        this.columnJavaTypeMapping.put("(tiny|small|medium)*int(\\(\\d+\\))?", new Tuple("Integer", "java.lang.Integer"));
-        this.columnJavaTypeMapping.put("integer", new Tuple("Integer", "java.lang.Integer"));
-        this.columnJavaTypeMapping.put("date", new Tuple("Date", "java.util.Date"));
-        this.columnJavaTypeMapping.put("datetime", new Tuple("Date", "java.util.Date"));
     }
 
     /**

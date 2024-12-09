@@ -5,10 +5,7 @@ import cn.hutool.core.lang.Tuple;
 import com.github.xg.model.XGTabInfo;
 import lombok.Data;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.github.xg.constant.XGConstants.*;
 import static com.github.xg.constant.XGConstants.MAPSTRUCT;
@@ -64,6 +61,8 @@ public class XGConfig {
             guanweiXGTabInfoList.add(new XGTabInfo(DTO, getTemplateContent("/template/guanwei", "dto.java"), 8));
             guanweiXGTabInfoList.add(new XGTabInfo(MAPSTRUCT, getTemplateContent("/template/guanwei", "mapstruct.java"), 9));
             authorXGConfig.setXgTabInfoList(guanweiXGTabInfoList);
+
+            authorXGConfig.setColumnJavaTypeMapping(initColumnJavaTypeMapping());
             list.add(authorXGConfig);
 
             //第二种，mybatisPlus配置
@@ -79,6 +78,8 @@ public class XGConfig {
             mpXGTabInfoList.add(new XGTabInfo(MAPPER, getTemplateContent("/template/mybatisplus", "mapper.java"), 5));
             mpXGTabInfoList.add(new XGTabInfo(XML, getTemplateContent("/template/mybatisplus", "mapper.xml"), 6));
             mpXGConfig.setXgTabInfoList(mpXGTabInfoList);
+
+            mpXGConfig.setColumnJavaTypeMapping(initColumnJavaTypeMapping());
             list.add(mpXGConfig);
 
             state.setXgConfigs(list);
@@ -119,5 +120,30 @@ public class XGConfig {
         }
         state.setXgConfigs(xgConfigs);
         XGSettingManager.getInstance().loadState(state);
+    }
+
+
+    /**
+     * 初始化数据库类型映射
+     */
+    public static Map<String, Tuple> initColumnJavaTypeMapping() {
+        Map<String, Tuple> columnJavaTypeMapping = new HashMap<>();
+        // 数据库类型映射
+        columnJavaTypeMapping.put("varchar(\\(\\d+\\))?", new Tuple("String", "java.lang.String"));
+        columnJavaTypeMapping.put("varchar2(\\(\\d+\\))?", new Tuple("String", "java.lang.String"));
+        columnJavaTypeMapping.put("nvarchar(\\(\\d+\\))?", new Tuple("String", "java.lang.String"));
+        columnJavaTypeMapping.put("nvarchar2(\\(\\d+\\))?", new Tuple("String", "java.lang.String"));
+        columnJavaTypeMapping.put("char(\\(\\d+\\))?", new Tuple("String", "java.lang.String"));
+        columnJavaTypeMapping.put("(tiny|medium|long)*text", new Tuple("String", "java.lang.String"));
+        columnJavaTypeMapping.put("numeric(\\(\\d+,\\d+\\))?", new Tuple("Double", "java.lang.Double"));
+        columnJavaTypeMapping.put("numericn(\\(\\d+,\\d+\\))?", new Tuple("Double", "java.lang.Double"));
+        columnJavaTypeMapping.put("numeric(\\(\\d+\\))?", new Tuple("Integer", "java.lang.Integer"));
+        columnJavaTypeMapping.put("decimal(\\(\\d+,\\d+\\))?", new Tuple("Double", "java.lang.Double"));
+        columnJavaTypeMapping.put("bigint(\\(\\d+\\))?", new Tuple("Long", "java.lang.Long"));
+        columnJavaTypeMapping.put("(tiny|small|medium)*int(\\(\\d+\\))?", new Tuple("Integer", "java.lang.Integer"));
+        columnJavaTypeMapping.put("integer", new Tuple("Integer", "java.lang.Integer"));
+        columnJavaTypeMapping.put("date", new Tuple("Date", "java.util.Date"));
+        columnJavaTypeMapping.put("datetime", new Tuple("Date", "java.util.Date"));
+        return  columnJavaTypeMapping;
     }
 }

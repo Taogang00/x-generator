@@ -39,9 +39,9 @@ public class XGMainDialog extends DialogWrapper {
 
         this.setOKButtonText("生成");
         this.setCancelButtonText("取消");
-        this.setTitle("X-代码生成器 0.0.5");
-        this.setSize(999, 666);
-        this.setResizable(false);
+        this.setTitle("X-代码生成器 0.0.6");
+        this.setSize(1000, 700);
+        this.setAutoAdjustable(true);
 
         xgCodeUI = new XGCodeUI(project, xgGlobalObj);
         rootPanel.add(xgCodeUI.getRootJPanel());

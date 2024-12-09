@@ -1,19 +1,15 @@
 package com.github.xg.config;
 
-import cn.hutool.core.io.FileUtil;
 import com.github.xg.model.XGTabInfo;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.Service;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
-import com.intellij.openapi.ui.Messages;
 import lombok.Data;
-import net.minidev.json.JSONObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
 import java.util.List;
 
 /**
@@ -61,21 +57,6 @@ public final class XGSettingManager implements PersistentStateComponent<XGSettin
     @Override
     public void loadState(@NotNull State state) {
         this.myState = state;
-    }
-
-    public static void export(String targetPath) {
-        JSONObject data = new JSONObject();
-        FileUtil.writeString(data.toJSONString(), new File(targetPath + File.separator + "X-Generator.json"), "UTF-8");
-        Messages.showDialog("导出成功，请到选择的目录查看", "提示", new String[]{"确定"}, -1, Messages.getInformationIcon());
-    }
-
-    public static void importConfig(String path) {
-        File file = new File(path);
-        if (!file.exists()) {
-            Messages.showDialog("文件不存在", "提示", new String[]{"确定"}, -1, Messages.getInformationIcon());
-            return;
-        }
-        Messages.showDialog("导入成功", "提示", new String[]{"确定"}, -1, Messages.getInformationIcon());
     }
 
     public static XGConfig getSelectXGConfig(String selectedName) {

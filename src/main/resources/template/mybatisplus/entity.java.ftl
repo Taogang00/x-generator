@@ -1,4 +1,3 @@
-<#--@formatter:off-->
 package ${global.entityPackagePath};
 
 import java.util.Date;
@@ -46,4 +45,3 @@ public class ${table.entityClassName} {
     </#if>
 </#list>
 }
-<#--@formatter:on-->

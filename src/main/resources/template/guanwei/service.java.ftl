@@ -1,4 +1,3 @@
-<#--@formatter:off-->
 package ${global.servicePackagePath};
 
 import ${table.dtoPackagePath}.${table.dtoClassName};
@@ -25,4 +24,3 @@ public interface ${table.serviceClassName} extends MBaseService<${table.entityCl
     List<${table.dtoClassName}> get${table.entityClassName}List(${table.queryClassName} query);
 
 }
-<#--@formatter:on-->

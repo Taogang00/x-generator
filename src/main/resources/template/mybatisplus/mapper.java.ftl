@@ -1,4 +1,3 @@
-<#--@formatter:off-->
 package ${table.mapperPackagePath};
 
 import ${table.entityPackagePath}.${table.entityClassName};
@@ -17,4 +16,3 @@ import java.util.List;
 public interface ${table.mapperClassName} extends BaseMapper<${table.entityClassName}> {
 
 }
-<#--@formatter:on-->

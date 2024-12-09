@@ -1,4 +1,3 @@
-<#--@formatter:off-->
 package ${global.dtoPackagePath};
 
 import jakarta.validation.constraints.NotNull;
@@ -32,4 +31,3 @@ public class ${table.dtoClassName} {
 
 </#list>
 }
-<#--@formatter:off-->

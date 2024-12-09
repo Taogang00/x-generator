@@ -1,4 +1,3 @@
-<#--@formatter:off-->
 package ${global.serviceImplPackagePath};
 
 import ${table.entityPackagePath}.${table.entityClassName};
@@ -19,4 +18,3 @@ import java.util.List;
 public class ${table.serviceImplClassName} extends ServiceImpl<${table.mapperClassName}, ${table.entityClassName}> implements ${table.serviceClassName} {
 
 }
-<#--@formatter:on-->

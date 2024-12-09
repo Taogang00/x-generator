@@ -1,4 +1,3 @@
-<#--@formatter:off-->
 package ${global.servicePackagePath};
 
 import ${table.entityPackagePath}.${table.entityClassName};
@@ -15,4 +14,3 @@ import java.util.List;
 public interface ${table.serviceClassName} extends IService<${table.entityClassName}> {
 
 }
-<#--@formatter:on-->

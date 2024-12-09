@@ -1,4 +1,3 @@
-<#--@formatter:off-->
 package ${table.mapstructPackagePath};
 
 import com.guanwei.mybatis.mapstruct.MybatisPageBaseConvertMapper;
@@ -19,4 +18,3 @@ import static org.mapstruct.NullValuePropertyMappingStrategy.IGNORE;
 public interface ${table.mapstructClassName} extends MybatisPageBaseConvertMapper<${table.dtoClassName}, ${table.entityClassName}>{
 
 }
-<#--@formatter:on-->

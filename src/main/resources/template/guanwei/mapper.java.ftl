@@ -1,4 +1,3 @@
-<#--@formatter:off-->
 package ${table.mapperPackagePath};
 
 import ${table.dtoPackagePath}.${table.dtoClassName};
@@ -26,4 +25,3 @@ public interface ${table.mapperClassName} extends MBaseMapper<${table.entityClas
    */
    List<${table.dtoClassName}> get${table.entityClassName}List(${table.queryClassName} query);
 }
-<#--@formatter:off-->

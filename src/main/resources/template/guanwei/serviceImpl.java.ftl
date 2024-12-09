@@ -1,4 +1,3 @@
-<#--@formatter:off-->
 package ${global.serviceImplPackagePath};
 
 import ${table.dtoPackagePath}.${table.dtoClassName};
@@ -25,4 +24,3 @@ public class ${table.serviceImplClassName} extends MBaseServiceImpl<${table.mapp
         return baseMapper.get${table.entityClassName}List(query);
     }
 }
-<#--@formatter:on-->

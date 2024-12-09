@@ -1,4 +1,3 @@
-<#--@formatter:off-->
 package ${global.controllerPackagePath};
 
 import com.guanwei.core.utils.result.R;

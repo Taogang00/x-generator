@@ -18,10 +18,10 @@
         <ul>
             <li>Supports generating Controller, Service, ServiceImpl, Entity, Mapper template code</li>
             <li>Automatically recognizes Maven project structure</li>
+            <li>Supports generating with different configurations</li>
             <li>Automatically recognizes Gradle project structure - TODO</li>
             <li>Supports custom templates - TODO</li>
             <li>Supports import/export configuration feature - TODO</li>
-            <li>Supports generating with different configurations - TODO</li>
         </ul>
 
         <h3>X 代码生成器，支持通过识别特定格式的xml文件来生成Java模板代码</h3>

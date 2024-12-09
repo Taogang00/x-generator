@@ -1,4 +1,3 @@
-<#--@formatter:off-->
 package ${global.queryPackagePath};
 
 import lombok.Data;
@@ -27,4 +26,3 @@ public class ${table.queryClassName} extends PageQuery {
 
 </#list>
 }
-<#--@formatter:off-->

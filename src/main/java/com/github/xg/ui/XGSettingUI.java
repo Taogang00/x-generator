@@ -1,12 +1,12 @@
 package com.github.xg.ui;
 
+import cn.hutool.core.lang.Tuple;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.xg.config.XGConfig;
 import com.github.xg.config.XGSettingManager;
 import com.github.xg.model.XGTabInfo;
 import com.intellij.icons.AllIcons;
-import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
@@ -22,14 +22,18 @@ import com.intellij.openapi.ui.Messages;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiFileFactory;
+import com.intellij.ui.components.fields.ExtendableTextField;
 import com.intellij.util.ui.JBUI;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 设置页面
@@ -49,6 +53,10 @@ public class XGSettingUI {
     private JCheckBox setDefaultConfigCheckBox;
     private JTable table1;
     private final Editor templateEditor;
+    private Map<String, Tuple> columnJavaTypeMapping;
+
+    String[] HEADER = {"数据类型(正则)", "Java类型"};
+    Object[][] TABLE_DATA = {{"Column Type", "Java Type"}};
 
     public XGSettingUI(Project project, XGCodeUI xgCodeUI) {
         resetButton.setIcon(AllIcons.General.Reset);
@@ -63,6 +71,8 @@ public class XGSettingUI {
         configComboBox.setSelectedIndex(xgCodeUI.getConfigComboBox().getSelectedIndex());
 
         initXGTabInfo((String) xgCodeUI.getConfigComboBox().getSelectedItem());
+
+        initXGTableInfo((String) xgCodeUI.getConfigComboBox().getSelectedItem());
 
         // 添加到顶部
 //        ActionToolbar actionToolbar = toolBar();
@@ -91,7 +101,7 @@ public class XGSettingUI {
                     WriteCommandAction.runWriteCommandAction(project, () -> {
                         XGTabInfo tabInfo = XGSettingManager.getSelectXGConfig(selectedItem.toString(), this.xgTabInfoList.getSelectedValue());
                         assert tabInfo != null;
-                        String fileName = StrUtil.format("{}{}", tabInfo.getType(), ".flt");
+                        String fileName = StrUtil.format("{}{}", tabInfo.getType(), ".ftl");
                         ((EditorEx) templateEditor).setHighlighter(EditorHighlighterFactory.getInstance().createEditorHighlighter(project, fileName));
                         document.setText(tabInfo.getContent());
                     });
@@ -112,7 +122,7 @@ public class XGSettingUI {
             WriteCommandAction.runWriteCommandAction(project, () -> {
                 XGTabInfo tabInfo = XGSettingManager.getSelectXGConfig(selectXGConfig, this.xgTabInfoList.getSelectedValue());
                 assert tabInfo != null;
-                String fileName = StrUtil.format("{}{}", tabInfo.getType(), ".flt");
+                String fileName = StrUtil.format("{}{}", tabInfo.getType(), ".ftl");
                 ((EditorEx) templateEditor).setHighlighter(EditorHighlighterFactory.getInstance().createEditorHighlighter(project, fileName));
                 document.setText(tabInfo.getContent());
             });
@@ -130,7 +140,7 @@ public class XGSettingUI {
                 XGTabInfo tabInfo = XGSettingManager.getSelectXGConfig(selectXGConfig, this.xgTabInfoList.getSelectedValue());
                 assert tabInfo != null;
 
-                String fileName = StrUtil.format("{}{}", tabInfo.getType(), ".flt");
+                String fileName = StrUtil.format("{}{}", tabInfo.getType(), ".ftl");
                 ((EditorEx) templateEditor).setHighlighter(EditorHighlighterFactory.getInstance().createEditorHighlighter(project, fileName));
                 document.setText(tabInfo.getContent());
             });
@@ -201,6 +211,42 @@ public class XGSettingUI {
 
         xgTabInfoList.setModel(model);
         xgTabInfoList.setSelectedIndex(0);
+    }
+
+    public void initXGTableInfo(String selectedConfigKey) {
+        XGConfig xgConfig = XGSettingManager.getSelectXGConfig(selectedConfigKey);
+        columnJavaTypeMapping = xgConfig.getColumnJavaTypeMapping();
+
+        TABLE_DATA = new Object[!columnJavaTypeMapping.isEmpty() ? columnJavaTypeMapping.size() : 0][];
+        int idx = 0;
+        for (Map.Entry<String, Tuple> stringTupleEntry : columnJavaTypeMapping.entrySet()) {
+            TABLE_DATA[idx] = new Object[]{stringTupleEntry.getKey(), stringTupleEntry.getValue().get(1)};
+            idx++;
+        }
+
+        table1.setModel(getDataModel());
+    }
+
+    @NotNull
+    private DefaultTableModel getDataModel() {
+        return new DefaultTableModel(TABLE_DATA, HEADER) {
+            boolean[] canEdit = {true, true, true};
+
+            @Override
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit[columnIndex];
+            }
+        };
+    }
+
+
+    private void setColumnInput(Project project) {
+        TableColumn comboBoxColumn = table1.getColumnModel().getColumn(1);
+        TableColumn type = table1.getColumnModel().getColumn(0);
+
+        ExtendableTextField textField = new ExtendableTextField();
+
+        comboBoxColumn.setCellEditor(new DefaultCellEditor(textField));
     }
 
 //    @SuppressWarnings("DialogTitleCapitalization")

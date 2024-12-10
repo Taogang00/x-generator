@@ -20,7 +20,6 @@ import java.util.List;
  * @author taogang
  * @date 2024/12/01
  */
-@SuppressWarnings("DialogTitleCapitalization")
 @Service
 @State(name = "x-generator", storages = {@Storage("plugin.x-generator.xml")})
 public final class XGSettingManager implements PersistentStateComponent<XGSettingManager.State> {

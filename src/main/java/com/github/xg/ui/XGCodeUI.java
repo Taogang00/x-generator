@@ -59,6 +59,8 @@ public class XGCodeUI {
     @Getter
     private JLabel runInfoLabel;
     @Getter
+    private JComboBox<String> configComboBox;
+    @Getter
     private Map<String, XGXmlElementTable> tableInfoMap;
 
     private JComboBox<String> projectModuleComboBox;
@@ -85,13 +87,12 @@ public class XGCodeUI {
     private JCheckBox mapperXmlCheckBox;
     private JButton importBtn;
     private JButton packageAllBtn;
-    @Getter
-    private JComboBox<String> configComboBox;
     private JList<String> tableList;
     private JTextField removeClassNamePrefixTextField;
     private JTextField addClassNamePrefixTextFieldTextField;
     private JTextField authorTextField;
     private List<XGXmlElementTable> tableInfoList;
+    private List<? extends String> xgGeneratorSelectedTableValuesList;
 
     private final List<XgTableObj> xgGeneratorSelectedTableObjList;
     private final XGGlobalObj xgGlobalObj;
@@ -104,6 +105,8 @@ public class XGCodeUI {
         this.runInfoLabel.setIcon(AllIcons.General.Information);
         this.authorTextField.setText(System.getProperty("user.name"));
         this.packageAllBtn.setText("全不选");
+
+        this.xgGeneratorSelectedTableValuesList = new ArrayList<>();
         this.xgGeneratorSelectedTableObjList = new ArrayList<>();
         xgGlobalObj.setAuthor(authorTextField.getText());
 
@@ -431,9 +434,35 @@ public class XGCodeUI {
      *
      * @param selectedValuesList Selected Values 列表
      */
-    public void initXgGeneratorSelectedTableObjList(List<? extends String> selectedValuesList) {
-        xgGeneratorSelectedTableObjList.clear();
-        for (String s : selectedValuesList) {
+    public void initXgGeneratorSelectedTableValuesList(List<? extends String> selectedValuesList) {
+        this.xgGeneratorSelectedTableValuesList = selectedValuesList;
+    }
+
+    /**
+     * 生成代码-点击生成按钮事件
+     *
+     * @param project      项目
+     * @param xgMainDialog 项目
+     * @throws IOException io异常
+     */
+    @SuppressWarnings("all")
+    public void generateCodeAction(Project project, XGMainDialog xgMainDialog) throws IOException {
+        if (this.tableInfoList == null || this.tableInfoList.isEmpty()) {
+            Messages.showInfoMessage("请先导入表实体数据！", "X-Generator");
+            return;
+        }
+        if (this.xgGeneratorSelectedTableValuesList.isEmpty()) {
+            Messages.showInfoMessage("请先选择要生成的表实体！", "X-Generator");
+            return;
+        }
+        if (!controllerCheckBox.isSelected() && !entityCheckBox.isSelected()
+                && !mapStructCheckBox.isSelected() && !queryCheckBox.isSelected() && !mapperXmlCheckBox.isSelected()
+                && !mapperCheckBox.isSelected() && !serviceCheckBox.isSelected() && !dtoCheckBox.isSelected()) {
+            Messages.showInfoMessage("请先选择要生成的代码对象！", "X-Generator");
+            return;
+        }
+
+        for (String s : xgGeneratorSelectedTableValuesList) {
             XGXmlElementTable xgXmlElementTable = tableInfoMap.get(s);
             String elementTableName = xgXmlElementTable.getName();
 
@@ -478,6 +507,8 @@ public class XGCodeUI {
             xgTableObj.setMapstructAbsolutePath(xgGlobalObj.getOutputMapStructPath() + File.separator + xgTableObj.getMapstructClassName() + ".java");
 
             XGConfig selectXGConfig = XGSettingManager.getSelectXGConfig(configComboBox.getSelectedItem().toString());
+            Map<String, Tuple> columnJavaTypeMapping = selectXGConfig.getColumnJavaTypeMapping();
+
             List<XGTableFieldsObj> tableFields = new ArrayList<>();
             for (XGXmlElementColumn columnInfo : xgXmlElementTable.getColumnList()) {
                 XGTableFieldsObj xgTableFieldsObj = new XGTableFieldsObj();
@@ -488,7 +519,7 @@ public class XGCodeUI {
                 xgTableFieldsObj.setPropertyName(StrUtil.lowerFirst(columnInfo.getFieldName()));
                 xgTableFieldsObj.setPropertyType(columnInfo.getFieldType());
                 //重新赋值
-                for (Map.Entry<String, Tuple> regexEntry : selectXGConfig.getColumnJavaTypeMapping().entrySet()) {
+                for (Map.Entry<String, Tuple> regexEntry : columnJavaTypeMapping.entrySet()) {
                     boolean match = ReUtil.isMatch(regexEntry.getKey(), columnInfo.getFieldType().toLowerCase());
                     if (match) {
                         xgTableFieldsObj.setPropertyType(regexEntry.getValue().get(0));
@@ -499,31 +530,6 @@ public class XGCodeUI {
             }
             xgTableObj.setTableFields(tableFields);
             xgGeneratorSelectedTableObjList.add(xgTableObj);
-        }
-    }
-
-    /**
-     * 生成代码-点击生成按钮事件
-     *
-     * @param project      项目
-     * @param xgMainDialog 项目
-     * @throws IOException io异常
-     */
-    @SuppressWarnings("all")
-    public void generateCodeAction(Project project, XGMainDialog xgMainDialog) throws IOException {
-        if (this.tableInfoList == null || this.tableInfoList.isEmpty()) {
-            Messages.showInfoMessage("请先导入表实体数据！", "X-Generator");
-            return;
-        }
-        if (this.xgGeneratorSelectedTableObjList.isEmpty()) {
-            Messages.showInfoMessage("请先选择要生成的表实体！", "X-Generator");
-            return;
-        }
-        if (!controllerCheckBox.isSelected() && !entityCheckBox.isSelected()
-                && !mapStructCheckBox.isSelected() && !queryCheckBox.isSelected() && !mapperXmlCheckBox.isSelected()
-                && !mapperCheckBox.isSelected() && !serviceCheckBox.isSelected() && !dtoCheckBox.isSelected()) {
-            Messages.showInfoMessage("请先选择要生成的代码对象！", "X-Generator");
-            return;
         }
 
         //去掉统一前缀

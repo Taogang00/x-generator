@@ -47,6 +47,7 @@ public class XGSettingUI {
     private JComboBox<String> configComboBox;
     private JButton resetButton;
     private JCheckBox setDefaultConfigCheckBox;
+    private JTable table1;
     private final Editor templateEditor;
 
     public XGSettingUI(Project project, XGCodeUI xgCodeUI) {

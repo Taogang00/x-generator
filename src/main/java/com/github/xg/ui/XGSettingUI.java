@@ -52,6 +52,8 @@ public class XGSettingUI {
     private JButton resetButton;
     private JCheckBox setDefaultConfigCheckBox;
     private JTable table1;
+    private JButton addBtn;
+    private JButton delBtn;
     private final Editor templateEditor;
     private Map<String, Tuple> columnJavaTypeMapping;
 

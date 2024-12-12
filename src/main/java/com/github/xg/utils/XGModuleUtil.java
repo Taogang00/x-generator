@@ -7,8 +7,6 @@ import com.intellij.openapi.roots.ContentEntry;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
 
-import java.util.Objects;
-
 public class XGModuleUtil {
 
     public static Module[] getModules(Project project) {
@@ -29,8 +27,11 @@ public class XGModuleUtil {
                             return sourceFolder.getPath();
                         }
                     }
-                    //未找到源路径，返回模块路径
-                    return Objects.requireNonNull(contentEntry.getFile()).getPath();
+                }
+                //未找到源路径，返回模块路径
+                VirtualFile[] contentRoots = rootManager.getContentRoots();
+                if (contentRoots.length > 0) {
+                    return contentRoots[0].getPath();
                 }
             }
         }
@@ -50,8 +51,11 @@ public class XGModuleUtil {
                             return sourceFolder.getPath();
                         }
                     }
-                    //未找到资源路径，返回模块路径
-                    return Objects.requireNonNull(contentEntry.getFile()).getPath();
+                }
+                //未找到资源路径，返回模块路径
+                VirtualFile[] contentRoots = rootManager.getContentRoots();
+                if (contentRoots.length > 0) {
+                    return contentRoots[0].getPath();
                 }
             }
         }

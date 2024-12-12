@@ -1,6 +1,5 @@
 package com.github.xg.ui;
 
-import cn.hutool.core.lang.Tuple;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.xg.config.XGConfig;
@@ -54,11 +53,11 @@ public class XGSettingUI {
     private JTable table1;
     private JButton addBtn;
     private JButton delBtn;
-    private final Editor templateEditor;
-    private Map<String, Tuple> columnJavaTypeMapping;
+    private Map<String, String> columnJavaTypeMapping;
 
-    String[] HEADER = {"数据类型(正则)", "Java类型"};
-    Object[][] TABLE_DATA = {{"Column Type", "Java Type"}};
+    private final Editor templateEditor;
+    private final String[] HEADER = {"数据类型(正则匹配)", "Java类型"};
+    private Object[][] TABLE_DATA = {{"Column Type", "Java Type"}};
 
     public XGSettingUI(Project project, XGCodeUI xgCodeUI) {
         resetButton.setIcon(AllIcons.General.Reset);
@@ -76,11 +75,6 @@ public class XGSettingUI {
 
         initXGTableInfo((String) xgCodeUI.getConfigComboBox().getSelectedItem());
 
-        // 添加到顶部
-//        ActionToolbar actionToolbar = toolBar();
-//        actionToolbar.setTargetComponent(templateList);
-//        templateList.add(actionToolbar.getComponent(), BorderLayout.NORTH);
-
         templateEditorJPanel.setLayout(new GridLayout(1, 1));
         templateEditorJPanel.setPreferredSize(new Dimension(550, 600));
 
@@ -96,7 +90,7 @@ public class XGSettingUI {
             if (selectedItem != null) {
                 int flag = Messages.showYesNoDialog("确定重置【" + selectedItem + "】模板配置吗？", "提示", AllIcons.General.QuestionDialog);
                 if (flag == 0) {
-                    XGConfig.initXGDefaultTemplateManager(selectedItem.toString());
+                    XGConfig.resetSelectedConfigXgTabInfo(selectedItem.toString());
 
                     Document document = templateEditor.getDocument();
                     document.setReadOnly(false);
@@ -152,7 +146,6 @@ public class XGSettingUI {
             @Override
             public void documentChanged(@NotNull DocumentEvent event) {
                 Object selectedItem = configComboBox.getSelectedItem();
-
                 List<XGConfig> xgConfigs = state.getXgConfigs();
                 for (XGConfig config : xgConfigs) {
                     if (config.getName().equals(selectedItem)) {
@@ -221,8 +214,8 @@ public class XGSettingUI {
 
         TABLE_DATA = new Object[!columnJavaTypeMapping.isEmpty() ? columnJavaTypeMapping.size() : 0][];
         int idx = 0;
-        for (Map.Entry<String, Tuple> stringTupleEntry : columnJavaTypeMapping.entrySet()) {
-            TABLE_DATA[idx] = new Object[]{stringTupleEntry.getKey(), stringTupleEntry.getValue().get(1)};
+        for (Map.Entry<String, String> stringTupleEntry : columnJavaTypeMapping.entrySet()) {
+            TABLE_DATA[idx] = new Object[]{stringTupleEntry.getKey(), stringTupleEntry.getValue()};
             idx++;
         }
 
@@ -241,7 +234,6 @@ public class XGSettingUI {
         };
     }
 
-
     private void setColumnInput(Project project) {
         TableColumn comboBoxColumn = table1.getColumnModel().getColumn(1);
         TableColumn type = table1.getColumnModel().getColumn(0);
@@ -250,22 +242,4 @@ public class XGSettingUI {
 
         comboBoxColumn.setCellEditor(new DefaultCellEditor(textField));
     }
-
-//    @SuppressWarnings("DialogTitleCapitalization")
-//    private ActionToolbar toolBar() {
-//        DefaultActionGroup actionGroup = new DefaultActionGroup();
-//        // 预览
-//        actionGroup.add(new AnAction("预览", "预览", AllIcons.Actions.ShowCode) {
-//            @Override
-//            public void actionPerformed(@NotNull AnActionEvent e) {
-//            }
-//
-//            @Override
-//            public @NotNull ActionUpdateThread getActionUpdateThread() {
-//                return ActionUpdateThread.BGT;
-//            }
-//        });
-//
-//        return ActionManager.getInstance().createActionToolbar("Item Toolbar", actionGroup, true);
-//    }
 }

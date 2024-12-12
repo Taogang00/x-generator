@@ -1,7 +1,6 @@
 package com.github.xg.ui;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.lang.Tuple;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
@@ -507,7 +506,7 @@ public class XGCodeUI {
             xgTableObj.setMapstructAbsolutePath(xgGlobalObj.getOutputMapStructPath() + File.separator + xgTableObj.getMapstructClassName() + ".java");
 
             XGConfig selectXGConfig = XGSettingManager.getSelectXGConfig(configComboBox.getSelectedItem().toString());
-            Map<String, Tuple> columnJavaTypeMapping = selectXGConfig.getColumnJavaTypeMapping();
+            Map<String, String> columnJavaTypeMapping = selectXGConfig.getColumnJavaTypeMapping();
 
             List<XGTableFieldsObj> tableFields = new ArrayList<>();
             for (XGXmlElementColumn columnInfo : xgXmlElementTable.getColumnList()) {
@@ -517,13 +516,13 @@ public class XGCodeUI {
                 xgTableFieldsObj.setNullOption(columnInfo.getNullOption());
                 xgTableFieldsObj.setDataLength(columnInfo.getDataLength());
                 xgTableFieldsObj.setPropertyName(StrUtil.lowerFirst(columnInfo.getFieldName()));
-                xgTableFieldsObj.setPropertyType(columnInfo.getFieldType());
-                //重新赋值
-                for (Map.Entry<String, Tuple> regexEntry : columnJavaTypeMapping.entrySet()) {
-                    boolean match = ReUtil.isMatch(regexEntry.getKey(), columnInfo.getFieldType().toLowerCase());
-                    if (match) {
-                        xgTableFieldsObj.setPropertyType(regexEntry.getValue().get(0));
-                        xgTableFieldsObj.setPropertyClass(regexEntry.getValue().get(1));
+                for (Map.Entry<String, String> regexEntry : columnJavaTypeMapping.entrySet()) {
+                    if (StrUtil.isNotBlank(regexEntry.getValue())) {
+                        if (ReUtil.isMatch(regexEntry.getKey(), columnInfo.getFieldType().toLowerCase())) {
+                            String value = regexEntry.getValue();
+                            xgTableFieldsObj.setPropertyType(value.substring(value.lastIndexOf(".") + 1));
+                            xgTableFieldsObj.setPropertyClass(value);
+                        }
                     }
                 }
                 tableFields.add(xgTableFieldsObj);

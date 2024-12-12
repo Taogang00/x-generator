@@ -124,7 +124,7 @@ public class XGCodeUI {
         }
 
         // 1.项目模块加载
-        Module[] modules = XGModuleUtil.getModules(project);
+        List<Module> modules = XGModuleUtil.getModules(project);
         for (Module module : modules) {
             projectModuleComboBox.addItem(module.getName());
         }

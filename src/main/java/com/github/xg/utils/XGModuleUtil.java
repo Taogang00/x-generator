@@ -7,15 +7,26 @@ import com.intellij.openapi.roots.ContentEntry;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class XGModuleUtil {
 
-    public static Module[] getModules(Project project) {
+    public static List<Module> getModules(Project project) {
+        //gradle 会把 x-generator.main x-generator.test 作为模块，需要去掉
+        List<Module> returnModules = new ArrayList<>();
         ModuleManager moduleManager = ModuleManager.getInstance(project);
-        return moduleManager.getModules();
+        Module[] modules = moduleManager.getModules();
+        for (Module module : modules) {
+            if (!module.getName().endsWith("main") && !module.getName().endsWith("test")) {
+                returnModules.add(module);
+            }
+        }
+        return returnModules;
     }
 
     public static String getModuleSourcePath(Project project, String moduleName) {
-        Module[] modules = XGModuleUtil.getModules(project);
+        List<Module> modules = XGModuleUtil.getModules(project);
         for (Module module : modules) {
             if (module.getName().equals(moduleName)) {
                 ModuleRootManager rootManager = ModuleRootManager.getInstance(module);
@@ -39,7 +50,7 @@ public class XGModuleUtil {
     }
 
     public static String getModuleReSourcePath(Project project, String moduleName) {
-        Module[] modules = XGModuleUtil.getModules(project);
+        List<Module> modules = XGModuleUtil.getModules(project);
         for (Module module : modules) {
             if (module.getName().equals(moduleName)) {
                 ModuleRootManager rootManager = ModuleRootManager.getInstance(module);

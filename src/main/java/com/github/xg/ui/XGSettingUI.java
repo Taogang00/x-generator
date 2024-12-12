@@ -30,6 +30,8 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -60,37 +62,55 @@ public class XGSettingUI {
     private Object[][] TABLE_DATA = {{"Column Type", "Java Type"}};
 
     public XGSettingUI(Project project, XGCodeUI xgCodeUI) {
-        resetButton.setIcon(AllIcons.General.Reset);
-        xgTabInfoList.setBorder(JBUI.Borders.emptyLeft(5));
+        this.delBtn.setEnabled(false);
+        this.resetButton.setIcon(AllIcons.General.Reset);
+        this.xgTabInfoList.setBorder(JBUI.Borders.emptyLeft(5));
+
         //配置的选项
         XGSettingManager.State state = XGSettingManager.getInstance().getState();
         assert state != null;
         List<XGConfig> valuesList = state.getXgConfigs();
         for (XGConfig config : valuesList) {
-            configComboBox.addItem(config.getName());
+            this.configComboBox.addItem(config.getName());
         }
-        configComboBox.setSelectedIndex(xgCodeUI.getConfigComboBox().getSelectedIndex());
-
-        initXGTabInfo((String) xgCodeUI.getConfigComboBox().getSelectedItem());
-
-        initXGTableInfo((String) xgCodeUI.getConfigComboBox().getSelectedItem());
-
-        templateEditorJPanel.setLayout(new GridLayout(1, 1));
-        templateEditorJPanel.setPreferredSize(new Dimension(550, 600));
+        this.configComboBox.setSelectedIndex(xgCodeUI.getConfigComboBox().getSelectedIndex());
+        this.initXGTabInfo((String) xgCodeUI.getConfigComboBox().getSelectedItem());
+        this.initXGTableInfo((String) xgCodeUI.getConfigComboBox().getSelectedItem());
 
         XGConfig xgConfig = XGSettingManager.getSelectXGConfig((String) xgCodeUI.getConfigComboBox().getSelectedItem());
-        setDefaultConfigCheckBox.setSelected(xgConfig.getIsDefault());
+        this.setDefaultConfigCheckBox.setSelected(xgConfig.getIsDefault());
 
         List<XGTabInfo> infoList = xgConfig.getXgTabInfoList();
-        templateEditor = createEditorWithText(project, infoList.get(0).getContent(), "ftl");
-        templateEditorJPanel.add(templateEditor.getComponent());
+        this.templateEditor = createEditorWithText(project, infoList.get(0).getContent(), "ftl");
+        this.templateEditorJPanel.add(templateEditor.getComponent());
+        this.templateEditorJPanel.setLayout(new GridLayout(1, 1));
+        this.templateEditorJPanel.setPreferredSize(new Dimension(550, 600));
 
-        resetButton.addActionListener(e1 -> {
+        this.table1.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                delBtn.setEnabled(true);
+            }
+        });
+
+        this.table1.getModel().addTableModelListener(e -> {
+            int row = e.getFirstRow();
+            String columnType = table1.getValueAt(row, 0).toString();
+            String javaType = table1.getValueAt(row, 1).toString();
+            if (StrUtil.isNotBlank(columnType) && StrUtil.isNotBlank(javaType)) {
+                columnJavaTypeMapping.put(columnType, javaType);
+                xgConfig.setColumnJavaTypeMapping(columnJavaTypeMapping);
+                XGSettingManager.updateXGConfigs(xgConfig);
+            }
+        });
+
+        this.resetButton.addActionListener(e1 -> {
             Object selectedItem = configComboBox.getSelectedItem();
             if (selectedItem != null) {
                 int flag = Messages.showYesNoDialog("确定重置【" + selectedItem + "】模板配置吗？", "提示", AllIcons.General.QuestionDialog);
                 if (flag == 0) {
                     XGConfig.resetSelectedConfigXgTabInfo(selectedItem.toString());
+                    this.initXGTableInfo(configComboBox.getSelectedItem().toString());
 
                     Document document = templateEditor.getDocument();
                     document.setReadOnly(false);
@@ -112,6 +132,7 @@ public class XGSettingUI {
             XGConfig selectXGConfig = XGSettingManager.getSelectXGConfig((String) selectedItem);
             setDefaultConfigCheckBox.setSelected(selectXGConfig.getIsDefault());
             initXGTabInfo(selectedItem.toString());
+            initXGTableInfo(selectedItem.toString());
 
             Document document = templateEditor.getDocument();
             document.setReadOnly(false);

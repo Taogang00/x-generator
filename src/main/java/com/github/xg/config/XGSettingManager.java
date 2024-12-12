@@ -10,6 +10,7 @@ import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -84,6 +85,21 @@ public final class XGSettingManager implements PersistentStateComponent<XGSettin
             }
         }
         return null;
+    }
+
+    public static void updateXGConfigs(XGConfig selectXGConfig) {
+        List<XGConfig> newXgConfigs = new ArrayList<>();
+        State state = XGSettingManager.getInstance().getState();
+        assert state != null;
+        List<XGConfig> xgConfigs = state.getXgConfigs();
+        for (XGConfig xgConfig : xgConfigs) {
+            if (xgConfig.getName().equals(selectXGConfig.getName())) {
+                newXgConfigs.add(selectXGConfig);
+            } else {
+                newXgConfigs.add(xgConfig);
+            }
+        }
+        state.setXgConfigs(newXgConfigs);
     }
 
     @Data

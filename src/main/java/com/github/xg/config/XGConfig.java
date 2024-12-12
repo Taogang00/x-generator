@@ -89,9 +89,11 @@ public class XGConfig {
             if (xgConfig.getName().equals(selectedName)) {
                 if (TEMPLATE_GUANWEI.equals(selectedName)) {
                     xgConfig.setXgTabInfoList(initGuanWeiXgTableInfo());
+                    xgConfig.setColumnJavaTypeMapping(initColumnJavaTypeMapping());
                 }
                 if (TEMPLATE_MYBATIS_PLUS.equals(selectedName)) {
                     xgConfig.setXgTabInfoList(initMybatisPlusXgTableInfo());
+                    xgConfig.setColumnJavaTypeMapping(initColumnJavaTypeMapping());
                 }
             }
         }

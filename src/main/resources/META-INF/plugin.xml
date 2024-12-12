@@ -41,7 +41,8 @@
         <h3>0.0.6</h3>
         <ul>
            <li>1.布局调整、可以手动拖动调整大小</li>
-           <li>2.数据库和Java类型映射关系维护 TODO</li>
+           <li>2.数据库和Java类型映射关系维护</li>
+           <li>3.项目模块识别调整，支持识别Maven、Gradle项目</li>
         </ul>
         <h3>0.0.5</h3>
         <ul>
@@ -76,7 +77,6 @@
     <!-- Product and plugin compatibility requirements.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
     <depends>com.intellij.modules.platform</depends>
-    <depends>org.jetbrains.idea.maven</depends>
 
     <!-- Extension points defined by the plugin.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->

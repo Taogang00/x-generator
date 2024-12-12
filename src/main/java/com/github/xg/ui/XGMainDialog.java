@@ -4,6 +4,8 @@ import cn.hutool.core.date.DateUtil;
 import com.github.xg.config.XGConfig;
 import com.github.xg.model.XGGlobalObj;
 import com.intellij.ide.BrowserUtil;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import org.jetbrains.annotations.NonNls;

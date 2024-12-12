@@ -1,6 +1,7 @@
 package com.github.xg.ui;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
@@ -10,8 +11,9 @@ import com.github.xg.config.XGSettingManager;
 import com.github.xg.model.*;
 import com.github.xg.render.XGTableListCellRenderer;
 import com.github.xg.utils.XGFileUtil;
-import com.github.xg.utils.XGMavenUtil;
+import com.github.xg.utils.XGModuleUtil;
 import com.intellij.icons.AllIcons;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -122,9 +124,9 @@ public class XGCodeUI {
         }
 
         // 1.项目模块加载
-        List<String> mavenArtifactIds = XGMavenUtil.getMavenArtifactId(project);
-        for (String item : mavenArtifactIds) {
-            projectModuleComboBox.addItem(item);
+        Module[] modules = XGModuleUtil.getModules(project);
+        for (Module module : modules) {
+            projectModuleComboBox.addItem(module.getName());
         }
 
         // 2.生成Java对象【全选】、【全不选】按钮事件
@@ -365,11 +367,14 @@ public class XGCodeUI {
      */
     public void initXgGeneratorGlobalOutputPathAndPackagePath(Project project, String selectedItem) {
         //src/main/java 绝对地址目录,形如：D:\gogs\camel\2.src\tles-oles-camel-out\src\main\java
-        File sourceDirectory = XGMavenUtil.getMavenArtifactIdSourcePath(project, selectedItem);
+        String sourcePath = XGModuleUtil.getModuleSourcePath(project, selectedItem);
+        Assert.notNull(sourcePath, "未识别到项目资源路径");
+        File sourceDirectory = new File(sourcePath);
         //src/main/source 绝对地址目录，形如：D:\gogs\camel\2.src\tles-oles-camel-out\src\main\resource
-        File resourceDirectory = XGMavenUtil.getMavenArtifactIdResourcePath(project, selectedItem);
-        assert sourceDirectory != null;
-        assert resourceDirectory != null;
+        String resourcePath = XGModuleUtil.getModuleReSourcePath(project, selectedItem);
+        Assert.notNull(resourcePath, "未识别到项目资源路径");
+        File resourceDirectory = new File(resourcePath);
+
         String sourceDirectoryAbsolutePath = sourceDirectory.getAbsolutePath();
         String resourceDirectoryAbsolutePath = resourceDirectory.getAbsolutePath();
 

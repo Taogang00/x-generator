@@ -79,12 +79,13 @@ public class XGSettingUI {
             this.configComboBox.addItem(config.getName());
         }
         this.configComboBox.setSelectedIndex(xgCodeUI.getConfigComboBox().getSelectedIndex());
-        this.initXGTabInfo((String) xgCodeUI.getConfigComboBox().getSelectedItem());
-        this.initXGTableInfo((String) xgCodeUI.getConfigComboBox().getSelectedItem());
+
+        this.initXGTabInfo((String) configComboBox.getSelectedItem());
+        this.initXGTableInfo((String) configComboBox.getSelectedItem());
         this.templateEditorJPanel.setLayout(new GridLayout(1, 1));
         this.templateEditorJPanel.setPreferredSize(new Dimension(550, 600));
 
-        XGConfig xgConfig = XGSettingManager.getSelectXGConfig((String) xgCodeUI.getConfigComboBox().getSelectedItem());
+        XGConfig xgConfig = XGSettingManager.getSelectXGConfig((String) configComboBox.getSelectedItem());
         this.setDefaultConfigCheckBox.setSelected(xgConfig.getIsDefault());
 
         List<XGTabInfo> infoList = xgConfig.getXgTabInfoList();

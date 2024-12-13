@@ -59,7 +59,7 @@ public class XGSettingUI {
     private Map<String, String> columnJavaTypeMapping;
 
     private final Editor templateEditor;
-    private final String[] HEADER = {"数据类型(正则匹配)", "Java类型"};
+    private final String[] HEADER = {"数据库类型(正则匹配)", "Java类型"};
     private Object[][] TABLE_DATA = {{"Column Type", "Java Type"}};
 
     public XGSettingUI(Project project, XGCodeUI xgCodeUI) {
@@ -110,7 +110,13 @@ public class XGSettingUI {
             }
         });
 
-        delBtn.addActionListener(e -> {
+        this.addBtn.addActionListener(e -> {
+            MultiInputDialog dialog = new MultiInputDialog();
+            dialog.show();
+            dialog.doOKAction();
+        });
+
+        this.delBtn.addActionListener(e -> {
             int flag = Messages.showYesNoDialog("确定要删除吗？", "提示", Messages.getQuestionIcon());
             if (0 == flag) {
                 int selectedRow = table1.getSelectedRow();
@@ -154,7 +160,7 @@ public class XGSettingUI {
             }
         });
 
-        configComboBox.addActionListener(e -> {
+        this.configComboBox.addActionListener(e -> {
             Object selectedItem = configComboBox.getSelectedItem();
             assert selectedItem != null;
 
@@ -174,7 +180,7 @@ public class XGSettingUI {
             });
         });
 
-        xgTabInfoList.addListSelectionListener(e -> {
+        this.xgTabInfoList.addListSelectionListener(e -> {
             if (e.getValueIsAdjusting() || ObjectUtil.isNull(xgTabInfoList.getSelectedValue())) {
                 return;
             }
@@ -192,7 +198,7 @@ public class XGSettingUI {
             });
         });
 
-        templateEditor.getDocument().addDocumentListener(new DocumentListener() {
+        this.templateEditor.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void documentChanged(@NotNull DocumentEvent event) {
                 Object selectedItem = configComboBox.getSelectedItem();
@@ -212,7 +218,7 @@ public class XGSettingUI {
             }
         });
 
-        setDefaultConfigCheckBox.addActionListener(e -> {
+        this.setDefaultConfigCheckBox.addActionListener(e -> {
             List<XGConfig> xgConfigs = state.getXgConfigs();
             for (XGConfig config : xgConfigs) {
                 config.setIsDefault(false);

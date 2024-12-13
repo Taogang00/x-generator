@@ -21,7 +21,6 @@ import com.intellij.openapi.ui.Messages;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiFileFactory;
-import com.intellij.ui.components.fields.ExtendableTextField;
 import com.intellij.util.ui.JBUI;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
@@ -29,7 +28,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
+import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -43,6 +42,7 @@ import java.util.Map;
  * @author taogang
  * @date 2024/12/08
  */
+@SuppressWarnings("DialogTitleCapitalization")
 @Getter
 public class XGSettingUI {
     private JPanel rootJPanel;
@@ -107,6 +107,29 @@ public class XGSettingUI {
                 columnJavaTypeMapping.put(columnType, javaType);
                 xgConfig.setColumnJavaTypeMapping(columnJavaTypeMapping);
                 XGSettingManager.updateXGConfigs(xgConfig);
+            }
+        });
+
+        delBtn.addActionListener(e -> {
+            int flag = Messages.showYesNoDialog("确定要删除吗？", "提示", Messages.getQuestionIcon());
+            if (0 == flag) {
+                int selectedRow = table1.getSelectedRow();
+                TableModel model = table1.getModel();
+                if (selectedRow == -1 || ObjectUtil.isNull(model)) {
+                    return;
+                }
+                if (table1.isEditing()) {
+                    table1.getCellEditor().stopCellEditing();
+                }
+                String columnType = model.getValueAt(selectedRow, 0).toString();
+
+                columnJavaTypeMapping.remove(columnType);
+                xgConfig.setColumnJavaTypeMapping(columnJavaTypeMapping);
+                XGSettingManager.updateXGConfigs(xgConfig);
+
+                initXGTableInfo((String) configComboBox.getSelectedItem());
+                delBtn.setEnabled(false);
+                Messages.showInfoMessage("删除成功！", "提示");
             }
         });
 
@@ -245,28 +268,18 @@ public class XGSettingUI {
             TABLE_DATA[idx] = new Object[]{stringTupleEntry.getKey(), stringTupleEntry.getValue()};
             idx++;
         }
-
         table1.setModel(getDataModel());
     }
 
     @NotNull
     private DefaultTableModel getDataModel() {
         return new DefaultTableModel(TABLE_DATA, HEADER) {
-            boolean[] canEdit = {true, true, true};
+            final boolean[] canEdit = {true, true, true};
 
             @Override
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit[columnIndex];
             }
         };
-    }
-
-    private void setColumnInput(Project project) {
-        TableColumn comboBoxColumn = table1.getColumnModel().getColumn(1);
-        TableColumn type = table1.getColumnModel().getColumn(0);
-
-        ExtendableTextField textField = new ExtendableTextField();
-
-        comboBoxColumn.setCellEditor(new DefaultCellEditor(textField));
     }
 }

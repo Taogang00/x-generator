@@ -111,7 +111,7 @@ public class XGSettingUI {
         });
 
         this.addBtn.addActionListener(e -> {
-            MultiInputDialog dialog = new MultiInputDialog();
+            MultiInputDialog dialog = new MultiInputDialog(this);
             dialog.show();
             dialog.doOKAction();
         });

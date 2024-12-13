@@ -27,6 +27,7 @@ import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import java.awt.*;
@@ -62,6 +63,10 @@ public class XGSettingUI {
     private Object[][] TABLE_DATA = {{"Column Type", "Java Type"}};
 
     public XGSettingUI(Project project, XGCodeUI xgCodeUI) {
+        DefaultTableCellRenderer dc = new DefaultTableCellRenderer();
+        dc.setHorizontalAlignment(JLabel.CENTER);
+        this.table1.setDefaultRenderer(Object.class, dc);
+
         this.delBtn.setEnabled(false);
         this.resetButton.setIcon(AllIcons.General.Reset);
         this.xgTabInfoList.setBorder(JBUI.Borders.emptyLeft(5));
@@ -76,6 +81,8 @@ public class XGSettingUI {
         this.configComboBox.setSelectedIndex(xgCodeUI.getConfigComboBox().getSelectedIndex());
         this.initXGTabInfo((String) xgCodeUI.getConfigComboBox().getSelectedItem());
         this.initXGTableInfo((String) xgCodeUI.getConfigComboBox().getSelectedItem());
+        this.templateEditorJPanel.setLayout(new GridLayout(1, 1));
+        this.templateEditorJPanel.setPreferredSize(new Dimension(550, 600));
 
         XGConfig xgConfig = XGSettingManager.getSelectXGConfig((String) xgCodeUI.getConfigComboBox().getSelectedItem());
         this.setDefaultConfigCheckBox.setSelected(xgConfig.getIsDefault());
@@ -83,8 +90,6 @@ public class XGSettingUI {
         List<XGTabInfo> infoList = xgConfig.getXgTabInfoList();
         this.templateEditor = createEditorWithText(project, infoList.get(0).getContent(), "ftl");
         this.templateEditorJPanel.add(templateEditor.getComponent());
-        this.templateEditorJPanel.setLayout(new GridLayout(1, 1));
-        this.templateEditorJPanel.setPreferredSize(new Dimension(550, 600));
 
         this.table1.addMouseListener(new MouseAdapter() {
             @Override

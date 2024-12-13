@@ -8,7 +8,7 @@
     <name>X-Generator</name>
 
     <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
-    <vendor email="tao_gang@outlook.com" url="https://gitee.com/taogang">TaoGang</vendor>
+    <vendor email="tao_gang@outlook.com" url="https://github.com/Taogang00/x-generator">TaoGang</vendor>
 
     <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
          Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
@@ -19,8 +19,8 @@
             <li>Supports generating Controller, Service, ServiceImpl, Entity, Mapper template code</li>
             <li>Automatically recognizes Maven project structure</li>
             <li>Supports generating with different configurations</li>
-            <li>Automatically recognizes Gradle project structure - TODO</li>
-            <li>Supports custom templates - TODO</li>
+            <li>Automatically recognizes Gradle project structure</li>
+            <li>Supports custom templates</li>
             <li>Supports import/export configuration feature - TODO</li>
         </ul>
 
@@ -29,8 +29,8 @@
             <li>支持生成Controller, Service, ServiceImpl, Entity, Mapper等模板代码</li>
             <li>支持Maven项目自动识别项目结构</li>
             <li>支持选择不同配置生成</li>
-            <li>支持Gradle项目自动识别项目结构 -TODO</li>
-            <li>支持自定义模板 -TODO</li>
+            <li>支持Gradle项目自动识别项目结构</li>
+            <li>支持自定义模板</li>
             <li>支持导入导出配置功能 -TODO</li>
         </ul>
     ]]></description>

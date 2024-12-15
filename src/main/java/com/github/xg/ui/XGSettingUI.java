@@ -5,6 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import com.github.xg.config.XGConfig;
 import com.github.xg.config.XGSettingManager;
 import com.github.xg.model.XGTabInfo;
+import com.github.xg.utils.XGNotifyUtil;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.Document;
@@ -137,7 +138,7 @@ public class XGSettingUI {
 
                 initXGTableInfo((String) configComboBox.getSelectedItem());
                 delBtn.setEnabled(false);
-                Messages.showInfoMessage("删除成功！", "提示");
+                XGNotifyUtil.notifySuccess("删除成功！", "提示", project);
             }
         });
 
@@ -158,6 +159,7 @@ public class XGSettingUI {
                         ((EditorEx) templateEditor).setHighlighter(EditorHighlighterFactory.getInstance().createEditorHighlighter(project, fileName));
                         document.setText(tabInfo.getContent());
                     });
+                    XGNotifyUtil.notifySuccess("【" + selectedItem + "】模板重置成功！", "提示", project);
                 }
             }
         });

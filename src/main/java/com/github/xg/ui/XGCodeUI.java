@@ -521,6 +521,9 @@ public class XGCodeUI {
                 xgTableFieldsObj.setNullOption(columnInfo.getNullOption());
                 xgTableFieldsObj.setDataLength(columnInfo.getDataLength());
                 xgTableFieldsObj.setPropertyName(StrUtil.lowerFirst(columnInfo.getFieldName()));
+                // 兜底的类型
+                xgTableFieldsObj.setPropertyType("Object");
+                xgTableFieldsObj.setPropertyClass("java.lang.Object");
                 for (Map.Entry<String, String> regexEntry : columnJavaTypeMapping.entrySet()) {
                     if (StrUtil.isNotBlank(regexEntry.getValue())) {
                         if (ReUtil.isMatch(regexEntry.getKey(), columnInfo.getFieldType().toLowerCase())) {

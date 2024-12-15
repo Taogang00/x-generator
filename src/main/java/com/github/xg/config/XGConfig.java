@@ -35,7 +35,7 @@ public class XGConfig {
     /**
      * 数据库列与Java类型映射
      */
-    private Map<String, String> columnJavaTypeMapping;
+    private TreeMap<String, String> columnJavaTypeMapping;
 
     /**
      * 初始化默认的配置内容
@@ -135,8 +135,8 @@ public class XGConfig {
     /**
      * 初始化数据库类型映射
      */
-    public static Map<String, String> initColumnJavaTypeMapping() {
-        Map<String, String> columnJavaTypeMapping = new LinkedHashMap<>();
+    public static TreeMap<String, String> initColumnJavaTypeMapping() {
+        TreeMap<String, String> columnJavaTypeMapping = new TreeMap<>();
         // 数据库类型映射
         columnJavaTypeMapping.put("varchar(\\(\\d+\\))?", "java.lang.String");
         columnJavaTypeMapping.put("varchar2(\\(\\d+\\))?", "java.lang.String");

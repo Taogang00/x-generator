@@ -37,6 +37,7 @@ import java.awt.event.MouseEvent;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * 设置页面
@@ -58,7 +59,7 @@ public class XGSettingUI {
     private JButton resetButton;
     private JButton addBtn;
     private JButton delBtn;
-    private Map<String, String> columnJavaTypeMapping;
+    private TreeMap<String, String> columnJavaTypeMapping;
 
     private final Editor templateEditor;
     private final String[] HEADER = {"数据库类型(正则)", "Java类型(全路径名)"};

@@ -136,7 +136,7 @@ public class XGConfig {
      * 初始化数据库类型映射
      */
     public static Map<String, String> initColumnJavaTypeMapping() {
-        Map<String, String> columnJavaTypeMapping = new HashMap<>();
+        Map<String, String> columnJavaTypeMapping = new LinkedHashMap<>();
         // 数据库类型映射
         columnJavaTypeMapping.put("varchar(\\(\\d+\\))?", "java.lang.String");
         columnJavaTypeMapping.put("varchar2(\\(\\d+\\))?", "java.lang.String");

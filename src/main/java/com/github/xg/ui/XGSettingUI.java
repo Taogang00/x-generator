@@ -17,6 +17,7 @@ import com.intellij.openapi.editor.ex.EditorEx;
 import com.intellij.openapi.editor.highlighter.EditorHighlighterFactory;
 import com.intellij.openapi.fileTypes.PlainTextLanguage;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
@@ -24,6 +25,7 @@ import com.intellij.psi.PsiFileFactory;
 import com.intellij.util.ui.JBUI;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -46,14 +48,14 @@ import java.util.Map;
 @Getter
 public class XGSettingUI {
     private JPanel rootJPanel;
-    private JTabbedPane tabbedPane1;
     private JPanel templateList;
     private JPanel templateEditorJPanel;
+    private JTabbedPane tabbedPane1;
     private JList<String> xgTabInfoList;
     private JComboBox<String> configComboBox;
-    private JButton resetButton;
     private JCheckBox setDefaultConfigCheckBox;
     private JTable table1;
+    private JButton resetButton;
     private JButton addBtn;
     private JButton delBtn;
     private Map<String, String> columnJavaTypeMapping;
@@ -111,9 +113,8 @@ public class XGSettingUI {
         });
 
         this.addBtn.addActionListener(e -> {
-            MultiInputDialog dialog = new MultiInputDialog(this);
+            ColumnMapInputDialog dialog = new ColumnMapInputDialog(this);
             dialog.show();
-            dialog.doOKAction();
         });
 
         this.delBtn.addActionListener(e -> {
@@ -277,6 +278,16 @@ public class XGSettingUI {
         table1.setModel(getDataModel());
     }
 
+    public void addXGTableInfo(String columnType, String javaType) {
+        columnJavaTypeMapping.put(columnType, javaType);
+        String selectedConfigKey = (String) configComboBox.getSelectedItem();
+        XGConfig xgConfig = XGSettingManager.getSelectXGConfig(selectedConfigKey);
+
+        xgConfig.setColumnJavaTypeMapping(columnJavaTypeMapping);
+        XGSettingManager.updateXGConfigs(xgConfig);
+        initXGTableInfo((String) configComboBox.getSelectedItem());
+    }
+
     @NotNull
     private DefaultTableModel getDataModel() {
         return new DefaultTableModel(TABLE_DATA, HEADER) {
@@ -287,5 +298,58 @@ public class XGSettingUI {
                 return canEdit[columnIndex];
             }
         };
+    }
+
+    @SuppressWarnings("DialogTitleCapitalization")
+    public static class ColumnMapInputDialog extends DialogWrapper {
+
+        private final XGSettingUI xgSettingUI;
+
+        private JTextField columnTypeJTextField;
+
+        private JTextField javaTypeJTextField;
+
+        public ColumnMapInputDialog(XGSettingUI xgSettingUI) {
+            super(true);
+            this.xgSettingUI = xgSettingUI;
+            setSize(380, 90);
+            setTitle("X-Generator");
+            setOKButtonText("添加");
+            setCancelButtonText("取消");
+            init();
+        }
+
+        @Nullable
+        @Override
+        protected JComponent createCenterPanel() {
+            JPanel panel = new JPanel();
+            panel.setLayout(new GridLayout(2, 2));
+
+            JLabel columnTypeJLabel = new JLabel("数据库类型(正则匹配)");
+            columnTypeJLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            columnTypeJTextField = new JTextField();
+
+            JLabel javaTypeJLabel = new JLabel("Java类型(全路径名)");
+            javaTypeJLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            javaTypeJTextField = new JTextField();
+
+            panel.add(columnTypeJLabel);
+            panel.add(columnTypeJTextField);
+            panel.add(javaTypeJLabel);
+            panel.add(javaTypeJTextField);
+            return panel;
+        }
+
+        @Override
+        protected void doOKAction() {
+            String firstValue = columnTypeJTextField.getText();
+            String secondValue = javaTypeJTextField.getText();
+            if (StrUtil.isBlank(firstValue) && StrUtil.isBlank(secondValue)) {
+                Messages.showWarningDialog("请输入表单数据项！", "提示");
+                return;
+            }
+            xgSettingUI.addXGTableInfo(firstValue, secondValue);
+            super.doOKAction();
+        }
     }
 }

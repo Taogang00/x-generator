@@ -61,7 +61,7 @@ public class XGSettingUI {
     private Map<String, String> columnJavaTypeMapping;
 
     private final Editor templateEditor;
-    private final String[] HEADER = {"数据库类型(正则匹配)", "Java类型"};
+    private final String[] HEADER = {"数据库类型(正则)", "Java类型(全路径名)"};
     private Object[][] TABLE_DATA = {{"Column Type", "Java Type"}};
 
     public XGSettingUI(Project project, XGCodeUI xgCodeUI) {
@@ -325,7 +325,7 @@ public class XGSettingUI {
             JPanel panel = new JPanel();
             panel.setLayout(new GridLayout(2, 2));
 
-            JLabel columnTypeJLabel = new JLabel("数据库类型(正则匹配)");
+            JLabel columnTypeJLabel = new JLabel("数据库类型(正则)");
             columnTypeJLabel.setHorizontalAlignment(SwingConstants.CENTER);
             columnTypeJTextField = new JTextField();
 

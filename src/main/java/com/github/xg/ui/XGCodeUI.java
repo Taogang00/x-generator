@@ -18,6 +18,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.DocumentAdapter;
+import com.intellij.ui.JBColor;
 import com.intellij.ui.components.fields.ExpandableTextField;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -350,7 +351,7 @@ public class XGCodeUI {
                 }
                 list.add(XGXmlElementTable);
             }
-            this.runInfoLabel.setText("已导入" + list.size() + "张表");
+            this.runInfoLabel.setText("已导入【" + list.size() + "】张表");
             this.runInfoLabel.setIcon(AllIcons.General.Information);
         } catch (Exception e) {
             this.runInfoLabel.setText("XML文件解析错误!");

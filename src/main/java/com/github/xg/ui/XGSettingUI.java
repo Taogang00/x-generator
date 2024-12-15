@@ -56,7 +56,7 @@ public class XGSettingUI {
     private JList<String> xgTabInfoList;
     private JComboBox<String> configComboBox;
     private JCheckBox setDefaultConfigCheckBox;
-    private JTable table1;
+    private JTable typeMappingTable;
     private JButton resetButton;
     private JButton addBtn;
     private JButton delBtn;
@@ -69,8 +69,8 @@ public class XGSettingUI {
     public XGSettingUI(Project project, XGCodeUI xgCodeUI) {
         DefaultTableCellRenderer dc = new DefaultTableCellRenderer();
         dc.setHorizontalAlignment(JLabel.CENTER);
-        this.table1.setDefaultRenderer(Object.class, dc);
-
+        this.typeMappingTable.setDefaultRenderer(Object.class, dc);
+        this.typeMappingTable.getTableHeader().setFont(new Font("Microsoft YaHei", Font.BOLD, 13));
         this.delBtn.setEnabled(false);
         this.resetButton.setIcon(AllIcons.General.Reset);
         this.xgTabInfoList.setBorder(JBUI.Borders.emptyLeft(5));
@@ -96,17 +96,17 @@ public class XGSettingUI {
         this.templateEditor = createEditorWithText(project, infoList.get(0).getContent(), "ftl");
         this.templateEditorJPanel.add(templateEditor.getComponent());
 
-        this.table1.addMouseListener(new MouseAdapter() {
+        this.typeMappingTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 delBtn.setEnabled(true);
             }
         });
 
-        this.table1.getModel().addTableModelListener(e -> {
+        this.typeMappingTable.getModel().addTableModelListener(e -> {
             int row = e.getFirstRow();
-            String columnType = table1.getValueAt(row, 0).toString();
-            String javaType = table1.getValueAt(row, 1).toString();
+            String columnType = typeMappingTable.getValueAt(row, 0).toString();
+            String javaType = typeMappingTable.getValueAt(row, 1).toString();
             if (StrUtil.isNotBlank(columnType) && StrUtil.isNotBlank(javaType)) {
                 columnJavaTypeMapping.put(columnType, javaType);
                 xgConfig.setColumnJavaTypeMapping(columnJavaTypeMapping);
@@ -122,13 +122,13 @@ public class XGSettingUI {
         this.delBtn.addActionListener(e -> {
             int flag = Messages.showYesNoDialog("确定要删除吗？", "提示", Messages.getQuestionIcon());
             if (0 == flag) {
-                int selectedRow = table1.getSelectedRow();
-                TableModel model = table1.getModel();
+                int selectedRow = typeMappingTable.getSelectedRow();
+                TableModel model = typeMappingTable.getModel();
                 if (selectedRow == -1 || ObjectUtil.isNull(model)) {
                     return;
                 }
-                if (table1.isEditing()) {
-                    table1.getCellEditor().stopCellEditing();
+                if (typeMappingTable.isEditing()) {
+                    typeMappingTable.getCellEditor().stopCellEditing();
                 }
                 String columnType = model.getValueAt(selectedRow, 0).toString();
 
@@ -278,7 +278,7 @@ public class XGSettingUI {
             TABLE_DATA[idx] = new Object[]{stringTupleEntry.getKey(), stringTupleEntry.getValue()};
             idx++;
         }
-        table1.setModel(getDataModel());
+        typeMappingTable.setModel(getDataModel());
     }
 
     public void addXGTableInfo(String columnType, String javaType) {

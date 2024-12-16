@@ -11,7 +11,7 @@ Java领域目前市面上常用的代码生成器大概有这几类：
 
 本插件基于IDEA的插件来生成Java通用模板代码，自动寻找当前项目模块、操作系统信息，实现生成的代码能直接运行的代码生成器。
 
-## 二、支持的XML模板
+## 二、支持的XML格式
 ```xml
 <?xml version="1.0" encoding="GB2312" ?>
 <Data>
@@ -31,13 +31,13 @@ Java领域目前市面上常用的代码生成器大概有这几类：
 - **Table 二级元素，定义了关系表的元数据，其中Name属性表示关系表的表名，Text属性表示关系表的描述**
 
 - **Column 三级元素，定义了关系表列的元数据，其中：**
+  - PrimaryKey 属性表示是否是主键，可选：True|False；
+  - Name 属性表示列的名称；
+  - Text 属性列的描述；
+  - DataType 属性表示列的类型；
+  - NullOption 属性表示是否允许为空，可选：True|False；
+  - DataLength 属性表示列的长度；
 
-​	PrimaryKey 属性表示是否是主键，可选：True|False；
-​	Name 属性表示列的名称；
-​	Text 属性列的描述；
-​	DataType 属性表示列的类型；
-​	NullOption 属性表示是否允许为空，可选：True|False；
-​	DataLength 属性表示列的长度；
 
 ## 三、生成代码
 

@@ -52,9 +52,6 @@ public class XGSettingUI {
     // 声明根面板
     private JPanel rootJPanel;
 
-    // 声明模板列表面板
-    private JPanel templateList;
-
     // 声明模板编辑器面板
     private JPanel templateEditorJPanel;
 

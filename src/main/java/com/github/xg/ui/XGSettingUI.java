@@ -103,7 +103,7 @@ public class XGSettingUI {
         // 禁用删除按钮
         this.delBtn.setEnabled(false);
         // 设置重置按钮图标
-        this.resetButton.setIcon(AllIcons.General.Reset);
+        this.resetButton.setIcon(AllIcons.Actions.ForceRefresh);
         // 设置下拉框边框
         this.xgTabInfoList.setBorder(JBUI.Borders.emptyLeft(5));
 

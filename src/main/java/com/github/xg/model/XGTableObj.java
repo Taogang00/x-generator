@@ -6,7 +6,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class XgTableObj {
+public class XGTableObj {
 
     private String tableName;
 

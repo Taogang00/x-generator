@@ -18,7 +18,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.DocumentAdapter;
-import com.intellij.ui.JBColor;
 import com.intellij.ui.components.fields.ExpandableTextField;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -96,7 +95,7 @@ public class XGCodeUI {
     private List<XGXmlElementTable> tableInfoList;
     private List<? extends String> xgGeneratorSelectedTableValuesList;
 
-    private final List<XgTableObj> xgGeneratorSelectedTableObjList;
+    private final List<XGTableObj> xgGeneratorSelectedTableObjList;
     private final XGGlobalObj xgGlobalObj;
 
     public XGCodeUI(Project project, XGGlobalObj xgGlobalObj) {
@@ -471,7 +470,7 @@ public class XGCodeUI {
             XGXmlElementTable xgXmlElementTable = tableInfoMap.get(s);
             String elementTableName = xgXmlElementTable.getName();
 
-            XgTableObj xgTableObj = new XgTableObj();
+            XGTableObj xgTableObj = new XGTableObj();
             xgTableObj.setTableName(elementTableName);
             xgTableObj.setTableComment(xgXmlElementTable.getComment());
             //entity
@@ -541,7 +540,7 @@ public class XGCodeUI {
         }
 
         //去掉统一前缀
-        for (XgTableObj xgTableObj : xgGeneratorSelectedTableObjList) {
+        for (XGTableObj xgTableObj : xgGeneratorSelectedTableObjList) {
             String controllerName = StrUtil.removePrefix(xgTableObj.getControllerClassName(), this.xgGlobalObj.getRemoveClassNamePrefix());
             controllerName = this.xgGlobalObj.getAddClassNamePrefix() + controllerName;
             xgTableObj.setControllerClassName(controllerName);
@@ -652,7 +651,7 @@ public class XGCodeUI {
             // 为了避免这个问题，你需要确保文件的父目录已经存在。如果目录不存在，你需要手动创建它。
             Files.createDirectories(path);
 
-            for (XgTableObj xgTableObj : xgGeneratorSelectedTableObjList) {
+            for (XGTableObj xgTableObj : xgGeneratorSelectedTableObjList) {
                 Path filePath = Paths.get(xgTableObj.getControllerAbsolutePath());
                 // 检查文件是否存在并且是否允许覆盖
                 boolean shouldProcess = Files.exists(filePath) && this.xgGlobalObj.getFileOverride() || !Files.exists(filePath);
@@ -683,7 +682,7 @@ public class XGCodeUI {
             Path path = Paths.get(xgGlobalObj.getOutputEntityPath());
             Files.createDirectories(path);
 
-            for (XgTableObj xgTableObj : xgGeneratorSelectedTableObjList) {
+            for (XGTableObj xgTableObj : xgGeneratorSelectedTableObjList) {
                 Path filePath = Paths.get(xgTableObj.getEntityAbsolutePath());
                 // 检查文件是否存在并且是否允许覆盖
                 boolean shouldProcess = Files.exists(filePath) && this.xgGlobalObj.getFileOverride() || !Files.exists(filePath);
@@ -714,7 +713,7 @@ public class XGCodeUI {
             Path path = Paths.get(xgGlobalObj.getOutputDTOPath());
             Files.createDirectories(path);
 
-            for (XgTableObj xgTableObj : xgGeneratorSelectedTableObjList) {
+            for (XGTableObj xgTableObj : xgGeneratorSelectedTableObjList) {
                 Path filePath = Paths.get(xgTableObj.getDtoAbsolutePath());
                 // 检查文件是否存在并且是否允许覆盖
                 boolean shouldProcess = Files.exists(filePath) && this.xgGlobalObj.getFileOverride() || !Files.exists(filePath);
@@ -745,7 +744,7 @@ public class XGCodeUI {
             Path path = Paths.get(xgGlobalObj.getOutputQueryPath());
             Files.createDirectories(path);
 
-            for (XgTableObj xgTableObj : xgGeneratorSelectedTableObjList) {
+            for (XGTableObj xgTableObj : xgGeneratorSelectedTableObjList) {
                 Path filePath = Paths.get(xgTableObj.getQueryAbsolutePath());
                 // 检查文件是否存在并且是否允许覆盖
                 boolean shouldProcess = Files.exists(filePath) && this.xgGlobalObj.getFileOverride() || !Files.exists(filePath);
@@ -776,7 +775,7 @@ public class XGCodeUI {
             Path path = Paths.get(xgGlobalObj.getOutputServicePath());
             Files.createDirectories(path);
 
-            for (XgTableObj xgTableObj : xgGeneratorSelectedTableObjList) {
+            for (XGTableObj xgTableObj : xgGeneratorSelectedTableObjList) {
                 Path filePath = Paths.get(xgTableObj.getServiceAbsolutePath());
                 // 检查文件是否存在并且是否允许覆盖
                 boolean shouldProcess = Files.exists(filePath) && this.xgGlobalObj.getFileOverride() || !Files.exists(filePath);
@@ -807,7 +806,7 @@ public class XGCodeUI {
             Path path = Paths.get(xgGlobalObj.getOutputServiceImplPath());
             Files.createDirectories(path);
 
-            for (XgTableObj xgTableObj : xgGeneratorSelectedTableObjList) {
+            for (XGTableObj xgTableObj : xgGeneratorSelectedTableObjList) {
                 Path filePath = Paths.get(xgTableObj.getServiceImplAbsolutePath());
                 // 检查文件是否存在并且是否允许覆盖
                 boolean shouldProcess = Files.exists(filePath) && this.xgGlobalObj.getFileOverride() || !Files.exists(filePath);
@@ -838,7 +837,7 @@ public class XGCodeUI {
             Path path = Paths.get(xgGlobalObj.getOutputMapperPath());
             Files.createDirectories(path);
 
-            for (XgTableObj xgTableObj : xgGeneratorSelectedTableObjList) {
+            for (XGTableObj xgTableObj : xgGeneratorSelectedTableObjList) {
                 Path filePath = Paths.get(xgTableObj.getMapperAbsolutePath());
                 // 检查文件是否存在并且是否允许覆盖
                 boolean shouldProcess = Files.exists(filePath) && this.xgGlobalObj.getFileOverride() || !Files.exists(filePath);
@@ -869,7 +868,7 @@ public class XGCodeUI {
             Path path = Paths.get(xgGlobalObj.getOutputMapperXmlPath());
             Files.createDirectories(path);
 
-            for (XgTableObj xgTableObj : xgGeneratorSelectedTableObjList) {
+            for (XGTableObj xgTableObj : xgGeneratorSelectedTableObjList) {
                 Path filePath = Paths.get(xgTableObj.getMapperXmlAbsolutePath());
                 // 检查文件是否存在并且是否允许覆盖
                 boolean shouldProcess = Files.exists(filePath) && this.xgGlobalObj.getFileOverride() || !Files.exists(filePath);
@@ -900,7 +899,7 @@ public class XGCodeUI {
             Path path = Paths.get(xgGlobalObj.getOutputMapStructPath());
             Files.createDirectories(path);
 
-            for (XgTableObj xgTableObj : xgGeneratorSelectedTableObjList) {
+            for (XGTableObj xgTableObj : xgGeneratorSelectedTableObjList) {
                 Path filePath = Paths.get(xgTableObj.getMapstructAbsolutePath());
                 // 检查文件是否存在并且是否允许覆盖
                 boolean shouldProcess = Files.exists(filePath) && this.xgGlobalObj.getFileOverride() || !Files.exists(filePath);

@@ -102,8 +102,10 @@ public class XGSettingUI {
         this.typeMappingTable.getTableHeader().setFont(new Font("Microsoft YaHei", Font.BOLD, 13));
         // 禁用删除按钮
         this.delBtn.setEnabled(false);
-        // 设置重置按钮图标
+        // 设置按钮图标
         this.resetButton.setIcon(AllIcons.Actions.ForceRefresh);
+        this.addBtn.setIcon(AllIcons.Actions.AddList);
+        this.delBtn.setIcon(AllIcons.Actions.GC);
         // 设置下拉框边框
         this.xgTabInfoList.setBorder(JBUI.Borders.emptyLeft(5));
 

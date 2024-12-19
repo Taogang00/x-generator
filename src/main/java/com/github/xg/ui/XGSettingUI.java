@@ -174,7 +174,7 @@ public class XGSettingUI {
         // 为删除按钮添加点击事件监听器
         this.delBtn.addActionListener(e -> {
             // 弹出确认删除对话框
-            int flag = Messages.showYesNoDialog("确定要删除吗？", "提示", Messages.getQuestionIcon());
+            int flag = Messages.showYesNoDialog("确定要删除吗？", "X-Generator", Messages.getQuestionIcon());
             if (0 == flag) {
                 int selectedRow = typeMappingTable.getSelectedRow();
                 TableModel model = typeMappingTable.getModel();
@@ -200,7 +200,7 @@ public class XGSettingUI {
                 // 禁用删除按钮
                 delBtn.setEnabled(false);
                 // 弹出删除成功提示
-                XGNotifyUtil.notifySuccess("删除成功！", "提示", project);
+                XGNotifyUtil.notifySuccess("删除成功！", "X-Generator", project);
             }
         });
 
@@ -209,7 +209,7 @@ public class XGSettingUI {
             Object selectedItem = configComboBox.getSelectedItem();
             if (selectedItem != null) {
                 // 弹出确认重置对话框
-                int flag = Messages.showYesNoDialog("确定重置【" + selectedItem + "】模板配置吗？", "提示", AllIcons.General.QuestionDialog);
+                int flag = Messages.showYesNoDialog("确定重置【" + selectedItem + "】模板配置吗？", "X-Generator", AllIcons.General.QuestionDialog);
                 if (flag == 0) {
                     // 重置选中的配置模板信息
                     XGConfig.resetSelectedConfigXgTabInfo(selectedItem.toString());
@@ -233,7 +233,7 @@ public class XGSettingUI {
                         document.setText(tabInfo.getContent());
                     });
                     // 弹出重置成功提示
-                    XGNotifyUtil.notifySuccess("【" + selectedItem + "】模板重置成功！", "提示", project);
+                    XGNotifyUtil.notifySuccess("【" + selectedItem + "】模板重置成功！", "X-Generator", project);
                 }
             }
         });
@@ -537,7 +537,7 @@ public class XGSettingUI {
             // 如果两个输入框都为空
             if (StrUtil.isBlank(firstValue) && StrUtil.isBlank(secondValue)) {
                 // 显示警告对话框，提示用户输入表单数据项
-                Messages.showWarningDialog("请输入表单数据项！", "提示");
+                Messages.showWarningDialog("请输入表单数据项！", "X-Generator");
                 // 退出方法
                 return;
             }

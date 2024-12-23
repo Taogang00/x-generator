@@ -662,7 +662,7 @@ public class XGCodeUI {
                         template.process(map, new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8));
                         count++;
                     } catch (IOException | TemplateException e) {
-                        throw new RuntimeException(e);
+                        //ignore Exception
                     }
                 }
             }
@@ -693,7 +693,7 @@ public class XGCodeUI {
                         template.process(map, new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8));
                         count++;
                     } catch (IOException | TemplateException e) {
-                        throw new RuntimeException(e);
+                        //ignore Exception
                     }
                 }
             }
@@ -724,7 +724,7 @@ public class XGCodeUI {
                         template.process(map, new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8));
                         count++;
                     } catch (IOException | TemplateException e) {
-                        throw new RuntimeException(e);
+                        //ignore Exception
                     }
                 }
             }
@@ -755,7 +755,7 @@ public class XGCodeUI {
                         template.process(map, new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8));
                         count++;
                     } catch (IOException | TemplateException e) {
-                        throw new RuntimeException(e);
+                        //ignore Exception
                     }
                 }
             }
@@ -786,7 +786,7 @@ public class XGCodeUI {
                         template.process(map, new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8));
                         count++;
                     } catch (IOException | TemplateException e) {
-                        throw new RuntimeException(e);
+                        //ignore Exception
                     }
                 }
             }
@@ -817,7 +817,7 @@ public class XGCodeUI {
                         template.process(map, new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8));
                         count++;
                     } catch (IOException | TemplateException e) {
-                        throw new RuntimeException(e);
+                        //ignore Exception
                     }
                 }
             }
@@ -848,7 +848,7 @@ public class XGCodeUI {
                         template.process(map, new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8));
                         count++;
                     } catch (IOException | TemplateException e) {
-                        throw new RuntimeException(e);
+                        //ignore Exception
                     }
                 }
             }
@@ -879,7 +879,7 @@ public class XGCodeUI {
                         template.process(map, new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8));
                         count++;
                     } catch (IOException | TemplateException e) {
-                        throw new RuntimeException(e);
+                        //ignore Exception
                     }
                 }
             }
@@ -910,7 +910,7 @@ public class XGCodeUI {
                         template.process(map, new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8));
                         count++;
                     } catch (IOException | TemplateException e) {
-                        throw new RuntimeException(e);
+                        //ignore Exception
                     }
                 }
             }

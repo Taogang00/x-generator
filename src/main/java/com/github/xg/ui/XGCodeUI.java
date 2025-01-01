@@ -594,42 +594,42 @@ public class XGCodeUI {
 
         int count = 0;
         XGConfig selectXGConfig = XGSettingManager.getSelectXGConfig(configComboBox.getSelectedItem().toString());
-        List<XGTabInfo> xgTabInfoList = selectXGConfig.getXgTabInfoList();
-        for (XGTabInfo xgTabInfo : xgTabInfoList) {
-            if (CONTROLLER.equals(xgTabInfo.getType())) {
-                Template template = getFreemarkerTemplate(xgTabInfo.getContent(), xgTabInfo.getType());
+        List<XGTempItem> xgTempItemList = selectXGConfig.getXgTempItemList();
+        for (XGTempItem xgTempItem : xgTempItemList) {
+            if (CONTROLLER.equals(xgTempItem.getName())) {
+                Template template = getFreemarkerTemplate(xgTempItem.getContent(), xgTempItem.getName());
                 count += generateControllerCode(template, map);
             }
-            if (ENTITY.equals(xgTabInfo.getType())) {
-                Template template = getFreemarkerTemplate(xgTabInfo.getContent(), xgTabInfo.getType());
+            if (ENTITY.equals(xgTempItem.getName())) {
+                Template template = getFreemarkerTemplate(xgTempItem.getContent(), xgTempItem.getName());
                 count += generateEntityCode(template, map);
             }
-            if (DTO.equals(xgTabInfo.getType())) {
-                Template template = getFreemarkerTemplate(xgTabInfo.getContent(), xgTabInfo.getType());
+            if (DTO.equals(xgTempItem.getName())) {
+                Template template = getFreemarkerTemplate(xgTempItem.getContent(), xgTempItem.getName());
                 count += generateDTOCode(template, map);
             }
-            if (QUERY.equals(xgTabInfo.getType())) {
-                Template template = getFreemarkerTemplate(xgTabInfo.getContent(), xgTabInfo.getType());
+            if (QUERY.equals(xgTempItem.getName())) {
+                Template template = getFreemarkerTemplate(xgTempItem.getContent(), xgTempItem.getName());
                 count += generateQueryCode(template, map);
             }
-            if (SERVICE.equals(xgTabInfo.getType())) {
-                Template template = getFreemarkerTemplate(xgTabInfo.getContent(), xgTabInfo.getType());
+            if (SERVICE.equals(xgTempItem.getName())) {
+                Template template = getFreemarkerTemplate(xgTempItem.getContent(), xgTempItem.getName());
                 count += generateServiceCode(template, map);
             }
-            if (SERVICE_IMPL.equals(xgTabInfo.getType())) {
-                Template template = getFreemarkerTemplate(xgTabInfo.getContent(), xgTabInfo.getType());
+            if (SERVICE_IMPL.equals(xgTempItem.getName())) {
+                Template template = getFreemarkerTemplate(xgTempItem.getContent(), xgTempItem.getName());
                 count += generateServiceImplCode(template, map);
             }
-            if (MAPPER.equals(xgTabInfo.getType())) {
-                Template template = getFreemarkerTemplate(xgTabInfo.getContent(), xgTabInfo.getType());
+            if (MAPPER.equals(xgTempItem.getName())) {
+                Template template = getFreemarkerTemplate(xgTempItem.getContent(), xgTempItem.getName());
                 count += generateMapperCode(template, map);
             }
-            if (XML.equals(xgTabInfo.getType())) {
-                Template template = getFreemarkerTemplate(xgTabInfo.getContent(), xgTabInfo.getType());
+            if (XML.equals(xgTempItem.getName())) {
+                Template template = getFreemarkerTemplate(xgTempItem.getContent(), xgTempItem.getName());
                 count += generateMapperXmlCode(template, map);
             }
-            if (MAPSTRUCT.equals(xgTabInfo.getType())) {
-                Template template = getFreemarkerTemplate(xgTabInfo.getContent(), xgTabInfo.getType());
+            if (MAPSTRUCT.equals(xgTempItem.getName())) {
+                Template template = getFreemarkerTemplate(xgTempItem.getContent(), xgTempItem.getName());
                 count += generateMapStructCode(template, map);
             }
         }

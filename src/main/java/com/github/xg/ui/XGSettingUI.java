@@ -4,7 +4,7 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.xg.config.XGConfig;
 import com.github.xg.config.XGSettingManager;
-import com.github.xg.model.XGTabInfo;
+import com.github.xg.model.XGTempItem;
 import com.github.xg.utils.XGNotifyUtil;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.command.WriteCommandAction;
@@ -59,7 +59,7 @@ public class XGSettingUI {
     private JTabbedPane tabbedPane1;
 
     // 声明列表组件，用于显示信息列表
-    private JList<String> xgTabInfoList;
+    private JList<String> xgTempItemList;
 
     // 声明组合框组件，用于选择配置
     private JComboBox<String> configComboBox;
@@ -107,7 +107,7 @@ public class XGSettingUI {
         this.addBtn.setIcon(AllIcons.Actions.AddList);
         this.delBtn.setIcon(AllIcons.Actions.GC);
         // 设置下拉框边框
-        this.xgTabInfoList.setBorder(JBUI.Borders.emptyLeft(5));
+        this.xgTempItemList.setBorder(JBUI.Borders.emptyLeft(5));
 
         // 配置的选项
         // 获取配置状态
@@ -136,7 +136,7 @@ public class XGSettingUI {
         this.setDefaultConfigCheckBox.setSelected(xgConfig.getIsDefault());
 
         // 获取当前配置下的所有XGTabInfo信息
-        List<XGTabInfo> infoList = xgConfig.getXgTabInfoList();
+        List<XGTempItem> infoList = xgConfig.getXgTempItemList();
         // 创建编辑器并设置内容
         this.templateEditor = createEditorWithText(project, infoList.get(0).getContent(), "ftl");
         // 将编辑器组件添加到模板编辑器面板中
@@ -223,10 +223,10 @@ public class XGSettingUI {
                     // 执行写操作
                     WriteCommandAction.runWriteCommandAction(project, () -> {
                         // 获取选中的XGTabInfo信息
-                        XGTabInfo tabInfo = XGSettingManager.getSelectXGConfig(selectedItem.toString(), this.xgTabInfoList.getSelectedValue());
+                        XGTempItem tabInfo = XGSettingManager.getSelectXGConfig(selectedItem.toString(), this.xgTempItemList.getSelectedValue());
                         assert tabInfo != null;
                         // 构造文件名
-                        String fileName = StrUtil.format("{}{}", tabInfo.getType(), ".ftl");
+                        String fileName = StrUtil.format("{}{}", tabInfo.getName(), ".ftl");
                         // 设置编辑器高亮器
                         ((EditorEx) templateEditor).setHighlighter(EditorHighlighterFactory.getInstance().createEditorHighlighter(project, fileName));
                         // 设置编辑器文本内容
@@ -258,10 +258,10 @@ public class XGSettingUI {
             // 执行写操作
             WriteCommandAction.runWriteCommandAction(project, () -> {
                 // 获取选中的XGTabInfo信息
-                XGTabInfo tabInfo = XGSettingManager.getSelectXGConfig(selectXGConfig, this.xgTabInfoList.getSelectedValue());
+                XGTempItem tabInfo = XGSettingManager.getSelectXGConfig(selectXGConfig, this.xgTempItemList.getSelectedValue());
                 assert tabInfo != null;
                 // 构造文件名
-                String fileName = StrUtil.format("{}{}", tabInfo.getType(), ".ftl");
+                String fileName = StrUtil.format("{}{}", tabInfo.getName(), ".ftl");
                 // 设置编辑器高亮器
                 ((EditorEx) templateEditor).setHighlighter(EditorHighlighterFactory.getInstance().createEditorHighlighter(project, fileName));
                 // 设置编辑器文本内容
@@ -270,9 +270,9 @@ public class XGSettingUI {
         });
 
         // 为下拉框添加列表选择监听器
-        this.xgTabInfoList.addListSelectionListener(e -> {
+        this.xgTempItemList.addListSelectionListener(e -> {
             // 检查是否正在调整值或选中的值为空
-            if (e.getValueIsAdjusting() || ObjectUtil.isNull(xgTabInfoList.getSelectedValue())) {
+            if (e.getValueIsAdjusting() || ObjectUtil.isNull(xgTempItemList.getSelectedValue())) {
                 return;
             }
             // 获取编辑器文档对象
@@ -286,11 +286,11 @@ public class XGSettingUI {
                 // 获取选中的配置信息
                 XGConfig selectXGConfig = XGSettingManager.getSelectXGConfig((String) selectedItem);
                 // 获取选中的XGTabInfo信息
-                XGTabInfo tabInfo = XGSettingManager.getSelectXGConfig(selectXGConfig, this.xgTabInfoList.getSelectedValue());
+                XGTempItem tabInfo = XGSettingManager.getSelectXGConfig(selectXGConfig, this.xgTempItemList.getSelectedValue());
                 assert tabInfo != null;
 
                 // 构造文件名
-                String fileName = StrUtil.format("{}{}", tabInfo.getType(), ".ftl");
+                String fileName = StrUtil.format("{}{}", tabInfo.getName(), ".ftl");
                 // 设置编辑器高亮器
                 ((EditorEx) templateEditor).setHighlighter(EditorHighlighterFactory.getInstance().createEditorHighlighter(project, fileName));
                 // 设置编辑器文本内容
@@ -311,11 +311,11 @@ public class XGSettingUI {
                     // 如果配置项的名称与选中的项匹配
                     if (config.getName().equals(selectedItem)) {
                         // 获取该配置项下的所有XGTabInfo信息
-                        List<XGTabInfo> xgTabInfos = config.getXgTabInfoList();
+                        List<XGTempItem> xgTempItems = config.getXgTempItemList();
                         // 遍历所有的XGTabInfo信息
-                        for (XGTabInfo tabInfo : xgTabInfos) {
+                        for (XGTempItem tabInfo : xgTempItems) {
                             // 如果XGTabInfo的类型与选中的类型匹配
-                            if (tabInfo.getType().equals(xgTabInfoList.getSelectedValue())) {
+                            if (tabInfo.getName().equals(xgTempItemList.getSelectedValue())) {
                                 // 设置XGTabInfo的内容为当前文档的内容
                                 tabInfo.setContent(event.getDocument().getText());
                             }
@@ -379,22 +379,22 @@ public class XGSettingUI {
         XGConfig xgConfig = XGSettingManager.getSelectXGConfig(selectedConfigKey);
 
         // 获取XGConfig对象中所有的XGTabInfo列表
-        List<XGTabInfo> infoList = xgConfig.getXgTabInfoList();
+        List<XGTempItem> infoList = xgConfig.getXgTempItemList();
 
         // 根据XGTabInfo的OrderNo属性对列表进行排序
-        infoList.sort(Comparator.comparing(XGTabInfo::getOrderNo));
+        infoList.sort(Comparator.comparing(XGTempItem::getOrderNo));
 
         // 创建一个DefaultListModel对象
         DefaultListModel<String> model = new DefaultListModel<>();
 
         // 将XGTabInfo列表中每个元素的Type属性添加到模型中
-        model.addAll(infoList.stream().map(XGTabInfo::getType).toList());
+        model.addAll(infoList.stream().map(XGTempItem::getName).toList());
 
         // 设置下拉列表框的模型为上面创建的模型
-        xgTabInfoList.setModel(model);
+        xgTempItemList.setModel(model);
 
         // 设置下拉列表框的选中索引为0，即默认选中第一个选项
-        xgTabInfoList.setSelectedIndex(0);
+        xgTempItemList.setSelectedIndex(0);
     }
 
 

@@ -7,12 +7,12 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class XGTabInfo {
+public class XGTempItem {
 
     /**
-     * 类型
+     * 名称
      */
-    private String type;
+    private String name;
 
     /**
      * 内容

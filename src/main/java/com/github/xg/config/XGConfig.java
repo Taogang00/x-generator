@@ -1,7 +1,7 @@
 package com.github.xg.config;
 
 import cn.hutool.core.date.DateUtil;
-import com.github.xg.model.XGTabInfo;
+import com.github.xg.model.XGTempItem;
 import lombok.Data;
 
 import java.util.*;
@@ -30,7 +30,7 @@ public class XGConfig {
     /**
      * 代码模板
      */
-    private List<XGTabInfo> xgTabInfoList;
+    private List<XGTempItem> xgTempItemList;
 
     /**
      * 数据库列与Java类型映射
@@ -51,7 +51,7 @@ public class XGConfig {
                 authorXGConfig.setCreateTime(DateUtil.formatDateTime(new Date()));
                 authorXGConfig.setIsDefault(true);
                 authorXGConfig.setName(TEMPLATE_GUANWEI);
-                authorXGConfig.setXgTabInfoList(initGuanWeiXgTableInfo());
+                authorXGConfig.setXgTempItemList(initGuanWeiXgTableInfo());
                 authorXGConfig.setColumnJavaTypeMapping(initColumnJavaTypeMapping());
                 list.add(authorXGConfig);
 
@@ -60,7 +60,7 @@ public class XGConfig {
                 mpXGConfig.setCreateTime(DateUtil.formatDateTime(new Date()));
                 mpXGConfig.setIsDefault(false);
                 mpXGConfig.setName(TEMPLATE_MYBATIS_PLUS);
-                mpXGConfig.setXgTabInfoList(initMybatisPlusXgTableInfo());
+                mpXGConfig.setXgTempItemList(initMybatisPlusXgTableInfo());
                 mpXGConfig.setColumnJavaTypeMapping(initColumnJavaTypeMapping());
                 list.add(mpXGConfig);
 
@@ -88,11 +88,11 @@ public class XGConfig {
         for (XGConfig xgConfig : xgConfigs) {
             if (xgConfig.getName().equals(selectedName)) {
                 if (TEMPLATE_GUANWEI.equals(selectedName)) {
-                    xgConfig.setXgTabInfoList(initGuanWeiXgTableInfo());
+                    xgConfig.setXgTempItemList(initGuanWeiXgTableInfo());
                     xgConfig.setColumnJavaTypeMapping(initColumnJavaTypeMapping());
                 }
                 if (TEMPLATE_MYBATIS_PLUS.equals(selectedName)) {
-                    xgConfig.setXgTabInfoList(initMybatisPlusXgTableInfo());
+                    xgConfig.setXgTempItemList(initMybatisPlusXgTableInfo());
                     xgConfig.setColumnJavaTypeMapping(initColumnJavaTypeMapping());
                 }
             }
@@ -104,32 +104,32 @@ public class XGConfig {
     /**
      * 初始化南京观为公司代码模板配置
      */
-    public static List<XGTabInfo> initGuanWeiXgTableInfo() {
-        List<XGTabInfo> guanweiXGTabInfoList = new ArrayList<>();
-        guanweiXGTabInfoList.add(new XGTabInfo(CONTROLLER, getTemplateContent("/template/guanwei", "controller.java"), 1));
-        guanweiXGTabInfoList.add(new XGTabInfo(SERVICE, getTemplateContent("/template/guanwei", "service.java"), 2));
-        guanweiXGTabInfoList.add(new XGTabInfo(SERVICE_IMPL, getTemplateContent("/template/guanwei", "serviceImpl.java"), 3));
-        guanweiXGTabInfoList.add(new XGTabInfo(ENTITY, getTemplateContent("/template/guanwei", "entity.java"), 4));
-        guanweiXGTabInfoList.add(new XGTabInfo(MAPPER, getTemplateContent("/template/guanwei", "mapper.java"), 5));
-        guanweiXGTabInfoList.add(new XGTabInfo(XML, getTemplateContent("/template/guanwei", "mapper.xml"), 6));
-        guanweiXGTabInfoList.add(new XGTabInfo(QUERY, getTemplateContent("/template/guanwei", "query.java"), 7));
-        guanweiXGTabInfoList.add(new XGTabInfo(DTO, getTemplateContent("/template/guanwei", "dto.java"), 8));
-        guanweiXGTabInfoList.add(new XGTabInfo(MAPSTRUCT, getTemplateContent("/template/guanwei", "mapstruct.java"), 9));
-        return guanweiXGTabInfoList;
+    public static List<XGTempItem> initGuanWeiXgTableInfo() {
+        List<XGTempItem> guanweiXGTempItemList = new ArrayList<>();
+        guanweiXGTempItemList.add(new XGTempItem(CONTROLLER, getTemplateContent("/template/guanwei", "controller.java"), 1));
+        guanweiXGTempItemList.add(new XGTempItem(SERVICE, getTemplateContent("/template/guanwei", "service.java"), 2));
+        guanweiXGTempItemList.add(new XGTempItem(SERVICE_IMPL, getTemplateContent("/template/guanwei", "serviceImpl.java"), 3));
+        guanweiXGTempItemList.add(new XGTempItem(ENTITY, getTemplateContent("/template/guanwei", "entity.java"), 4));
+        guanweiXGTempItemList.add(new XGTempItem(MAPPER, getTemplateContent("/template/guanwei", "mapper.java"), 5));
+        guanweiXGTempItemList.add(new XGTempItem(XML, getTemplateContent("/template/guanwei", "mapper.xml"), 6));
+        guanweiXGTempItemList.add(new XGTempItem(QUERY, getTemplateContent("/template/guanwei", "query.java"), 7));
+        guanweiXGTempItemList.add(new XGTempItem(DTO, getTemplateContent("/template/guanwei", "dto.java"), 8));
+        guanweiXGTempItemList.add(new XGTempItem(MAPSTRUCT, getTemplateContent("/template/guanwei", "mapstruct.java"), 9));
+        return guanweiXGTempItemList;
     }
 
     /**
      * 初始化MybatisPlus代码模板配置
      */
-    public static List<XGTabInfo> initMybatisPlusXgTableInfo() {
-        List<XGTabInfo> mpXGTabInfoList = new ArrayList<>();
-        mpXGTabInfoList.add(new XGTabInfo(CONTROLLER, getTemplateContent("/template/mybatisplus", "controller.java"), 1));
-        mpXGTabInfoList.add(new XGTabInfo(SERVICE, getTemplateContent("/template/mybatisplus", "service.java"), 2));
-        mpXGTabInfoList.add(new XGTabInfo(SERVICE_IMPL, getTemplateContent("/template/mybatisplus", "serviceImpl.java"), 3));
-        mpXGTabInfoList.add(new XGTabInfo(ENTITY, getTemplateContent("/template/mybatisplus", "entity.java"), 4));
-        mpXGTabInfoList.add(new XGTabInfo(MAPPER, getTemplateContent("/template/mybatisplus", "mapper.java"), 5));
-        mpXGTabInfoList.add(new XGTabInfo(XML, getTemplateContent("/template/mybatisplus", "mapper.xml"), 6));
-        return mpXGTabInfoList;
+    public static List<XGTempItem> initMybatisPlusXgTableInfo() {
+        List<XGTempItem> mpXGTempItemList = new ArrayList<>();
+        mpXGTempItemList.add(new XGTempItem(CONTROLLER, getTemplateContent("/template/mybatisplus", "controller.java"), 1));
+        mpXGTempItemList.add(new XGTempItem(SERVICE, getTemplateContent("/template/mybatisplus", "service.java"), 2));
+        mpXGTempItemList.add(new XGTempItem(SERVICE_IMPL, getTemplateContent("/template/mybatisplus", "serviceImpl.java"), 3));
+        mpXGTempItemList.add(new XGTempItem(ENTITY, getTemplateContent("/template/mybatisplus", "entity.java"), 4));
+        mpXGTempItemList.add(new XGTempItem(MAPPER, getTemplateContent("/template/mybatisplus", "mapper.java"), 5));
+        mpXGTempItemList.add(new XGTempItem(XML, getTemplateContent("/template/mybatisplus", "mapper.xml"), 6));
+        return mpXGTempItemList;
     }
 
     /**

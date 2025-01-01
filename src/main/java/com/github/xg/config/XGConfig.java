@@ -4,7 +4,10 @@ import cn.hutool.core.date.DateUtil;
 import com.github.xg.model.XGTempItem;
 import lombok.Data;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.TreeMap;
 
 import static com.github.xg.constant.XGConstants.*;
 import static com.github.xg.utils.XGTemplateUtil.getTemplateContent;
@@ -69,9 +72,11 @@ public class XGConfig {
             } else {
                 //不为空，检查相关的配置是否有（后续变动新增的配置项），如果没有，就添加
                 for (XGConfig xgConfig : state.getXgConfigs()) {
-                    Map<String, String> xgConfigColumnJavaTypeMapping = xgConfig.getColumnJavaTypeMapping();
-                    if (xgConfigColumnJavaTypeMapping == null) {
+                    if (xgConfig.getColumnJavaTypeMapping() == null) {
                         xgConfig.setColumnJavaTypeMapping(initColumnJavaTypeMapping());
+                    }
+                    if (xgConfig.getXgTempItemList() == null) {
+                        xgConfig.setXgTempItemList(initGuanWeiXgTableInfo());
                     }
                 }
             }

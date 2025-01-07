@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="GB2312" ?>
+<Data>
+    <Table Name="SYS_User" Text="系统用户表">
+        <Column PrimaryKey="True" Name="UserId" Text="用户Id" DataType="VARCHAR" NullOption="False" DataLength="32"/>
+        <Column PrimaryKey="False" Name="UserName" Text="用户名称" DataType="VARCHAR" NullOption="False" DataLength="100"/>
+    </Table>
+    <Table Name="SYS_Post" Text="系统岗位表">
+        <Column PrimaryKey="True" Name="PostId" Text="岗位Id" DataType="VARCHAR" NullOption="False" DataLength="32"/>
+        <Column PrimaryKey="False" Name="PostName" Text="岗位名称" DataType="VARCHAR" NullOption="True" DataLength="100"/>
+    </Table>
+</Data>

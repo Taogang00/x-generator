@@ -50,16 +50,16 @@ public class ${table.controllerClassName} {
 	 */
 	@GetMapping("/list")
 	public R<?> list(${table.queryClassName} query) {
-LambdaQueryWrapper<${table.entityClassName}> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-<#list table.tableFields as field>
-    <#if field.propertyType == "String">
+        LambdaQueryWrapper<${table.entityClassName}> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        <#list table.tableFields as field>
+        <#if field.propertyType == "String">
         lambdaQueryWrapper.like(isNotEmpty(query.get${field.propertyName?cap_first}()), ${table.entityClassName}::get${field.propertyName?cap_first}, query.get${field.propertyName?cap_first}());
-    <#else>
+        <#else>
         lambdaQueryWrapper.eq(isNotEmpty(query.get${field.propertyName?cap_first}()), ${table.entityClassName}::get${field.propertyName?cap_first}, query.get${field.propertyName?cap_first}());
-    </#if>
-</#list>
-List<${table.entityClassName}> list = ${table.serviceClassName?uncap_first}.selectList(query, lambdaQueryWrapper);
-return R.OK(list);
+        </#if>
+        </#list>
+        List<${table.entityClassName}> list = ${table.serviceClassName?uncap_first}.selectList(query, lambdaQueryWrapper);
+        return R.OK(list);
 	}
 
     /**

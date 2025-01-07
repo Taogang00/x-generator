@@ -23,7 +23,7 @@ Java领域目前市面上常用的代码生成器大概有这几类：
         <Column PrimaryKey="True" Name="PostId" Text="岗位Id" DataType="VARCHAR" NullOption="False" DataLength="32"/>
         <Column PrimaryKey="False" Name="PostName" Text="岗位名称" DataType="VARCHAR" NullOption="True" DataLength="100"/>
     </Table>
-<Data>
+</Data>
 ```
 
 - **Data  一级元素，无属性**

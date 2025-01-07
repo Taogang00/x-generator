@@ -102,7 +102,7 @@ public class XGCodeUI {
         this.xgGlobalObj = xgGlobalObj;
         this.skipRadioButton.setActionCommand("0");
         this.overrideRadioButton.setActionCommand("1");
-        this.importBtn.setIcon(AllIcons.General.OpenDisk);
+        this.importBtn.setIcon(AllIcons.FileTypes.Xml);
         this.runInfoLabel.setIcon(AllIcons.General.Information);
         this.authorTextField.setText(System.getProperty("user.name"));
         this.packageAllBtn.setText("全不选");

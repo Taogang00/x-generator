@@ -1,10 +1,12 @@
 package com.github.xg.ui;
 
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.xg.config.XGConfig;
 import com.github.xg.config.XGSettingManager;
 import com.github.xg.model.XGTempItem;
+import com.github.xg.utils.XGFileUtil;
 import com.github.xg.utils.XGNotifyUtil;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.command.WriteCommandAction;
@@ -35,6 +37,8 @@ import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.InputStream;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -79,6 +83,9 @@ public class XGSettingUI {
     // 声明删除按钮
     private JButton delBtn;
 
+    // 声明xml按钮
+    private JButton xmlButton;
+
     // 声明一个TreeMap，用于存储列名和Java类型的映射关系
     private TreeMap<String, String> columnJavaTypeMapping;
 
@@ -106,6 +113,7 @@ public class XGSettingUI {
         this.resetButton.setIcon(AllIcons.Actions.ForceRefresh);
         this.addBtn.setIcon(AllIcons.Actions.AddList);
         this.delBtn.setIcon(AllIcons.Actions.GC);
+        this.xmlButton.setIcon(AllIcons.FileTypes.Xml);
         // 设置下拉框边框
         this.xgTempItemList.setBorder(JBUI.Borders.emptyLeft(5));
 
@@ -202,6 +210,17 @@ public class XGSettingUI {
                 // 弹出删除成功提示
                 XGNotifyUtil.notifySuccess("删除成功！", "X-Generator", project);
             }
+        });
+
+        // 导出配置
+        this.xmlButton.addActionListener(e -> {
+            String exportPath = XGFileUtil.chooseDirectory(project);
+            if (StrUtil.isEmpty(exportPath)) {
+                return;
+            }
+            InputStream resourceAsStream = XGSettingManager.class.getResourceAsStream("/import/import.xml");
+            FileUtil.writeFromStream(resourceAsStream, new File(exportPath + File.separator + "import.xml"), true);
+            XGNotifyUtil.notifySuccess("导出成功，请到选择的目录查看", "X-Generator", project);
         });
 
         // 为重置按钮添加点击事件监听器
@@ -348,7 +367,6 @@ public class XGSettingUI {
         });
     }
 
-
     public Editor createEditorWithText(Project project, String text, String fileSuffix) {
         // 获取PsiFileFactory实例
         PsiFileFactory psiFileFactory = PsiFileFactory.getInstance(project);
@@ -373,7 +391,6 @@ public class XGSettingUI {
         return editor;
     }
 
-
     public void initXGTabInfo(String selectedConfigKey) {
         // 根据传入的配置键获取对应的XGConfig对象
         XGConfig xgConfig = XGSettingManager.getSelectXGConfig(selectedConfigKey);
@@ -396,7 +413,6 @@ public class XGSettingUI {
         // 设置下拉列表框的选中索引为0，即默认选中第一个选项
         xgTempItemList.setSelectedIndex(0);
     }
-
 
     public void initXGTableInfo(String selectedConfigKey) {
         // 根据选定的配置键获取对应的XGConfig对象
@@ -424,7 +440,6 @@ public class XGSettingUI {
         typeMappingTable.setModel(getDataModel());
     }
 
-
     public void addXGTableInfo(String columnType, String javaType) {
         // 将列类型和Java类型添加到映射关系中
         columnJavaTypeMapping.put(columnType, javaType);
@@ -445,7 +460,6 @@ public class XGSettingUI {
         initXGTableInfo((String) configComboBox.getSelectedItem());
     }
 
-
     @NotNull
     private DefaultTableModel getDataModel() {
         // 创建一个新的DefaultTableModel对象，并传入表格数据和表头
@@ -461,7 +475,6 @@ public class XGSettingUI {
             }
         };
     }
-
 
     @SuppressWarnings("DialogTitleCapitalization")
     public static class ColumnMapInputDialog extends DialogWrapper {
@@ -495,7 +508,6 @@ public class XGSettingUI {
             init();
         }
 
-
         @Nullable
         @Override
         protected JComponent createCenterPanel() {
@@ -525,7 +537,6 @@ public class XGSettingUI {
             panel.add(javaTypeJTextField);
             return panel;
         }
-
 
         @Override
         protected void doOKAction() {

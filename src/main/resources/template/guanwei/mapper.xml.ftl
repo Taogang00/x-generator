@@ -25,16 +25,4 @@
         <#list group as field><#if field_index != 0 || !group?is_first>,</#if>${field.propertyName}</#list>
     </#list>
     </sql>
-
-    <select id="get${table.entityClassName}List" resultType="${table.dtoPackagePath}.${table.dtoClassName}">
-        SELECT *
-        FROM ${table.tableName}
-        <where>
-        <#list table.tableFields as field>
-            <if test="@com.guanwei.core.utils.EmptyUtil@isNotEmpty(${field.propertyName?uncap_first})">
-                AND ${field.propertyName?uncap_first} = ${'#'}${'{'}${field.propertyName?uncap_first}${'}'}
-            </if>
-        </#list>
-        </where>
-    </select>
 </mapper>

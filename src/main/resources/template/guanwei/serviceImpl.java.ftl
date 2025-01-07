@@ -1,6 +1,5 @@
 package ${global.serviceImplPackagePath};
 
-import ${table.dtoPackagePath}.${table.dtoClassName};
 import ${table.entityPackagePath}.${table.entityClassName};
 import ${table.mapperPackagePath}.${table.mapperClassName};
 import ${table.queryPackagePath}.${table.queryClassName};
@@ -19,8 +18,4 @@ import java.util.List;
 @Service
 public class ${table.serviceImplClassName} extends MBaseServiceImpl<${table.mapperClassName}, ${table.entityClassName}> implements ${table.serviceClassName} {
 
-    @Override
-    public List<${table.dtoClassName}> get${table.entityClassName}List(${table.queryClassName} query) {
-        return baseMapper.get${table.entityClassName}List(query);
-    }
 }

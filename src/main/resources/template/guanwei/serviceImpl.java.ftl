@@ -2,7 +2,6 @@ package ${global.serviceImplPackagePath};
 
 import ${table.entityPackagePath}.${table.entityClassName};
 import ${table.mapperPackagePath}.${table.mapperClassName};
-import ${table.queryPackagePath}.${table.queryClassName};
 import ${table.servicePackagePath}.${table.serviceClassName};
 import com.guanwei.mybatis.base.service.MBaseServiceImpl;
 import org.springframework.stereotype.Service;

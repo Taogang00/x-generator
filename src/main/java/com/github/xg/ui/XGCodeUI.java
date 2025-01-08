@@ -634,7 +634,6 @@ public class XGCodeUI {
             }
         }
         Messages.showInfoMessage("生成成功，共有 " + count + " 个文件发生变化", "X-Generator");
-        xgMainDialog.doCancelAction();
     }
 
     /**

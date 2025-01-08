@@ -52,7 +52,7 @@ public class ${table.controllerClassName} {
 	@GetMapping("/list")
 	public R<?> list(${table.queryClassName} query) {
         LambdaQueryWrapper<${table.entityClassName}> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        <#list table.tableFields as field>
+        <#list table.tableFields?sort_by("propertyType") as field>
         <#if field.propertyType == "String">
         lambdaQueryWrapper.like(isNotEmpty(query.get${field.propertyName?cap_first}()), ${table.entityClassName}::get${field.propertyName?cap_first}, query.get${field.propertyName?cap_first}());
         <#else>

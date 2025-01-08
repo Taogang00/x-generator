@@ -6,8 +6,6 @@ import ${table.servicePackagePath}.${table.serviceClassName};
 import com.guanwei.mybatis.base.service.MBaseServiceImpl;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 /**
  * ${table.tableComment}  ${table.serviceClassName}实现类
  *

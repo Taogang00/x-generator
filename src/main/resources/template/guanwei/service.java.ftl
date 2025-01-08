@@ -3,8 +3,6 @@ package ${global.servicePackagePath};
 import ${table.entityPackagePath}.${table.entityClassName};
 import com.guanwei.mybatis.base.service.MBaseService;
 
-import java.util.List;
-
 /**
  * ${table.tableComment} 服务接口
  *

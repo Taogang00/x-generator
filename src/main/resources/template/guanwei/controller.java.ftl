@@ -1,12 +1,12 @@
 package ${global.controllerPackagePath};
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.guanwei.core.utils.result.R;
 import ${table.dtoPackagePath}.${table.dtoClassName};
 import ${table.queryPackagePath}.${table.queryClassName};
 import ${table.entityPackagePath}.${table.entityClassName};
 import ${table.mapstructPackagePath}.${table.mapstructClassName};
 import ${table.servicePackagePath}.${table.serviceClassName};
+import com.guanwei.core.utils.result.R;
 import lombok.RequiredArgsConstructor;
 import org.springframework.util.Assert;
 import org.springframework.validation.annotation.Validated;

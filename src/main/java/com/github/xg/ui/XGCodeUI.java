@@ -13,6 +13,9 @@ import com.github.xg.render.XGTableListCellRenderer;
 import com.github.xg.utils.XGFileUtil;
 import com.github.xg.utils.XGModuleUtil;
 import com.intellij.icons.AllIcons;
+import com.intellij.openapi.actionSystem.ActionManager;
+import com.intellij.openapi.actionSystem.AnAction;
+import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
@@ -450,7 +453,7 @@ public class XGCodeUI {
      * @throws IOException io异常
      */
     @SuppressWarnings("all")
-    public void generateCodeAction(Project project, XGMainDialog xgMainDialog) throws IOException {
+    public void generateCodeAction(Project project, XGMainDialog xgMainDialog, AnActionEvent event) throws IOException {
         if (this.tableInfoList == null || this.tableInfoList.isEmpty()) {
             Messages.showInfoMessage("请先导入表实体数据！", "X-Generator");
             return;
@@ -633,6 +636,14 @@ public class XGCodeUI {
                 count += generateMapStructCode(template, map);
             }
         }
+
+        //重新加载项目，刷新文件变化
+        AnAction synchronizeAction = ActionManager.getInstance().getAction("SynchronizeCurrentFile");
+        if (synchronizeAction != null) {
+            AnActionEvent anActionEvent = AnActionEvent.createFromDataContext("SynchronizeFile", null, event.getDataContext());
+            synchronizeAction.actionPerformed(anActionEvent);
+        }
+
         Messages.showInfoMessage("生成成功，共有 " + count + " 个文件发生变化", "X-Generator");
     }
 

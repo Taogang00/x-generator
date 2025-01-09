@@ -14,7 +14,7 @@ public class XGAnAction extends AnAction {
         if (project != null) {
             ApplicationManager.getApplication().invokeLater(() -> {
                 ApplicationManager.getApplication().invokeLater(() -> {
-                    XGMainDialog dialog = new XGMainDialog(project);
+                    XGMainDialog dialog = new XGMainDialog(project, e);
                     dialog.show();
                 });
             });

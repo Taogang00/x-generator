@@ -4,6 +4,7 @@ import cn.hutool.core.date.DateUtil;
 import com.github.xg.config.XGConfig;
 import com.github.xg.model.XGGlobalObj;
 import com.intellij.ide.BrowserUtil;
+import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import org.jetbrains.annotations.NonNls;
@@ -28,9 +29,13 @@ public class XGMainDialog extends DialogWrapper {
 
     private final Action settingAction;
 
-    public XGMainDialog(Project project) {
+    private final AnActionEvent event;
+
+    public XGMainDialog(Project project, @NotNull AnActionEvent event) {
         super(project);
         this.project = project;
+        this.event = event;
+
         XGGlobalObj xgGlobalObj = new XGGlobalObj();
         xgGlobalObj.setDateTime(DateUtil.formatDateTime(new Date()));
         xgGlobalObj.setFileOverride(false);
@@ -77,7 +82,7 @@ public class XGMainDialog extends DialogWrapper {
     protected void doOKAction() {
         // 在这里调用 XGCodeGeneratorUI 中的方法
         try {
-            xgCodeUI.generateCodeAction(project, this);
+            xgCodeUI.generateCodeAction(project, this, event);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

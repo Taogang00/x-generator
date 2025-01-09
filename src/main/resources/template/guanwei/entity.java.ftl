@@ -21,13 +21,13 @@ public class ${table.entityClassName} {
 <#list table.tableFields as field>
     <#if field.primaryKey>
         <#if field.comment!?length gt 0>
-            /**
-            * ${field.comment}
-            */
+        /**
+        * ${field.comment}
+        */
         </#if>
         <#if !hasProcessed>
-            @TableId(type = IdType.ASSIGN_ID)
-            <#assign hasProcessed = true />
+        @TableId(type = IdType.ASSIGN_ID)
+        <#assign hasProcessed = true />
         </#if>
         private ${field.propertyType} ${field.propertyName};
 
@@ -36,9 +36,9 @@ public class ${table.entityClassName} {
 <#list table.tableFields as field>
     <#if !field.primaryKey>
         <#if field.comment!?length gt 0>
-            /**
-            * ${field.comment}
-            */
+        /**
+        * ${field.comment}
+        */
         </#if>
         private ${field.propertyType} ${field.propertyName};
 

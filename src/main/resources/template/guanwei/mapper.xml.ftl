@@ -20,6 +20,7 @@
     </resultMap>
 
     <!-- 通用查询结果列 -->
+    <!--suppress SqlNoDataSourceInspection -->
     <sql id="Base_Column_List">
     <#list table.tableFields?chunk(8) as group>
         <#list group as field><#if field_index != 0 || !group?is_first>,</#if>${field.propertyName}</#list>

@@ -20,27 +20,27 @@ public class ${table.entityClassName} {
 <#assign hasProcessed = false />
 <#list table.tableFields as field>
     <#if field.primaryKey>
-        <#if field.comment!?length gt 0>
-        /**
-        * ${field.comment}
-        */
-        </#if>
-        <#if !hasProcessed>
-        @TableId(type = IdType.ASSIGN_ID)
-        <#assign hasProcessed = true />
-        </#if>
-        private ${field.propertyType} ${field.propertyName};
+    <#if field.comment!?length gt 0>
+    /**
+    * ${field.comment}
+    */
+    </#if>
+    <#if !hasProcessed>
+    @TableId(type = IdType.ASSIGN_ID)
+    <#assign hasProcessed = true />
+    </#if>
+    private ${field.propertyType} ${field.propertyName};
 
     </#if>
 </#list>
 <#list table.tableFields as field>
     <#if !field.primaryKey>
-        <#if field.comment!?length gt 0>
-        /**
-        * ${field.comment}
-        */
-        </#if>
-        private ${field.propertyType} ${field.propertyName};
+    <#if field.comment!?length gt 0>
+    /**
+    * ${field.comment}
+    */
+    </#if>
+    private ${field.propertyType} ${field.propertyName};
 
     </#if>
 </#list>

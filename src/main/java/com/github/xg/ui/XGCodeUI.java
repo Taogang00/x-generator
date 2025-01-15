@@ -22,6 +22,7 @@ import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.DocumentAdapter;
 import com.intellij.ui.components.fields.ExpandableTextField;
+import com.intellij.uiDesigner.core.GridConstraints;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import lombok.Getter;
@@ -32,6 +33,7 @@ import org.w3c.dom.NodeList;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
+import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.io.File;
@@ -43,6 +45,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -61,6 +64,8 @@ public class XGCodeUI {
     @Getter
     private JPanel rootJPanel;
     @Getter
+    private JPanel templateJPanel;
+    @Getter
     private JLabel runInfoLabel;
     @Getter
     private JComboBox<String> configComboBox;
@@ -68,27 +73,13 @@ public class XGCodeUI {
     private Map<String, XGXmlElementTable> tableInfoMap;
 
     private JComboBox<String> projectModuleComboBox;
-    private ExpandableTextField controllerPathTextField;
-    private ExpandableTextField servicePathTextField;
-    private ExpandableTextField mapperPathTextField;
-    private ExpandableTextField entityPathTextField;
-    private ExpandableTextField dtoPathTextField;
-    private ExpandableTextField queryPathTextField;
-    private ExpandableTextField mapStructPathTextField;
-    private ExpandableTextField mapperXmlPathTextField;
+
     private ExpandableTextField sourceCodeGeneratorPathTextField;
     private ExpandableTextField resourcesCodeGeneratorPathTextField;
 
     private JRadioButton skipRadioButton;
     private JRadioButton overrideRadioButton;
-    private JCheckBox controllerCheckBox;
-    private JCheckBox serviceCheckBox;
-    private JCheckBox mapperCheckBox;
-    private JCheckBox entityCheckBox;
-    private JCheckBox dtoCheckBox;
-    private JCheckBox queryCheckBox;
-    private JCheckBox mapStructCheckBox;
-    private JCheckBox mapperXmlCheckBox;
+
     private JButton importBtn;
     private JButton packageAllBtn;
     private JList<String> tableList;
@@ -109,6 +100,70 @@ public class XGCodeUI {
         this.runInfoLabel.setIcon(AllIcons.General.Information);
         this.authorTextField.setText(System.getProperty("user.name"));
         this.packageAllBtn.setText("全不选");
+
+        for (int i = 0; i < 3; i++) {
+            // 创建复选框
+            JCheckBox newCheckBox = new JCheckBox("新复选框" + i);
+            newCheckBox.setSelected(true); // 设置默认选中状态
+
+            // 设置复选框的布局约束
+            GridBagConstraints gbc = new GridBagConstraints();
+            GridConstraints constraints = new GridConstraints();
+            constraints.setRow(i); // 指定行
+            constraints.setColumn(0);
+            constraints.setRowSpan(1);
+            constraints.setColSpan(1);
+            constraints.setVSizePolicy(GridConstraints.SIZEPOLICY_CAN_SHRINK);
+            constraints.setHSizePolicy(3);
+            constraints.setAnchor(8);
+            constraints.setFill(0);
+            constraints.setIndent(0);
+            constraints.setUseParentLayout(false);
+
+            // 将复选框添加到 test 面板
+            templateJPanel.add(newCheckBox, constraints);
+
+            // 创建 ExpandableTextField
+            ExpandableTextField expandableTextField = new ExpandableTextField();
+            expandableTextField.setText("初始文本" + i);
+            expandableTextField.setToolTipText("请输入文本" + i);
+
+            // 创建一个新的GridConstraints对象，用于定义组件在网格中的布局约束
+            GridConstraints constraints2 = new GridConstraints();
+
+            // 设置组件在网格中的行位置
+            constraints2.setRow(i);
+
+            // 设置组件在网格中的列位置
+            constraints2.setColumn(1);
+
+            // 设置组件占据的行数为1
+            constraints2.setRowSpan(1);
+
+            // 设置组件占据的列数为1
+            constraints2.setColSpan(1);
+
+            // 设置垂直尺寸策略，0表示无特定策略，可能根据具体布局管理器定义的行为调整
+            constraints2.setVSizePolicy(GridConstraints.SIZEPOLICY_CAN_SHRINK); // 设置垂直尺寸
+
+            // 设置水平尺寸策略，6表示组件在水平方向上按需分配空间
+            constraints2.setHSizePolicy(6);
+
+            // 设置组件的对齐方式，8表示组件在网格单元格的中心对齐
+            constraints2.setAnchor(8);
+
+            // 设置填充方式，1表示组件在网格单元格中按需填充空间
+            constraints2.setFill(1);
+
+            // 设置缩进值为0，表示组件在网格中的位置不进行缩进
+            constraints2.setIndent(0);
+
+            // 设置不使用父布局的布局属性，确保此组件的布局仅由当前设置的约束定义
+            constraints2.setUseParentLayout(false);
+
+            // 将 ExpandableTextField 添加到 test 面板
+            templateJPanel.add(expandableTextField, constraints2);
+        }
 
         this.xgGeneratorSelectedTableValuesList = new ArrayList<>();
         this.xgGeneratorSelectedTableObjList = new ArrayList<>();
@@ -133,45 +188,7 @@ public class XGCodeUI {
         }
 
         // 2.生成Java对象【全选】、【全不选】按钮事件
-        packageAllBtn.addActionListener(e -> {
-            if (!this.controllerCheckBox.isSelected()
-                    || !this.serviceCheckBox.isSelected()
-                    || !this.dtoCheckBox.isSelected()
-                    || !this.queryCheckBox.isSelected()
-                    || !this.mapperCheckBox.isSelected()
-                    || !this.entityCheckBox.isSelected()
-                    || !this.mapperXmlCheckBox.isSelected()) {
-                this.packageAllBtn.setText("全不选");
-                this.controllerCheckBox.setSelected(true);
-                this.entityCheckBox.setSelected(true);
-                this.serviceCheckBox.setSelected(true);
-                this.dtoCheckBox.setSelected(true);
-                this.queryCheckBox.setSelected(true);
-                this.mapperCheckBox.setSelected(true);
-                this.mapStructCheckBox.setSelected(true);
-                this.mapperXmlCheckBox.setSelected(true);
-            } else {
-                this.packageAllBtn.setText("全选");
-                this.controllerCheckBox.setSelected(false);
-                this.entityCheckBox.setSelected(false);
-                this.serviceCheckBox.setSelected(false);
-                this.dtoCheckBox.setSelected(false);
-                this.queryCheckBox.setSelected(false);
-                this.mapStructCheckBox.setSelected(false);
-                this.mapperCheckBox.setSelected(false);
-                this.mapperXmlCheckBox.setSelected(false);
-            }
-        });
 
-        // 3.生成Java对象生成与否的单选事件
-        controllerCheckBox.addItemListener(e -> this.xgGlobalObj.setGenerateController(e.getStateChange() == ItemEvent.SELECTED));
-        serviceCheckBox.addItemListener(e -> this.xgGlobalObj.setGenerateService(e.getStateChange() == ItemEvent.SELECTED));
-        entityCheckBox.addItemListener(e -> this.xgGlobalObj.setGenerateEntity(e.getStateChange() == ItemEvent.SELECTED));
-        dtoCheckBox.addItemListener(e -> this.xgGlobalObj.setGenerateDTO(e.getStateChange() == ItemEvent.SELECTED));
-        queryCheckBox.addItemListener(e -> this.xgGlobalObj.setGenerateQuery(e.getStateChange() == ItemEvent.SELECTED));
-        mapStructCheckBox.addItemListener(e -> this.xgGlobalObj.setGenerateMapStruct(e.getStateChange() == ItemEvent.SELECTED));
-        mapperCheckBox.addItemListener(e -> this.xgGlobalObj.setGenerateMapper(e.getStateChange() == ItemEvent.SELECTED));
-        mapperXmlCheckBox.addItemListener(e -> this.xgGlobalObj.setGenerateMapperXml(e.getStateChange() == ItemEvent.SELECTED));
 
         // 4.添加ActionListener来监听文件冲突时按钮的状态变化
         ActionListener actionListener = e -> {
@@ -254,54 +271,6 @@ public class XGCodeUI {
             @Override
             protected void textChanged(@NotNull DocumentEvent e) {
                 xgGlobalObj.setResourcesCodeGeneratorPath(resourcesCodeGeneratorPathTextField.getText());
-            }
-        });
-        controllerPathTextField.getDocument().addDocumentListener(new DocumentAdapter() {
-            @Override
-            protected void textChanged(@NotNull DocumentEvent e) {
-                xgGlobalObj.setControllerPackagePath(controllerPathTextField.getText());
-            }
-        });
-        servicePathTextField.getDocument().addDocumentListener(new DocumentAdapter() {
-            @Override
-            protected void textChanged(@NotNull DocumentEvent e) {
-                xgGlobalObj.setServicePackagePath(servicePathTextField.getText());
-            }
-        });
-        entityPathTextField.getDocument().addDocumentListener(new DocumentAdapter() {
-            @Override
-            protected void textChanged(@NotNull DocumentEvent e) {
-                xgGlobalObj.setEntityPackagePath(entityPathTextField.getText());
-            }
-        });
-        dtoPathTextField.getDocument().addDocumentListener(new DocumentAdapter() {
-            @Override
-            protected void textChanged(@NotNull DocumentEvent e) {
-                xgGlobalObj.setDtoPackagePath(dtoPathTextField.getText());
-            }
-        });
-        queryPathTextField.getDocument().addDocumentListener(new DocumentAdapter() {
-            @Override
-            protected void textChanged(@NotNull DocumentEvent e) {
-                xgGlobalObj.setQueryPackagePath(queryPathTextField.getText());
-            }
-        });
-        mapStructPathTextField.getDocument().addDocumentListener(new DocumentAdapter() {
-            @Override
-            protected void textChanged(@NotNull DocumentEvent e) {
-                xgGlobalObj.setMapstructPackagePath(mapStructPathTextField.getText());
-            }
-        });
-        mapperPathTextField.getDocument().addDocumentListener(new DocumentAdapter() {
-            @Override
-            protected void textChanged(@NotNull DocumentEvent e) {
-                xgGlobalObj.setMapperPackagePath(mapperPathTextField.getText());
-            }
-        });
-        mapperXmlPathTextField.getDocument().addDocumentListener(new DocumentAdapter() {
-            @Override
-            protected void textChanged(@NotNull DocumentEvent e) {
-                xgGlobalObj.setMapperXmlPackagePath(mapperXmlPathTextField.getText());
             }
         });
     }
@@ -425,15 +394,6 @@ public class XGCodeUI {
         this.xgGlobalObj.setQueryPackagePath(queryPackagePath);
         this.xgGlobalObj.setMapstructPackagePath(mapStructPackagePath);
         this.xgGlobalObj.setMapperXmlPackagePath("mapper");
-
-        this.controllerPathTextField.setText(controllerPackagePath);
-        this.servicePathTextField.setText(this.xgGlobalObj.getServicePackagePath());
-        this.mapperPathTextField.setText(this.xgGlobalObj.getMapperPackagePath());
-        this.entityPathTextField.setText(this.xgGlobalObj.getEntityPackagePath());
-        this.dtoPathTextField.setText(this.xgGlobalObj.getDtoPackagePath());
-        this.queryPathTextField.setText(this.xgGlobalObj.getQueryPackagePath());
-        this.mapStructPathTextField.setText(this.xgGlobalObj.getMapstructPackagePath());
-        this.mapperXmlPathTextField.setText(this.xgGlobalObj.getMapperXmlPackagePath());
     }
 
     /**
@@ -462,12 +422,7 @@ public class XGCodeUI {
             Messages.showInfoMessage("请先选择要生成的表实体！", "X-Generator");
             return;
         }
-        if (!controllerCheckBox.isSelected() && !entityCheckBox.isSelected()
-                && !mapStructCheckBox.isSelected() && !queryCheckBox.isSelected() && !mapperXmlCheckBox.isSelected()
-                && !mapperCheckBox.isSelected() && !serviceCheckBox.isSelected() && !dtoCheckBox.isSelected()) {
-            Messages.showInfoMessage("请先选择要生成的代码对象！", "X-Generator");
-            return;
-        }
+
 
         for (String s : xgGeneratorSelectedTableValuesList) {
             XGXmlElementTable xgXmlElementTable = tableInfoMap.get(s);

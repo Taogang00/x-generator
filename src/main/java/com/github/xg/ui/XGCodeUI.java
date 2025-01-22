@@ -22,7 +22,6 @@ import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.DocumentAdapter;
 import com.intellij.ui.components.fields.ExpandableTextField;
-import com.intellij.uiDesigner.core.GridConstraints;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import lombok.Getter;
@@ -44,8 +43,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -101,68 +100,42 @@ public class XGCodeUI {
         this.authorTextField.setText(System.getProperty("user.name"));
         this.packageAllBtn.setText("全不选");
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 13; i++) {
             // 创建复选框
             JCheckBox newCheckBox = new JCheckBox("新复选框" + i);
             newCheckBox.setSelected(true); // 设置默认选中状态
-
+            newCheckBox.addActionListener(event -> {
+                if (newCheckBox.isSelected()) {
+                    // 复选框被选中时执行操作
+                    System.out.println("复选框被选中");
+                } else {
+                    // 复选框未被选中时执行操作
+                    System.out.println("复选框未被选中");
+                }
+            });
             // 设置复选框的布局约束
             GridBagConstraints gbc = new GridBagConstraints();
-            GridConstraints constraints = new GridConstraints();
-            constraints.setRow(i); // 指定行
-            constraints.setColumn(0);
-            constraints.setRowSpan(1);
-            constraints.setColSpan(1);
-            constraints.setVSizePolicy(GridConstraints.SIZEPOLICY_CAN_SHRINK);
-            constraints.setHSizePolicy(3);
-            constraints.setAnchor(8);
-            constraints.setFill(0);
-            constraints.setIndent(0);
-            constraints.setUseParentLayout(false);
-
+            gbc.gridx = 0; // 列索引
+            gbc.gridy = i; // 行索引
+            gbc.weightx = 0.1; // 水平权重
+            gbc.fill = GridBagConstraints.HORIZONTAL; // 水平填充
+            gbc.anchor = GridBagConstraints.WEST; // 垂直靠上对齐
             // 将复选框添加到 test 面板
-            templateJPanel.add(newCheckBox, constraints);
+            templateJPanel.add(newCheckBox, gbc);
 
             // 创建 ExpandableTextField
             ExpandableTextField expandableTextField = new ExpandableTextField();
             expandableTextField.setText("初始文本" + i);
             expandableTextField.setToolTipText("请输入文本" + i);
 
-            // 创建一个新的GridConstraints对象，用于定义组件在网格中的布局约束
-            GridConstraints constraints2 = new GridConstraints();
-
-            // 设置组件在网格中的行位置
-            constraints2.setRow(i);
-
-            // 设置组件在网格中的列位置
-            constraints2.setColumn(1);
-
-            // 设置组件占据的行数为1
-            constraints2.setRowSpan(1);
-
-            // 设置组件占据的列数为1
-            constraints2.setColSpan(1);
-
-            // 设置垂直尺寸策略，0表示无特定策略，可能根据具体布局管理器定义的行为调整
-            constraints2.setVSizePolicy(GridConstraints.SIZEPOLICY_CAN_SHRINK); // 设置垂直尺寸
-
-            // 设置水平尺寸策略，6表示组件在水平方向上按需分配空间
-            constraints2.setHSizePolicy(6);
-
-            // 设置组件的对齐方式，8表示组件在网格单元格的中心对齐
-            constraints2.setAnchor(8);
-
-            // 设置填充方式，1表示组件在网格单元格中按需填充空间
-            constraints2.setFill(1);
-
-            // 设置缩进值为0，表示组件在网格中的位置不进行缩进
-            constraints2.setIndent(0);
-
-            // 设置不使用父布局的布局属性，确保此组件的布局仅由当前设置的约束定义
-            constraints2.setUseParentLayout(false);
-
+            GridBagConstraints gbc2 = new GridBagConstraints();
+            gbc2.gridx = 1; // 列索引
+            gbc2.gridy = i; // 行索引
+            gbc2.weightx = 0.9; // 水平权重
+            gbc2.fill = GridBagConstraints.HORIZONTAL; // 水平填充
+            gbc2.anchor = GridBagConstraints.WEST; // 垂直靠上对齐
             // 将 ExpandableTextField 添加到 test 面板
-            templateJPanel.add(expandableTextField, constraints2);
+            templateJPanel.add(expandableTextField, gbc2);
         }
 
         this.xgGeneratorSelectedTableValuesList = new ArrayList<>();

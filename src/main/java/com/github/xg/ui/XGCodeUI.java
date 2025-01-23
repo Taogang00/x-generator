@@ -248,7 +248,7 @@ public class XGCodeUI {
 
             // 创建 ExpandableTextField
             ExpandableTextField expandableTextField = new ExpandableTextField();
-            expandableTextField.setToolTipText("包名路径");
+            expandableTextField.setToolTipText("生成对象的相对路径");
             expandableTextField.setText(xgTempItem.getPackageName());
             gbc.gridx = 1; // 列索引
             gbc.gridy = i; // 行索引

@@ -31,4 +31,11 @@ public class XGTempItem {
         this.orderNo = orderNo;
         this.packageName = name.toLowerCase();
     }
+
+    public XGTempItem(String name, String content, String packageName, Integer orderNo) {
+        this.name = name;
+        this.content = content;
+        this.packageName = packageName;
+        this.orderNo = orderNo;
+    }
 }

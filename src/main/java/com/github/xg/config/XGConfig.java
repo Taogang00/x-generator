@@ -113,7 +113,7 @@ public class XGConfig {
         List<XGTempItem> guanweiXGTempItemList = new ArrayList<>();
         guanweiXGTempItemList.add(new XGTempItem(CONTROLLER, getTemplateContent("/template/guanwei", "controller.java"), 1));
         guanweiXGTempItemList.add(new XGTempItem(SERVICE, getTemplateContent("/template/guanwei", "service.java"), 2));
-        guanweiXGTempItemList.add(new XGTempItem(SERVICE_IMPL, getTemplateContent("/template/guanwei", "serviceImpl.java"), 3));
+        guanweiXGTempItemList.add(new XGTempItem(SERVICE_IMPL, getTemplateContent("/template/guanwei", "serviceImpl.java"), "service.impl", 3));
         guanweiXGTempItemList.add(new XGTempItem(ENTITY, getTemplateContent("/template/guanwei", "entity.java"), 4));
         guanweiXGTempItemList.add(new XGTempItem(MAPPER, getTemplateContent("/template/guanwei", "mapper.java"), 5));
         guanweiXGTempItemList.add(new XGTempItem(XML, getTemplateContent("/template/guanwei", "mapper.xml"), 6));
@@ -130,7 +130,7 @@ public class XGConfig {
         List<XGTempItem> mpXGTempItemList = new ArrayList<>();
         mpXGTempItemList.add(new XGTempItem(CONTROLLER, getTemplateContent("/template/mybatisplus", "controller.java"), 1));
         mpXGTempItemList.add(new XGTempItem(SERVICE, getTemplateContent("/template/mybatisplus", "service.java"), 2));
-        mpXGTempItemList.add(new XGTempItem(SERVICE_IMPL, getTemplateContent("/template/mybatisplus", "serviceImpl.java"), 3));
+        mpXGTempItemList.add(new XGTempItem(SERVICE_IMPL, getTemplateContent("/template/mybatisplus", "serviceImpl.java"), "service.impl", 3));
         mpXGTempItemList.add(new XGTempItem(ENTITY, getTemplateContent("/template/mybatisplus", "entity.java"), 4));
         mpXGTempItemList.add(new XGTempItem(MAPPER, getTemplateContent("/template/mybatisplus", "mapper.java"), 5));
         mpXGTempItemList.add(new XGTempItem(XML, getTemplateContent("/template/mybatisplus", "mapper.xml"), 6));

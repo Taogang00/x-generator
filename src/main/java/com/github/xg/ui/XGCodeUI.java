@@ -70,15 +70,11 @@ public class XGCodeUI {
     private JComboBox<String> configComboBox;
     @Getter
     private Map<String, XGXmlElementTable> tableInfoMap;
-
     private JComboBox<String> projectModuleComboBox;
-
     private ExpandableTextField sourceCodeGeneratorPathTextField;
     private ExpandableTextField resourcesCodeGeneratorPathTextField;
-
     private JRadioButton skipRadioButton;
     private JRadioButton overrideRadioButton;
-
     private JButton importBtn;
     private JButton packageAllBtn;
     private JList<String> tableList;
@@ -87,9 +83,9 @@ public class XGCodeUI {
     private JTextField authorTextField;
     private List<XGXmlElementTable> tableInfoList;
     private List<? extends String> xgGeneratorSelectedTableValuesList;
-
     private final List<XGTableObj> xgGeneratorSelectedTableObjList;
     private final XGGlobalObj xgGlobalObj;
+    private final List<XGGeneratorObj> xgGeneratorObjList = new ArrayList<>();
 
     public XGCodeUI(Project project, XGGlobalObj xgGlobalObj) {
         this.xgGlobalObj = xgGlobalObj;
@@ -123,7 +119,18 @@ public class XGCodeUI {
         }
 
         // 2.生成Java对象【全选】、【全不选】按钮事件
-
+        packageAllBtn.addActionListener(e -> {
+            boolean allSelected = "全选".equals(this.packageAllBtn.getText());
+            // 遍历 xgGeneratorObjList 并设置复选框状态
+            for (XGGeneratorObj xgGeneratorObj : xgGeneratorObjList) {
+                JCheckBox checkBox = xgGeneratorObj.getJCheckBox();
+                if (checkBox != null) {
+                    checkBox.setSelected(allSelected);
+                }
+            }
+            // 切换按钮文本
+            this.packageAllBtn.setText(allSelected ? "全不选" : "全选");
+        });
 
         // 4.添加ActionListener来监听文件冲突时按钮的状态变化
         ActionListener actionListener = e -> {
@@ -209,42 +216,48 @@ public class XGCodeUI {
             }
         });
 
-
         XGConfig selectXGConfig = XGSettingManager.getSelectXGConfig(configComboBox.getSelectedItem().toString());
+        initXgGeneratorSelectedTableValuesList(selectXGConfig);
+
+        configComboBox.addActionListener(e -> {
+            String selectedConfigKey = (String) configComboBox.getSelectedItem();
+            XGConfig selectXGConfig2 = XGSettingManager.getSelectXGConfig(selectedConfigKey);
+            initXgGeneratorSelectedTableValuesList(selectXGConfig2);
+        });
+    }
+
+    public void initXgGeneratorSelectedTableValuesList(XGConfig selectXGConfig) {
+        xgGeneratorObjList.clear();
+        templateJPanel.removeAll();
+        templateJPanel.repaint();
+        templateJPanel.revalidate();
+
         List<XGTempItem> xgTempItemList = selectXGConfig.getXgTempItemList();
         for (int i = 0; i < xgTempItemList.size(); i++) {
             XGTempItem xgTempItem = xgTempItemList.get(i);
 
-            // 创建复选框
-            JCheckBox newCheckBox = new JCheckBox("生成 " + xgTempItem.getName());
-            newCheckBox.setSelected(true); // 设置默认选中状态
-            newCheckBox.addActionListener(event -> {
-                if (newCheckBox.isSelected()) {
-                    // 复选框被选中时执行操作
-                    System.out.println("复选框被选中");
-                } else {
-                    // 复选框未被选中时执行操作
-                    System.out.println("复选框未被选中");
-                }
-            });
-            // 设置复选框的布局约束
+            JCheckBox generatorCheckBox = new JCheckBox("生成 " + xgTempItem.getName());
+            generatorCheckBox.setSelected(true); // 设置默认选中状态
             GridBagConstraints gbc = new GridBagConstraints();
             gbc.gridx = 0; // 列索引
             gbc.gridy = i; // 行索引
-            gbc.weightx = 0.2; // 水平权重
+            gbc.weightx = 0.1; // 水平权重
             gbc.fill = GridBagConstraints.HORIZONTAL; // 水平填充
             gbc.anchor = GridBagConstraints.WEST; // 垂直靠上对齐
-            // 将复选框添加到 test 面板
-            templateJPanel.add(newCheckBox, gbc);
+            templateJPanel.add(generatorCheckBox, gbc);
 
             // 创建 ExpandableTextField
             ExpandableTextField expandableTextField = new ExpandableTextField();
             expandableTextField.setText(xgTempItem.getPackageName());
-
             gbc.gridx = 1; // 列索引
             gbc.gridy = i; // 行索引
-            gbc.weightx = 0.8; // 水平权重
+            gbc.weightx = 0.85; // 水平权重
             templateJPanel.add(expandableTextField, gbc);
+
+            XGGeneratorObj xgGeneratorObj = new XGGeneratorObj();
+            xgGeneratorObj.setJCheckBox(generatorCheckBox);
+            xgGeneratorObj.setExpandableTextField(expandableTextField);
+            xgGeneratorObjList.add(xgGeneratorObj);
         }
     }
 

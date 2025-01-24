@@ -1,8 +1,12 @@
 package com.github.xg.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class XGTempItem {
 
     /**
@@ -30,12 +34,5 @@ public class XGTempItem {
         this.content = content;
         this.orderNo = orderNo;
         this.packageName = name.toLowerCase();
-    }
-
-    public XGTempItem(String name, String content, String packageName, Integer orderNo) {
-        this.name = name;
-        this.content = content;
-        this.packageName = packageName;
-        this.orderNo = orderNo;
     }
 }

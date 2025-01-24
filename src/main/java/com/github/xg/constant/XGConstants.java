@@ -32,4 +32,7 @@ public class XGConstants {
 
     public static final String TEMPLATE_GUANWEI = "GuanWei";
     public static final String TEMPLATE_MYBATIS_PLUS = "MybatisPlus3";
+
+    public static final String ALL_PACKAGE_YES = "全选";
+    public static final String ALL_PACKAGE_NO = "全不选";
 }

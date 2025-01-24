@@ -94,7 +94,7 @@ public class XGCodeUI {
         this.importBtn.setIcon(AllIcons.FileTypes.Xml);
         this.runInfoLabel.setIcon(AllIcons.General.Information);
         this.authorTextField.setText(System.getProperty("user.name"));
-        this.packageAllBtn.setText("全不选");
+        this.packageAllBtn.setText(ALL_PACKAGE_NO);
 
         this.xgGeneratorSelectedTableValuesList = new ArrayList<>();
         this.xgGeneratorSelectedTableObjList = new ArrayList<>();
@@ -120,7 +120,7 @@ public class XGCodeUI {
 
         // 2.生成Java对象【全选】、【全不选】按钮事件
         packageAllBtn.addActionListener(e -> {
-            boolean allSelected = "全选".equals(this.packageAllBtn.getText());
+            boolean allSelected = ALL_PACKAGE_YES.equals(this.packageAllBtn.getText());
             // 遍历 xgGeneratorObjList 并设置复选框状态
             for (XGGeneratorObj xgGeneratorObj : xgGeneratorObjList) {
                 JCheckBox checkBox = xgGeneratorObj.getJCheckBox();
@@ -129,7 +129,7 @@ public class XGCodeUI {
                 }
             }
             // 切换按钮文本
-            this.packageAllBtn.setText(allSelected ? "全不选" : "全选");
+            this.packageAllBtn.setText(allSelected ? ALL_PACKAGE_NO : ALL_PACKAGE_YES);
         });
 
         // 4.添加ActionListener来监听文件冲突时按钮的状态变化
@@ -241,7 +241,7 @@ public class XGCodeUI {
             GridBagConstraints gbc = new GridBagConstraints();
             gbc.gridx = 0; // 列索引
             gbc.gridy = i; // 行索引
-            gbc.weightx = 0.1; // 水平权重
+            gbc.weightx = 0.15; // 水平权重
             gbc.fill = GridBagConstraints.HORIZONTAL; // 水平填充
             gbc.anchor = GridBagConstraints.WEST; // 垂直靠上对齐
             templateJPanel.add(generatorCheckBox, gbc);

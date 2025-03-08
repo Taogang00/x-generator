@@ -43,7 +43,6 @@ public class XGMainDialog extends DialogWrapper {
         XGConfig.initXGDefaultTemplateManager();
 
         this.setOKButtonText("生成");
-        this.setCancelButtonText("取消");
         this.setTitle("X-Generator 0.0.9");
         this.setSize(1000, 700);
         this.setAutoAdjustable(true);
@@ -58,7 +57,7 @@ public class XGMainDialog extends DialogWrapper {
                 if (currentPageSetting) {
                     XGSettingUI xgSettingUI = new XGSettingUI(project, xgCodeUI);
                     rootPanel.add(xgSettingUI.getRootJPanel());
-                    settingAction.putValue(Action.NAME, "上一步");
+                    settingAction.putValue(Action.NAME, "主页");
                     setOKActionEnabled(false);
                 } else {
                     rootPanel.add(xgCodeUI.getRootJPanel());
@@ -101,6 +100,6 @@ public class XGMainDialog extends DialogWrapper {
 
     @Override
     protected Action @NotNull [] createActions() {
-        return new Action[]{settingAction, getCancelAction(), getOKAction(), getHelpAction()};
+        return new Action[]{settingAction, getOKAction(), getHelpAction()};
     }
 }

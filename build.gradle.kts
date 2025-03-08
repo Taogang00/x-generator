@@ -22,7 +22,7 @@ intellij {
 }
 
 dependencies {
-    implementation("cn.hutool:hutool-core:5.8.34")
+    implementation("cn.hutool:hutool-core:5.8.36")
     implementation("org.freemarker:freemarker:2.3.34")
 
     compileOnly("org.projectlombok:lombok:1.18.34")
@@ -43,7 +43,7 @@ tasks {
         //最低版本 idea2022.2 开始基于jdk17编译
         sinceBuild.set("222")
         //最高版本
-        untilBuild.set("243.*")
+        untilBuild.set("")
     }
 
     signPlugin {

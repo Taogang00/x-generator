@@ -13,8 +13,6 @@ import com.github.xg.render.XGTableListCellRenderer;
 import com.github.xg.utils.XGFileUtil;
 import com.github.xg.utils.XGModuleUtil;
 import com.intellij.icons.AllIcons;
-import com.intellij.openapi.actionSystem.ActionManager;
-import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
@@ -625,13 +623,6 @@ public class XGCodeUI {
                 Template template = getFreemarkerTemplate(xgTempItem.getContent(), xgTempItem.getName());
                 count += generateMapStructCode(template, map);
             }
-        }
-
-        //重新加载项目，刷新文件变化
-        AnAction synchronizeAction = ActionManager.getInstance().getAction("SynchronizeCurrentFile");
-        if (synchronizeAction != null) {
-            AnActionEvent anActionEvent = AnActionEvent.createFromDataContext("SynchronizeFile", null, event.getDataContext());
-            synchronizeAction.actionPerformed(anActionEvent);
         }
 
         Messages.showInfoMessage("生成成功，共有 " + count + " 个文件发生变化", "X-Generator");

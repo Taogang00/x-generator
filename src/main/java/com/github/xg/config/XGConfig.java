@@ -46,7 +46,7 @@ public class XGConfig {
     public static void initXGDefaultTemplateManager() {
         XGSettingManager.State state = XGSettingManager.getInstance().getState();
         if (state != null) {
-            XGConfig xgConfig = state.getXgConfigs();
+            XGConfig xgConfig = state.getXgConfig();
             //为空的状态，表示配置为空，本地没相关配置
             if (xgConfig == null) {
                 XGConfig authorXGConfig = new XGConfig();
@@ -56,7 +56,7 @@ public class XGConfig {
                 authorXGConfig.setXgTempItemList(initGuanWeiXgTableInfo());
                 authorXGConfig.setColumnJavaTypeMapping(initColumnJavaTypeMapping());
 
-                state.setXgConfigs(authorXGConfig);
+                state.setXgConfig(authorXGConfig);
                 XGSettingManager.getInstance().loadState(state);
             } else {
                 //不为空，检查相关的配置是否有（后续变动新增的配置项），如果没有，就添加
@@ -76,10 +76,10 @@ public class XGConfig {
     public static void resetSelectedConfigXgTabInfo() {
         XGSettingManager.State state = XGSettingManager.getInstance().getState();
         assert state != null;
-        XGConfig xgConfig = state.getXgConfigs();
+        XGConfig xgConfig = state.getXgConfig();
         xgConfig.setXgTempItemList(initGuanWeiXgTableInfo());
         xgConfig.setColumnJavaTypeMapping(initColumnJavaTypeMapping());
-        state.setXgConfigs(xgConfig);
+        state.setXgConfig(xgConfig);
         XGSettingManager.getInstance().loadState(state);
     }
 

@@ -152,7 +152,7 @@ public class XGSettingUI {
             if (StrUtil.isNotBlank(columnType) && StrUtil.isNotBlank(javaType)) {
                 columnJavaTypeMapping.put(columnType, javaType);
                 xgConfig.setColumnJavaTypeMapping(columnJavaTypeMapping);
-                XGSettingManager.updateXGConfigs(xgConfig);
+                XGSettingManager.updateXgConfig(xgConfig);
             }
         });
 
@@ -185,7 +185,7 @@ public class XGSettingUI {
                 // 更新配置中的映射关系
                 xgConfig.setColumnJavaTypeMapping(columnJavaTypeMapping);
                 // 更新配置
-                XGSettingManager.updateXGConfigs(xgConfig);
+                XGSettingManager.updateXgConfig(xgConfig);
 
                 // 重新初始化XGTableInfo
                 initXGTableInfo();
@@ -270,7 +270,7 @@ public class XGSettingUI {
             @Override
             public void documentChanged(@NotNull DocumentEvent event) {
                 // 获取所有的XGConfig配置
-                XGConfig config = state.getXgConfigs();
+                XGConfig config = state.getXgConfig();
                 // 获取该配置项下的所有XGTabInfo信息
                 List<XGTempItem> xgTempItems = config.getXgTempItemList();
                 // 遍历所有的XGTabInfo信息
@@ -282,7 +282,7 @@ public class XGSettingUI {
                     }
                 }
                 // 更新state中的XGConfig配置
-                state.setXgConfigs(config);
+                state.setXgConfig(config);
                 // 加载更新后的state
                 XGSettingManager.getInstance().loadState(state);
             }
@@ -374,7 +374,7 @@ public class XGSettingUI {
         xgConfig.setColumnJavaTypeMapping(columnJavaTypeMapping);
 
         // 更新XGConfig配置
-        XGSettingManager.updateXGConfigs(xgConfig);
+        XGSettingManager.updateXgConfig(xgConfig);
 
         // 重新初始化XGTableInfo
         initXGTableInfo();

@@ -61,7 +61,7 @@ public final class XGSettingManager implements PersistentStateComponent<XGSettin
     public static XGConfig getSelectXGConfig() {
         State state = getInstance().getState();
         assert state != null;
-        return state.getXgConfigs();
+        return state.getXgConfig();
     }
 
     public static XGTempItem getSelectXGConfig(XGConfig selectXGConfig, String tabInfoTypeName) {
@@ -85,10 +85,10 @@ public final class XGSettingManager implements PersistentStateComponent<XGSettin
         return null;
     }
 
-    public static void updateXGConfigs(XGConfig selectXGConfig) {
+    public static void updateXgConfig(XGConfig selectXGConfig) {
         State state = XGSettingManager.getInstance().getState();
         assert state != null;
-        state.setXgConfigs(selectXGConfig);
+        state.setXgConfig(selectXGConfig);
     }
 
     @Data
@@ -97,6 +97,6 @@ public final class XGSettingManager implements PersistentStateComponent<XGSettin
         /**
          * 配置映射
          */
-        public XGConfig xgConfigs;
+        public XGConfig xgConfig;
     }
 }

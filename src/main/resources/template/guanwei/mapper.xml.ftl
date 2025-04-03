@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--suppress SqlNoDataSourceInspection -->
 <mapper namespace="${table.mapperPackagePath}.${table.mapperClassName}">
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="${table.entityPackagePath}.${table.entityClassName}">

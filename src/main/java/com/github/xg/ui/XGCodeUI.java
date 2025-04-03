@@ -63,8 +63,6 @@ public class XGCodeUI {
     @Getter
     private JLabel runInfoLabel;
     @Getter
-    private JComboBox<String> configComboBox;
-    @Getter
     private Map<String, XGXmlElementTable> tableInfoMap;
 
     private JComboBox<String> projectModuleComboBox;
@@ -117,14 +115,6 @@ public class XGCodeUI {
         //配置的选项
         XGSettingManager.State state = XGSettingManager.getInstance().getState();
         assert state != null;
-        List<XGConfig> valuesList = state.getXgConfigs();
-        for (int i = 0; i < valuesList.size(); i++) {
-            XGConfig config = valuesList.get(i);
-            configComboBox.addItem(config.getName());
-            if (config.getIsDefault()) {
-                configComboBox.setSelectedIndex(i);
-            }
-        }
 
         // 1.项目模块加载
         List<Module> modules = XGModuleUtil.getModules(project);
@@ -513,7 +503,7 @@ public class XGCodeUI {
             xgTableObj.setMapstructPackagePath(xgGlobalObj.getMapstructPackagePath());
             xgTableObj.setMapstructAbsolutePath(xgGlobalObj.getOutputMapStructPath() + File.separator + xgTableObj.getMapstructClassName() + ".java");
 
-            XGConfig selectXGConfig = XGSettingManager.getSelectXGConfig(configComboBox.getSelectedItem().toString());
+            XGConfig selectXGConfig = XGSettingManager.getSelectXGConfig();
             Map<String, String> columnJavaTypeMapping = selectXGConfig.getColumnJavaTypeMapping();
 
             List<XGTableFieldsObj> tableFields = new ArrayList<>();
@@ -596,7 +586,7 @@ public class XGCodeUI {
         map.put("global", xgGlobalInfoMap);
 
         int count = 0;
-        XGConfig selectXGConfig = XGSettingManager.getSelectXGConfig(configComboBox.getSelectedItem().toString());
+        XGConfig selectXGConfig = XGSettingManager.getSelectXGConfig();
         List<XGTempItem> xgTempItemList = selectXGConfig.getXgTempItemList();
         for (XGTempItem xgTempItem : xgTempItemList) {
             if (CONTROLLER.equals(xgTempItem.getName())) {

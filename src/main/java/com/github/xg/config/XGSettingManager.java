@@ -1,20 +1,15 @@
 package com.github.xg.config;
 
-import cn.hutool.core.io.FileUtil;
 import com.github.xg.model.XGTempItem;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.Service;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
-import com.intellij.openapi.ui.Messages;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
-import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,7 +21,7 @@ import java.util.List;
  * @date 2024/12/01
  */
 @Service
-@State(name = "x-generator", storages = {@Storage("plugin.x-generator.xml")})
+@State(name = "x-generator", storages = {@Storage("idea.plugin.x-generator.xml")})
 public final class XGSettingManager implements PersistentStateComponent<XGSettingManager.State> {
 
     private State myState = new State();
@@ -63,11 +58,10 @@ public final class XGSettingManager implements PersistentStateComponent<XGSettin
         this.myState = state;
     }
 
-    public static XGConfig getSelectXGConfig(String selectedName) {
+    public static XGConfig getSelectXGConfig() {
         State state = getInstance().getState();
         assert state != null;
-        List<XGConfig> xgConfigs = state.getXgConfigs();
-        return xgConfigs.stream().filter(xgConfig -> xgConfig.getName().equals(selectedName)).findFirst().orElse(null);
+        return state.getXgConfigs();
     }
 
     public static XGTempItem getSelectXGConfig(XGConfig selectXGConfig, String tabInfoTypeName) {
@@ -80,8 +74,8 @@ public final class XGSettingManager implements PersistentStateComponent<XGSettin
         return null;
     }
 
-    public static XGTempItem getSelectXGConfig(String selectedName, String tabInfoTypeName) {
-        XGConfig selectXGConfig = XGSettingManager.getSelectXGConfig(selectedName);
+    public static XGTempItem getSelectXGConfig(String tabInfoTypeName) {
+        XGConfig selectXGConfig = XGSettingManager.getSelectXGConfig();
         List<XGTempItem> xgTempItemList = selectXGConfig.getXgTempItemList();
         for (XGTempItem tabInfo : xgTempItemList) {
             if (tabInfo.getName().equals(tabInfoTypeName)) {
@@ -92,18 +86,9 @@ public final class XGSettingManager implements PersistentStateComponent<XGSettin
     }
 
     public static void updateXGConfigs(XGConfig selectXGConfig) {
-        List<XGConfig> newXgConfigs = new ArrayList<>();
         State state = XGSettingManager.getInstance().getState();
         assert state != null;
-        List<XGConfig> xgConfigs = state.getXgConfigs();
-        for (XGConfig xgConfig : xgConfigs) {
-            if (xgConfig.getName().equals(selectXGConfig.getName())) {
-                newXgConfigs.add(selectXGConfig);
-            } else {
-                newXgConfigs.add(xgConfig);
-            }
-        }
-        state.setXgConfigs(newXgConfigs);
+        state.setXgConfigs(selectXGConfig);
     }
 
     @Data
@@ -111,8 +96,7 @@ public final class XGSettingManager implements PersistentStateComponent<XGSettin
 
         /**
          * 配置映射
-         * key=default、mybatis3、mybatisPlus、custom1、...
          */
-        public List<XGConfig> xgConfigs;
+        public XGConfig xgConfigs;
     }
 }

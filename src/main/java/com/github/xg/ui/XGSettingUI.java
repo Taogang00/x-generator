@@ -65,12 +65,6 @@ public class XGSettingUI {
     // 声明列表组件，用于显示信息列表
     private JList<String> xgTempItemList;
 
-    // 声明组合框组件，用于选择配置
-    private JComboBox<String> configComboBox;
-
-    // 声明复选框组件，用于设置默认配置
-    private JCheckBox setDefaultConfigCheckBox;
-
     // 声明表格组件，用于显示类型映射
     private JTable typeMappingTable;
 
@@ -121,27 +115,17 @@ public class XGSettingUI {
         // 获取配置状态
         XGSettingManager.State state = XGSettingManager.getInstance().getState();
         assert state != null;
-        // 获取所有配置列表
-        List<XGConfig> valuesList = state.getXgConfigs();
-        // 遍历配置列表，添加到下拉框中
-        for (XGConfig config : valuesList) {
-            this.configComboBox.addItem(config.getName());
-        }
-        // 设置下拉框选中项
-        this.configComboBox.setSelectedIndex(xgCodeUI.getConfigComboBox().getSelectedIndex());
 
         // 初始化XGTabInfo
-        this.initXGTabInfo((String) configComboBox.getSelectedItem());
+        this.initXGTabInfo();
         // 初始化XGTableInfo
-        this.initXGTableInfo((String) configComboBox.getSelectedItem());
+        this.initXGTableInfo();
         // 设置模板编辑器面板布局和大小
         this.templateEditorJPanel.setLayout(new GridLayout(1, 1));
         this.templateEditorJPanel.setPreferredSize(new Dimension(550, 600));
 
         // 获取当前选中的配置
-        XGConfig xgConfig = XGSettingManager.getSelectXGConfig((String) configComboBox.getSelectedItem());
-        // 设置默认配置复选框选中状态
-        this.setDefaultConfigCheckBox.setSelected(xgConfig.getIsDefault());
+        XGConfig xgConfig = XGSettingManager.getSelectXGConfig();
 
         // 获取当前配置下的所有XGTabInfo信息
         List<XGTempItem> infoList = xgConfig.getXgTempItemList();
@@ -204,7 +188,7 @@ public class XGSettingUI {
                 XGSettingManager.updateXGConfigs(xgConfig);
 
                 // 重新初始化XGTableInfo
-                initXGTableInfo((String) configComboBox.getSelectedItem());
+                initXGTableInfo();
                 // 禁用删除按钮
                 delBtn.setEnabled(false);
                 // 弹出删除成功提示
@@ -225,67 +209,33 @@ public class XGSettingUI {
 
         // 为重置按钮添加点击事件监听器
         this.resetButton.addActionListener(e1 -> {
-            Object selectedItem = configComboBox.getSelectedItem();
-            if (selectedItem != null) {
-                // 弹出确认重置对话框
-                int flag = Messages.showYesNoDialog("确定重置【" + selectedItem + "】模板配置吗？", "X-Generator", AllIcons.General.QuestionDialog);
-                if (flag == 0) {
-                    // 重置选中的配置模板信息
-                    XGConfig.resetSelectedConfigXgTabInfo(selectedItem.toString());
-                    // 重新初始化XGTableInfo
-                    this.initXGTableInfo(configComboBox.getSelectedItem().toString());
+            // 弹出确认重置对话框
+            int flag = Messages.showYesNoDialog("确定重置模板配置吗？", "X-Generator", AllIcons.General.QuestionDialog);
+            if (flag == 0) {
+                // 重置选中的配置模板信息
+                XGConfig.resetSelectedConfigXgTabInfo();
+                // 重新初始化XGTableInfo
+                this.initXGTableInfo();
 
-                    // 获取编辑器文档对象
-                    Document document = templateEditor.getDocument();
-                    // 设置文档可编辑
-                    document.setReadOnly(false);
-                    // 执行写操作
-                    WriteCommandAction.runWriteCommandAction(project, () -> {
-                        // 获取选中的XGTabInfo信息
-                        XGTempItem tabInfo = XGSettingManager.getSelectXGConfig(selectedItem.toString(), this.xgTempItemList.getSelectedValue());
-                        assert tabInfo != null;
-                        // 构造文件名
-                        String fileName = StrUtil.format("{}{}", tabInfo.getName(), ".ftl");
-                        // 设置编辑器高亮器
-                        ((EditorEx) templateEditor).setHighlighter(EditorHighlighterFactory.getInstance().createEditorHighlighter(project, fileName));
-                        // 设置编辑器文本内容
-                        document.setText(tabInfo.getContent());
-                    });
-                    // 弹出重置成功提示
-                    XGNotifyUtil.notifySuccess("【" + selectedItem + "】模板重置成功！", "X-Generator", project);
-                }
+                // 获取编辑器文档对象
+                Document document = templateEditor.getDocument();
+                // 设置文档可编辑
+                document.setReadOnly(false);
+                // 执行写操作
+                WriteCommandAction.runWriteCommandAction(project, () -> {
+                    // 获取选中的XGTabInfo信息
+                    XGTempItem tabInfo = XGSettingManager.getSelectXGConfig(this.xgTempItemList.getSelectedValue());
+                    assert tabInfo != null;
+                    // 构造文件名
+                    String fileName = StrUtil.format("{}{}", tabInfo.getName(), ".ftl");
+                    // 设置编辑器高亮器
+                    ((EditorEx) templateEditor).setHighlighter(EditorHighlighterFactory.getInstance().createEditorHighlighter(project, fileName));
+                    // 设置编辑器文本内容
+                    document.setText(tabInfo.getContent());
+                });
+                // 弹出重置成功提示
+                XGNotifyUtil.notifySuccess("模板重置成功！", "X-Generator", project);
             }
-        });
-
-        // 为下拉框添加选择事件监听器
-        this.configComboBox.addActionListener(e -> {
-            Object selectedItem = configComboBox.getSelectedItem();
-            assert selectedItem != null;
-
-            // 获取选中的配置信息
-            XGConfig selectXGConfig = XGSettingManager.getSelectXGConfig((String) selectedItem);
-            // 设置默认配置复选框选中状态
-            setDefaultConfigCheckBox.setSelected(selectXGConfig.getIsDefault());
-            // 重新初始化XGTabInfo
-            initXGTabInfo(selectedItem.toString());
-            // 重新初始化XGTableInfo
-            initXGTableInfo(selectedItem.toString());
-            // 获取编辑器文档对象
-            Document document = templateEditor.getDocument();
-            // 设置文档可编辑
-            document.setReadOnly(false);
-            // 执行写操作
-            WriteCommandAction.runWriteCommandAction(project, () -> {
-                // 获取选中的XGTabInfo信息
-                XGTempItem tabInfo = XGSettingManager.getSelectXGConfig(selectXGConfig, this.xgTempItemList.getSelectedValue());
-                assert tabInfo != null;
-                // 构造文件名
-                String fileName = StrUtil.format("{}{}", tabInfo.getName(), ".ftl");
-                // 设置编辑器高亮器
-                ((EditorEx) templateEditor).setHighlighter(EditorHighlighterFactory.getInstance().createEditorHighlighter(project, fileName));
-                // 设置编辑器文本内容
-                document.setText(tabInfo.getContent());
-            });
         });
 
         // 为下拉框添加列表选择监听器
@@ -300,10 +250,8 @@ public class XGSettingUI {
             document.setReadOnly(false);
             // 执行写操作
             WriteCommandAction.runWriteCommandAction(project, () -> {
-                // 获取下拉框选中的项
-                Object selectedItem = configComboBox.getSelectedItem();
                 // 获取选中的配置信息
-                XGConfig selectXGConfig = XGSettingManager.getSelectXGConfig((String) selectedItem);
+                XGConfig selectXGConfig = XGSettingManager.getSelectXGConfig();
                 // 获取选中的XGTabInfo信息
                 XGTempItem tabInfo = XGSettingManager.getSelectXGConfig(selectXGConfig, this.xgTempItemList.getSelectedValue());
                 assert tabInfo != null;
@@ -321,49 +269,24 @@ public class XGSettingUI {
         this.templateEditor.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void documentChanged(@NotNull DocumentEvent event) {
-                // 获取当前选中的配置项
-                Object selectedItem = configComboBox.getSelectedItem();
                 // 获取所有的XGConfig配置
-                List<XGConfig> xgConfigs = state.getXgConfigs();
-                // 遍历所有的XGConfig配置
-                for (XGConfig config : xgConfigs) {
-                    // 如果配置项的名称与选中的项匹配
-                    if (config.getName().equals(selectedItem)) {
-                        // 获取该配置项下的所有XGTabInfo信息
-                        List<XGTempItem> xgTempItems = config.getXgTempItemList();
-                        // 遍历所有的XGTabInfo信息
-                        for (XGTempItem tabInfo : xgTempItems) {
-                            // 如果XGTabInfo的类型与选中的类型匹配
-                            if (tabInfo.getName().equals(xgTempItemList.getSelectedValue())) {
-                                // 设置XGTabInfo的内容为当前文档的内容
-                                tabInfo.setContent(event.getDocument().getText());
-                            }
-                        }
+                XGConfig config = state.getXgConfigs();
+                // 获取该配置项下的所有XGTabInfo信息
+                List<XGTempItem> xgTempItems = config.getXgTempItemList();
+                // 遍历所有的XGTabInfo信息
+                for (XGTempItem tabInfo : xgTempItems) {
+                    // 如果XGTabInfo的类型与选中的类型匹配
+                    if (tabInfo.getName().equals(xgTempItemList.getSelectedValue())) {
+                        // 设置XGTabInfo的内容为当前文档的内容
+                        tabInfo.setContent(event.getDocument().getText());
                     }
                 }
                 // 更新state中的XGConfig配置
-                state.setXgConfigs(xgConfigs);
+                state.setXgConfigs(config);
                 // 加载更新后的state
                 XGSettingManager.getInstance().loadState(state);
             }
 
-        });
-
-        // 为默认配置复选框添加点击事件监听器
-        this.setDefaultConfigCheckBox.addActionListener(e -> {
-            // 获取所有配置列表
-            List<XGConfig> xgConfigs = state.getXgConfigs();
-            // 遍历配置列表，设置默认配置为false，当前选中的配置为true
-            for (XGConfig config : xgConfigs) {
-                config.setIsDefault(false);
-                if (config.getName().equals(configComboBox.getSelectedItem())) {
-                    config.setIsDefault(true);
-                }
-            }
-            // 更新配置列表
-            state.setXgConfigs(xgConfigs);
-            // 加载更新后的状态
-            XGSettingManager.getInstance().loadState(state);
         });
     }
 
@@ -391,9 +314,9 @@ public class XGSettingUI {
         return editor;
     }
 
-    public void initXGTabInfo(String selectedConfigKey) {
+    public void initXGTabInfo() {
         // 根据传入的配置键获取对应的XGConfig对象
-        XGConfig xgConfig = XGSettingManager.getSelectXGConfig(selectedConfigKey);
+        XGConfig xgConfig = XGSettingManager.getSelectXGConfig();
 
         // 获取XGConfig对象中所有的XGTabInfo列表
         List<XGTempItem> infoList = xgConfig.getXgTempItemList();
@@ -414,9 +337,9 @@ public class XGSettingUI {
         xgTempItemList.setSelectedIndex(0);
     }
 
-    public void initXGTableInfo(String selectedConfigKey) {
+    public void initXGTableInfo() {
         // 根据选定的配置键获取对应的XGConfig对象
-        XGConfig xgConfig = XGSettingManager.getSelectXGConfig(selectedConfigKey);
+        XGConfig xgConfig = XGSettingManager.getSelectXGConfig();
 
         // 获取列名与Java类型的映射关系
         columnJavaTypeMapping = xgConfig.getColumnJavaTypeMapping();
@@ -444,11 +367,8 @@ public class XGSettingUI {
         // 将列类型和Java类型添加到映射关系中
         columnJavaTypeMapping.put(columnType, javaType);
 
-        // 获取当前选中的配置键
-        String selectedConfigKey = (String) configComboBox.getSelectedItem();
-
         // 根据选中的配置键获取对应的XGConfig对象
-        XGConfig xgConfig = XGSettingManager.getSelectXGConfig(selectedConfigKey);
+        XGConfig xgConfig = XGSettingManager.getSelectXGConfig();
 
         // 更新XGConfig对象的列名和Java类型的映射关系
         xgConfig.setColumnJavaTypeMapping(columnJavaTypeMapping);
@@ -457,7 +377,7 @@ public class XGSettingUI {
         XGSettingManager.updateXGConfigs(xgConfig);
 
         // 重新初始化XGTableInfo
-        initXGTableInfo((String) configComboBox.getSelectedItem());
+        initXGTableInfo();
     }
 
     @NotNull

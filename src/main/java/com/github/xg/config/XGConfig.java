@@ -46,38 +46,25 @@ public class XGConfig {
     public static void initXGDefaultTemplateManager() {
         XGSettingManager.State state = XGSettingManager.getInstance().getState();
         if (state != null) {
+            XGConfig xgConfig = state.getXgConfigs();
             //为空的状态，表示配置为空，本地没相关配置
-            if (state.getXgConfigs() == null) {
-                List<XGConfig> list = new ArrayList<>();
-                //第一种，作者公司默认的配置
+            if (xgConfig == null) {
                 XGConfig authorXGConfig = new XGConfig();
                 authorXGConfig.setCreateTime(DateUtil.formatDateTime(new Date()));
                 authorXGConfig.setIsDefault(true);
                 authorXGConfig.setName(TEMPLATE_GUANWEI);
                 authorXGConfig.setXgTempItemList(initGuanWeiXgTableInfo());
                 authorXGConfig.setColumnJavaTypeMapping(initColumnJavaTypeMapping());
-                list.add(authorXGConfig);
 
-                //第二种，mybatisPlus配置
-                XGConfig mpXGConfig = new XGConfig();
-                mpXGConfig.setCreateTime(DateUtil.formatDateTime(new Date()));
-                mpXGConfig.setIsDefault(false);
-                mpXGConfig.setName(TEMPLATE_MYBATIS_PLUS);
-                mpXGConfig.setXgTempItemList(initMybatisPlusXgTableInfo());
-                mpXGConfig.setColumnJavaTypeMapping(initColumnJavaTypeMapping());
-                list.add(mpXGConfig);
-
-                state.setXgConfigs(list);
+                state.setXgConfigs(authorXGConfig);
                 XGSettingManager.getInstance().loadState(state);
             } else {
                 //不为空，检查相关的配置是否有（后续变动新增的配置项），如果没有，就添加
-                for (XGConfig xgConfig : state.getXgConfigs()) {
-                    if (xgConfig.getColumnJavaTypeMapping() == null) {
-                        xgConfig.setColumnJavaTypeMapping(initColumnJavaTypeMapping());
-                    }
-                    if (xgConfig.getXgTempItemList() == null) {
-                        xgConfig.setXgTempItemList(initGuanWeiXgTableInfo());
-                    }
+                if (xgConfig.getColumnJavaTypeMapping() == null) {
+                    xgConfig.setColumnJavaTypeMapping(initColumnJavaTypeMapping());
+                }
+                if (xgConfig.getXgTempItemList() == null) {
+                    xgConfig.setXgTempItemList(initGuanWeiXgTableInfo());
                 }
             }
         }
@@ -86,23 +73,13 @@ public class XGConfig {
     /**
      * 重置选择的指定的配置的代码模板配置内容
      */
-    public static void resetSelectedConfigXgTabInfo(String selectedName) {
+    public static void resetSelectedConfigXgTabInfo() {
         XGSettingManager.State state = XGSettingManager.getInstance().getState();
         assert state != null;
-        List<XGConfig> xgConfigs = state.getXgConfigs();
-        for (XGConfig xgConfig : xgConfigs) {
-            if (xgConfig.getName().equals(selectedName)) {
-                if (TEMPLATE_GUANWEI.equals(selectedName)) {
-                    xgConfig.setXgTempItemList(initGuanWeiXgTableInfo());
-                    xgConfig.setColumnJavaTypeMapping(initColumnJavaTypeMapping());
-                }
-                if (TEMPLATE_MYBATIS_PLUS.equals(selectedName)) {
-                    xgConfig.setXgTempItemList(initMybatisPlusXgTableInfo());
-                    xgConfig.setColumnJavaTypeMapping(initColumnJavaTypeMapping());
-                }
-            }
-        }
-        state.setXgConfigs(xgConfigs);
+        XGConfig xgConfig = state.getXgConfigs();
+        xgConfig.setXgTempItemList(initGuanWeiXgTableInfo());
+        xgConfig.setColumnJavaTypeMapping(initColumnJavaTypeMapping());
+        state.setXgConfigs(xgConfig);
         XGSettingManager.getInstance().loadState(state);
     }
 
@@ -121,20 +98,6 @@ public class XGConfig {
         guanweiXGTempItemList.add(new XGTempItem(DTO, getTemplateContent("/template/guanwei", "dto.java"), 8));
         guanweiXGTempItemList.add(new XGTempItem(MAPSTRUCT, getTemplateContent("/template/guanwei", "mapstruct.java"), 9));
         return guanweiXGTempItemList;
-    }
-
-    /**
-     * 初始化MybatisPlus代码模板配置
-     */
-    public static List<XGTempItem> initMybatisPlusXgTableInfo() {
-        List<XGTempItem> mpXGTempItemList = new ArrayList<>();
-        mpXGTempItemList.add(new XGTempItem(CONTROLLER, getTemplateContent("/template/mybatisplus", "controller.java"), 1));
-        mpXGTempItemList.add(new XGTempItem(SERVICE, getTemplateContent("/template/mybatisplus", "service.java"), 2));
-        mpXGTempItemList.add(new XGTempItem(SERVICE_IMPL, getTemplateContent("/template/mybatisplus", "serviceImpl.java"), 3));
-        mpXGTempItemList.add(new XGTempItem(ENTITY, getTemplateContent("/template/mybatisplus", "entity.java"), 4));
-        mpXGTempItemList.add(new XGTempItem(MAPPER, getTemplateContent("/template/mybatisplus", "mapper.java"), 5));
-        mpXGTempItemList.add(new XGTempItem(XML, getTemplateContent("/template/mybatisplus", "mapper.xml"), 6));
-        return mpXGTempItemList;
     }
 
     /**

@@ -94,7 +94,7 @@ public class XGSettingUI {
     // 该数组初始化为包含一个元素，元素为{"Column Type", "Java Type"}
     private Object[][] TABLE_DATA = {{"Column Type", "Java Type"}};
 
-    public XGSettingUI(Project project, XGCodeUI xgCodeUI) {
+    public XGSettingUI(Project project) {
         // 设置表格单元格渲染器居中对齐
         DefaultTableCellRenderer dc = new DefaultTableCellRenderer();
         dc.setHorizontalAlignment(JLabel.CENTER);

@@ -56,7 +56,7 @@ public class XGMainDialog extends DialogWrapper {
             protected void doAction(ActionEvent e) {
                 rootPanel.removeAll();
                 if (currentPageSetting) {
-                    XGSettingUI xgSettingUI = new XGSettingUI(project, xgCodeUI);
+                    XGSettingUI xgSettingUI = new XGSettingUI(project);
                     rootPanel.add(xgSettingUI.getRootJPanel());
                     settingAction.putValue(Action.NAME, "上一步");
                     setOKActionEnabled(false);

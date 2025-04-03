@@ -36,9 +36,9 @@ public class ${table.entityClassName} {
 <#list table.tableFields as field>
     <#if !field.primaryKey>
     <#if field.comment!?length gt 0>
-        /**
-        * ${field.comment}
-        */
+    /**
+    * ${field.comment}
+    */
     </#if>
     private ${field.propertyType} ${field.propertyName};
 

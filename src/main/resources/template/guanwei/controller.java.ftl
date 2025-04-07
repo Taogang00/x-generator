@@ -7,6 +7,8 @@ import ${table.entityPackagePath}.${table.entityClassName};
 import ${table.mapstructPackagePath}.${table.mapstructClassName};
 import ${table.servicePackagePath}.${table.serviceClassName};
 import com.guanwei.core.utils.result.R;
+import com.guanwei.mybatis.util.PageHelpUtil;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.util.Assert;
 import org.springframework.validation.annotation.Validated;
@@ -60,7 +62,11 @@ public class ${table.controllerClassName} {
         </#if>
         </#list>
         List<${table.entityClassName}> list = ${table.serviceClassName?uncap_first}.selectList(query, lambdaQueryWrapper);
-        return R.OK(list);
+
+        //转dto
+        PageList<${table.entityClassName}> pageList = PageHelpUtil.of(list);
+        PageResult<${table.dtoClassName}> pageResult = ${table.mapstructClassName?uncap_first}.toPageResult(pageList);
+        return R.OK(pageResult);
 	}
 
     /**

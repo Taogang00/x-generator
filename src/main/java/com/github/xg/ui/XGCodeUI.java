@@ -1,6 +1,7 @@
 package com.github.xg.ui;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.ReUtil;
@@ -115,7 +116,7 @@ public class XGCodeUI {
         assert state != null;
 
         // 1.项目模块加载
-        List<Module> modules = XGModuleUtil.getModules(project);
+        List<Module> modules = ListUtil.sort(XGModuleUtil.getModules(project), Comparator.comparing(Module::getName));
         for (Module module : modules) {
             projectModuleComboBox.addItem(module.getName());
         }

@@ -3,6 +3,7 @@ package ${global.queryPackagePath};
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import com.guanwei.mybatis.model.PageQuery;
+import com.guanwei.mybatis.annotation.EscapeWildcard;
 
 import java.util.Date;
 
@@ -21,6 +22,9 @@ public class ${table.queryClassName} extends PageQuery {
     /**
      * ${field.comment}
      */
+</#if>
+<#if field.propertyClass =="java.lang.String">
+    @EscapeWildcard
 </#if>
     private ${field.propertyType} ${field.propertyName};
 

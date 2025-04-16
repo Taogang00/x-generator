@@ -88,15 +88,15 @@ public class XGConfig {
      */
     public static List<XGTempItem> initGuanWeiXgTableInfo() {
         List<XGTempItem> guanweiXGTempItemList = new ArrayList<>();
-        guanweiXGTempItemList.add(new XGTempItem(CONTROLLER, getTemplateContent("/template/guanwei", "controller.java"), 1));
-        guanweiXGTempItemList.add(new XGTempItem(SERVICE, getTemplateContent("/template/guanwei", "service.java"), 2));
-        guanweiXGTempItemList.add(new XGTempItem(SERVICE_IMPL, getTemplateContent("/template/guanwei", "serviceImpl.java"), 3));
-        guanweiXGTempItemList.add(new XGTempItem(ENTITY, getTemplateContent("/template/guanwei", "entity.java"), 4));
-        guanweiXGTempItemList.add(new XGTempItem(MAPPER, getTemplateContent("/template/guanwei", "mapper.java"), 5));
-        guanweiXGTempItemList.add(new XGTempItem(XML, getTemplateContent("/template/guanwei", "mapper.xml"), 6));
-        guanweiXGTempItemList.add(new XGTempItem(QUERY, getTemplateContent("/template/guanwei", "query.java"), 7));
-        guanweiXGTempItemList.add(new XGTempItem(DTO, getTemplateContent("/template/guanwei", "dto.java"), 8));
-        guanweiXGTempItemList.add(new XGTempItem(MAPSTRUCT, getTemplateContent("/template/guanwei", "mapstruct.java"), 9));
+        guanweiXGTempItemList.add(new XGTempItem(CONTROLLER, getTemplateContent("/template", "controller.java"), 1));
+        guanweiXGTempItemList.add(new XGTempItem(SERVICE, getTemplateContent("/template", "service.java"), 2));
+        guanweiXGTempItemList.add(new XGTempItem(SERVICE_IMPL, getTemplateContent("/template", "serviceImpl.java"), 3));
+        guanweiXGTempItemList.add(new XGTempItem(ENTITY, getTemplateContent("/template", "entity.java"), 4));
+        guanweiXGTempItemList.add(new XGTempItem(MAPPER, getTemplateContent("/template", "mapper.java"), 5));
+        guanweiXGTempItemList.add(new XGTempItem(XML, getTemplateContent("/template", "mapper.xml"), 6));
+        guanweiXGTempItemList.add(new XGTempItem(QUERY, getTemplateContent("/template", "query.java"), 7));
+        guanweiXGTempItemList.add(new XGTempItem(DTO, getTemplateContent("/template", "dto.java"), 8));
+        guanweiXGTempItemList.add(new XGTempItem(MAPSTRUCT, getTemplateContent("/template", "mapstruct.java"), 9));
         return guanweiXGTempItemList;
     }
 

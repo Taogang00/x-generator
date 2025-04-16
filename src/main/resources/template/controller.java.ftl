@@ -52,7 +52,7 @@ public class ${table.controllerClassName} {
      * @return {@link R}<{@link ?}> 通用返回对象
 	 */
 	@GetMapping("/list")
-	public R<?> list(${table.queryClassName} query) {
+	public R<?> list(@Validated ${table.queryClassName} query) {
         LambdaQueryWrapper<${table.entityClassName}> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         <#list table.tableFields?sort_by("propertyType") as field>
         <#if field.propertyType == "String">

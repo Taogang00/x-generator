@@ -2,7 +2,6 @@ package com.github.xg.ui;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.ListUtil;
-import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
@@ -360,17 +359,19 @@ public class XGCodeUI {
     public void initXgGeneratorGlobalOutputPathAndPackagePath(Project project, String selectedItem) {
         //src/main/java 绝对地址目录,形如：D:\gogs\camel\2.src\tles-oles-camel-out\src\main\java
         String sourcePath = XGModuleUtil.getModuleSourcePath(project, selectedItem);
-        Assert.notNull(sourcePath, "未识别到项目【" + project.getName() + "】源文件夹路径【" + selectedItem + "】");
+        if (StrUtil.isEmpty(sourcePath)) {
+            throw new IllegalArgumentException("未识别到项目【" + project.getName() + "】源文件夹路径【" + selectedItem + "】");
+        }
 
         //src/main/source 绝对地址目录，形如：D:\gogs\camel\2.src\tles-oles-camel-out\src\main\resource
         String resourcePath = XGModuleUtil.getModuleReSourcePath(project, selectedItem);
-        Assert.notNull(resourcePath, "未识别到项目【" + project.getName() + "】资源文件夹路径【" + selectedItem + "】");
+        if (StrUtil.isEmpty(resourcePath)) {
+            throw new IllegalArgumentException("未识别到项目【" + project.getName() + "】资源文件夹路径【" + selectedItem + "】");
+        }
 
-        assert sourcePath != null;
         File sourceDirectory = new File(sourcePath);
         String sourceDirectoryAbsolutePath = sourceDirectory.getAbsolutePath();
 
-        assert resourcePath != null;
         File resourceDirectory = new File(resourcePath);
         String resourceDirectoryAbsolutePath = resourceDirectory.getAbsolutePath();
 

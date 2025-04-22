@@ -8,6 +8,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.XmlUtil;
 import com.github.xg.config.XGConfig;
 import com.github.xg.config.XGSettingManager;
+import com.github.xg.generate.*;
 import com.github.xg.model.*;
 import com.github.xg.render.XGTableListCellRenderer;
 import com.github.xg.utils.XGFileUtil;
@@ -21,7 +22,6 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.DocumentAdapter;
 import com.intellij.ui.components.fields.ExpandableTextField;
 import freemarker.template.Template;
-import freemarker.template.TemplateException;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.w3c.dom.Document;
@@ -33,13 +33,7 @@ import javax.swing.event.DocumentEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -593,325 +587,45 @@ public class XGCodeUI {
         XGConfig selectXGConfig = XGSettingManager.getSelectXGConfig();
         List<XGTempItem> xgTempItemList = selectXGConfig.getXgTempItemList();
         for (XGTempItem xgTempItem : xgTempItemList) {
+            Template template = getFreemarkerTemplate(xgTempItem.getContent(), xgTempItem.getName());
             if (CONTROLLER.equals(xgTempItem.getName())) {
-                Template template = getFreemarkerTemplate(xgTempItem.getContent(), xgTempItem.getName());
-                count += generateControllerCode(template, map);
+                GenerateController generate = new GenerateController();
+                count += generate.generateCode(template, this.xgGlobalObj, xgGeneratorSelectedTableObjList, map);
             }
             if (ENTITY.equals(xgTempItem.getName())) {
-                Template template = getFreemarkerTemplate(xgTempItem.getContent(), xgTempItem.getName());
-                count += generateEntityCode(template, map);
+                GenerateEntity generate = new GenerateEntity();
+                count += generate.generateCode(template, this.xgGlobalObj, xgGeneratorSelectedTableObjList, map);
             }
             if (DTO.equals(xgTempItem.getName())) {
-                Template template = getFreemarkerTemplate(xgTempItem.getContent(), xgTempItem.getName());
-                count += generateDTOCode(template, map);
+                GenerateDTO generate = new GenerateDTO();
+                count += generate.generateCode(template, this.xgGlobalObj, xgGeneratorSelectedTableObjList, map);
             }
             if (QUERY.equals(xgTempItem.getName())) {
-                Template template = getFreemarkerTemplate(xgTempItem.getContent(), xgTempItem.getName());
-                count += generateQueryCode(template, map);
+                GenerateQuery generate = new GenerateQuery();
+                count += generate.generateCode(template, this.xgGlobalObj, xgGeneratorSelectedTableObjList, map);
             }
             if (SERVICE.equals(xgTempItem.getName())) {
-                Template template = getFreemarkerTemplate(xgTempItem.getContent(), xgTempItem.getName());
-                count += generateServiceCode(template, map);
+                GenerateService generate = new GenerateService();
+                count += generate.generateCode(template, this.xgGlobalObj, xgGeneratorSelectedTableObjList, map);
             }
             if (SERVICE_IMPL.equals(xgTempItem.getName())) {
-                Template template = getFreemarkerTemplate(xgTempItem.getContent(), xgTempItem.getName());
-                count += generateServiceImplCode(template, map);
+                GenerateServiceImpl generate = new GenerateServiceImpl();
+                count += generate.generateCode(template, this.xgGlobalObj, xgGeneratorSelectedTableObjList, map);
             }
             if (MAPPER.equals(xgTempItem.getName())) {
-                Template template = getFreemarkerTemplate(xgTempItem.getContent(), xgTempItem.getName());
-                count += generateMapperCode(template, map);
+                GenerateMapper generate = new GenerateMapper();
+                count += generate.generateCode(template, this.xgGlobalObj, xgGeneratorSelectedTableObjList, map);
             }
             if (XML.equals(xgTempItem.getName())) {
-                Template template = getFreemarkerTemplate(xgTempItem.getContent(), xgTempItem.getName());
-                count += generateMapperXmlCode(template, map);
+                GenerateMapperXml generate = new GenerateMapperXml();
+                count += generate.generateCode(template, this.xgGlobalObj, xgGeneratorSelectedTableObjList, map);
             }
             if (MAPSTRUCT.equals(xgTempItem.getName())) {
-                Template template = getFreemarkerTemplate(xgTempItem.getContent(), xgTempItem.getName());
-                count += generateMapStructCode(template, map);
+                GenerateMapStruct generate = new GenerateMapStruct();
+                count += generate.generateCode(template, this.xgGlobalObj, xgGeneratorSelectedTableObjList, map);
             }
         }
 
         Messages.showInfoMessage("生成成功，共有 " + count + " 个文件发生变化", "X-Generator");
-    }
-
-    /**
-     * 生成entity代码
-     *
-     * @param template 模板
-     * @param map      地图
-     */
-    public int generateControllerCode(Template template, Map<String, Object> map) throws IOException {
-        int count = 0;
-        if (xgGlobalObj.getGenerateController()) {
-            Path path = Paths.get(xgGlobalObj.getOutputControllerPath());
-            // 在使用 FileOutputStream 时，如果文件的父目录不存在（即文件所在的文件夹），Java 会抛出 FileNotFoundException，即使你尝试创建一个新的文件。
-            // 为了避免这个问题，你需要确保文件的父目录已经存在。如果目录不存在，你需要手动创建它。
-            Files.createDirectories(path);
-
-            for (XGTableObj xgTableObj : xgGeneratorSelectedTableObjList) {
-                Path filePath = Paths.get(xgTableObj.getControllerAbsolutePath());
-                // 检查文件是否存在并且是否允许覆盖
-                boolean shouldProcess = Files.exists(filePath) && this.xgGlobalObj.getFileOverride() || !Files.exists(filePath);
-                if (shouldProcess) {
-                    try (FileOutputStream fileOutputStream = new FileOutputStream(xgTableObj.getControllerAbsolutePath())) {
-                        Map<String, Object> stringObjectMap = BeanUtil.beanToMap(xgTableObj);
-                        map.put("table", stringObjectMap);
-                        template.process(map, new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8));
-                        count++;
-                    } catch (IOException | TemplateException e) {
-                        //ignore Exception
-                    }
-                }
-            }
-        }
-        return count;
-    }
-
-    /**
-     * 生成entity代码
-     *
-     * @param template 模板
-     * @param map      地图
-     */
-    public int generateEntityCode(Template template, Map<String, Object> map) throws IOException {
-        int count = 0;
-        if (xgGlobalObj.getGenerateEntity()) {
-            Path path = Paths.get(xgGlobalObj.getOutputEntityPath());
-            Files.createDirectories(path);
-
-            for (XGTableObj xgTableObj : xgGeneratorSelectedTableObjList) {
-                Path filePath = Paths.get(xgTableObj.getEntityAbsolutePath());
-                // 检查文件是否存在并且是否允许覆盖
-                boolean shouldProcess = Files.exists(filePath) && this.xgGlobalObj.getFileOverride() || !Files.exists(filePath);
-                if (shouldProcess) {
-                    try (FileOutputStream fileOutputStream = new FileOutputStream(xgTableObj.getEntityAbsolutePath())) {
-                        Map<String, Object> stringObjectMap = BeanUtil.beanToMap(xgTableObj);
-                        map.put("table", stringObjectMap);
-                        template.process(map, new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8));
-                        count++;
-                    } catch (IOException | TemplateException e) {
-                        //ignore Exception
-                    }
-                }
-            }
-        }
-        return count;
-    }
-
-    /**
-     * 生成DTO代码
-     *
-     * @param template 模板
-     * @param map      地图
-     */
-    public int generateDTOCode(Template template, Map<String, Object> map) throws IOException {
-        int count = 0;
-        if (xgGlobalObj.getGenerateDTO()) {
-            Path path = Paths.get(xgGlobalObj.getOutputDTOPath());
-            Files.createDirectories(path);
-
-            for (XGTableObj xgTableObj : xgGeneratorSelectedTableObjList) {
-                Path filePath = Paths.get(xgTableObj.getDtoAbsolutePath());
-                // 检查文件是否存在并且是否允许覆盖
-                boolean shouldProcess = Files.exists(filePath) && this.xgGlobalObj.getFileOverride() || !Files.exists(filePath);
-                if (shouldProcess) {
-                    try (FileOutputStream fileOutputStream = new FileOutputStream(xgTableObj.getDtoAbsolutePath())) {
-                        Map<String, Object> stringObjectMap = BeanUtil.beanToMap(xgTableObj);
-                        map.put("table", stringObjectMap);
-                        template.process(map, new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8));
-                        count++;
-                    } catch (IOException | TemplateException e) {
-                        //ignore Exception
-                    }
-                }
-            }
-        }
-        return count;
-    }
-
-    /**
-     * 生成Query代码
-     *
-     * @param template 模板
-     * @param map      地图
-     */
-    public int generateQueryCode(Template template, Map<String, Object> map) throws IOException {
-        int count = 0;
-        if (xgGlobalObj.getGenerateQuery()) {
-            Path path = Paths.get(xgGlobalObj.getOutputQueryPath());
-            Files.createDirectories(path);
-
-            for (XGTableObj xgTableObj : xgGeneratorSelectedTableObjList) {
-                Path filePath = Paths.get(xgTableObj.getQueryAbsolutePath());
-                // 检查文件是否存在并且是否允许覆盖
-                boolean shouldProcess = Files.exists(filePath) && this.xgGlobalObj.getFileOverride() || !Files.exists(filePath);
-                if (shouldProcess) {
-                    try (FileOutputStream fileOutputStream = new FileOutputStream(xgTableObj.getQueryAbsolutePath())) {
-                        Map<String, Object> stringObjectMap = BeanUtil.beanToMap(xgTableObj);
-                        map.put("table", stringObjectMap);
-                        template.process(map, new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8));
-                        count++;
-                    } catch (IOException | TemplateException e) {
-                        //ignore Exception
-                    }
-                }
-            }
-        }
-        return count;
-    }
-
-    /**
-     * 生成Service代码
-     *
-     * @param template 模板
-     * @param map      地图
-     */
-    public int generateServiceCode(Template template, Map<String, Object> map) throws IOException {
-        int count = 0;
-        if (xgGlobalObj.getGenerateService()) {
-            Path path = Paths.get(xgGlobalObj.getOutputServicePath());
-            Files.createDirectories(path);
-
-            for (XGTableObj xgTableObj : xgGeneratorSelectedTableObjList) {
-                Path filePath = Paths.get(xgTableObj.getServiceAbsolutePath());
-                // 检查文件是否存在并且是否允许覆盖
-                boolean shouldProcess = Files.exists(filePath) && this.xgGlobalObj.getFileOverride() || !Files.exists(filePath);
-                if (shouldProcess) {
-                    try (FileOutputStream fileOutputStream = new FileOutputStream(xgTableObj.getServiceAbsolutePath())) {
-                        Map<String, Object> stringObjectMap = BeanUtil.beanToMap(xgTableObj);
-                        map.put("table", stringObjectMap);
-                        template.process(map, new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8));
-                        count++;
-                    } catch (IOException | TemplateException e) {
-                        //ignore Exception
-                    }
-                }
-            }
-        }
-        return count;
-    }
-
-    /**
-     * 生成ServiceImpl代码
-     *
-     * @param template 模板
-     * @param map      地图
-     */
-    public int generateServiceImplCode(Template template, Map<String, Object> map) throws IOException {
-        int count = 0;
-        if (xgGlobalObj.getGenerateService()) {
-            Path path = Paths.get(xgGlobalObj.getOutputServiceImplPath());
-            Files.createDirectories(path);
-
-            for (XGTableObj xgTableObj : xgGeneratorSelectedTableObjList) {
-                Path filePath = Paths.get(xgTableObj.getServiceImplAbsolutePath());
-                // 检查文件是否存在并且是否允许覆盖
-                boolean shouldProcess = Files.exists(filePath) && this.xgGlobalObj.getFileOverride() || !Files.exists(filePath);
-                if (shouldProcess) {
-                    try (FileOutputStream fileOutputStream = new FileOutputStream(xgTableObj.getServiceImplAbsolutePath())) {
-                        Map<String, Object> stringObjectMap = BeanUtil.beanToMap(xgTableObj);
-                        map.put("table", stringObjectMap);
-                        template.process(map, new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8));
-                        count++;
-                    } catch (IOException | TemplateException e) {
-                        //ignore Exception
-                    }
-                }
-            }
-        }
-        return count;
-    }
-
-    /**
-     * 生成Mapper代码
-     *
-     * @param template 模板
-     * @param map      地图
-     */
-    public int generateMapperCode(Template template, Map<String, Object> map) throws IOException {
-        int count = 0;
-        if (xgGlobalObj.getGenerateMapper()) {
-            Path path = Paths.get(xgGlobalObj.getOutputMapperPath());
-            Files.createDirectories(path);
-
-            for (XGTableObj xgTableObj : xgGeneratorSelectedTableObjList) {
-                Path filePath = Paths.get(xgTableObj.getMapperAbsolutePath());
-                // 检查文件是否存在并且是否允许覆盖
-                boolean shouldProcess = Files.exists(filePath) && this.xgGlobalObj.getFileOverride() || !Files.exists(filePath);
-                if (shouldProcess) {
-                    try (FileOutputStream fileOutputStream = new FileOutputStream(xgTableObj.getMapperAbsolutePath())) {
-                        Map<String, Object> stringObjectMap = BeanUtil.beanToMap(xgTableObj);
-                        map.put("table", stringObjectMap);
-                        template.process(map, new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8));
-                        count++;
-                    } catch (IOException | TemplateException e) {
-                        //ignore Exception
-                    }
-                }
-            }
-        }
-        return count;
-    }
-
-    /**
-     * 生成MapperXml代码
-     *
-     * @param template 模板
-     * @param map      地图
-     */
-    public int generateMapperXmlCode(Template template, Map<String, Object> map) throws IOException {
-        int count = 0;
-        if (xgGlobalObj.getGenerateMapperXml()) {
-            Path path = Paths.get(xgGlobalObj.getOutputMapperXmlPath());
-            Files.createDirectories(path);
-
-            for (XGTableObj xgTableObj : xgGeneratorSelectedTableObjList) {
-                Path filePath = Paths.get(xgTableObj.getMapperXmlAbsolutePath());
-                // 检查文件是否存在并且是否允许覆盖
-                boolean shouldProcess = Files.exists(filePath) && this.xgGlobalObj.getFileOverride() || !Files.exists(filePath);
-                if (shouldProcess) {
-                    try (FileOutputStream fileOutputStream = new FileOutputStream(xgTableObj.getMapperXmlAbsolutePath())) {
-                        Map<String, Object> stringObjectMap = BeanUtil.beanToMap(xgTableObj);
-                        map.put("table", stringObjectMap);
-                        template.process(map, new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8));
-                        count++;
-                    } catch (IOException | TemplateException e) {
-                        //ignore Exception
-                    }
-                }
-            }
-        }
-        return count;
-    }
-
-    /**
-     * 生成MapStruct代码
-     *
-     * @param template 模板
-     * @param map      地图
-     */
-    public int generateMapStructCode(Template template, Map<String, Object> map) throws IOException {
-        int count = 0;
-        if (xgGlobalObj.getGenerateMapStruct()) {
-            Path path = Paths.get(xgGlobalObj.getOutputMapStructPath());
-            Files.createDirectories(path);
-
-            for (XGTableObj xgTableObj : xgGeneratorSelectedTableObjList) {
-                Path filePath = Paths.get(xgTableObj.getMapstructAbsolutePath());
-                // 检查文件是否存在并且是否允许覆盖
-                boolean shouldProcess = Files.exists(filePath) && this.xgGlobalObj.getFileOverride() || !Files.exists(filePath);
-                if (shouldProcess) {
-                    try (FileOutputStream fileOutputStream = new FileOutputStream(xgTableObj.getMapstructAbsolutePath())) {
-                        Map<String, Object> stringObjectMap = BeanUtil.beanToMap(xgTableObj);
-                        map.put("table", stringObjectMap);
-                        template.process(map, new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8));
-                        count++;
-                    } catch (IOException | TemplateException e) {
-                        //ignore Exception
-                    }
-                }
-            }
-        }
-        return count;
     }
 }

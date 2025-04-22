@@ -25,7 +25,7 @@ public class ${table.dtoClassName} {
     @NotNull(message = "${field.comment}不能为空！")
     </#if>
     <#if field.propertyClass =="java.lang.String">
-    @Length(max = ${field.dataLength}, message = "${field.comment}【${validatedValue}】长度不能超过${field.dataLength}位")
+    @Length(max = ${field.dataLength}, message = "${field.comment}：【${r'${validatedValue}'}】长度不能超过${field.dataLength}位")
     </#if>
     private ${field.propertyType} ${field.propertyName};
 

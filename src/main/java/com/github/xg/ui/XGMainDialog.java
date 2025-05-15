@@ -44,8 +44,8 @@ public class XGMainDialog extends DialogWrapper {
 
         this.setOKButtonText("生成");
         this.setCancelButtonText("取消");
-        this.setTitle("X-Generator 0.1.2");
-        this.setSize(1000, 660);
+        this.setTitle("X-Generator 0.1.3");
+        this.setSize(1000, 690);
         this.setAutoAdjustable(true);
 
         xgCodeUI = new XGCodeUI(project, xgGlobalObj);

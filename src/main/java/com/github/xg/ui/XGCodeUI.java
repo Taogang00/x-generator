@@ -2,10 +2,8 @@ package com.github.xg.ui;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.ListUtil;
-import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.core.util.ReUtil;
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.core.util.XmlUtil;
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.*;
 import com.github.xg.config.XGConfig;
 import com.github.xg.config.XGSettingManager;
 import com.github.xg.generate.*;
@@ -20,6 +18,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.DocumentAdapter;
+import com.intellij.ui.JBColor;
 import com.intellij.ui.components.fields.ExpandableTextField;
 import freemarker.template.Template;
 import lombok.Getter;
@@ -34,6 +33,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -85,6 +85,7 @@ public class XGCodeUI {
     private JTextField removeClassNamePrefixTextField;
     private JTextField addClassNamePrefixTextFieldTextField;
     private JTextField authorTextField;
+    private JLabel lolLabel;
     private List<XGXmlElementTable> tableInfoList;
     private List<? extends String> xgGeneratorSelectedTableValuesList;
 
@@ -103,6 +104,13 @@ public class XGCodeUI {
         this.xgGeneratorSelectedTableValuesList = new ArrayList<>();
         this.xgGeneratorSelectedTableObjList = new ArrayList<>();
         xgGlobalObj.setAuthor(authorTextField.getText());
+
+        URL resource = this.getClass().getResource("/lol/lol.txt");
+        assert resource != null;
+        List<String> lines = FileUtil.readUtf8Lines(resource);
+        String randomItem = RandomUtil.randomEle(lines);
+        this.lolLabel.setText(randomItem);
+        this.lolLabel.setForeground(JBColor.BLUE);
 
         //配置的选项
         XGSettingManager.State state = XGSettingManager.getInstance().getState();

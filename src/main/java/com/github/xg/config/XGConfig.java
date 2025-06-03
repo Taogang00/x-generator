@@ -114,7 +114,7 @@ public class XGConfig {
         columnJavaTypeMapping.put("(tiny|medium|long)*text", "java.lang.String");
         columnJavaTypeMapping.put("numeric(\\(\\d+,\\d+\\))?", "java.lang.Double");
         columnJavaTypeMapping.put("numericn(\\(\\d+,\\d+\\))?", "java.lang.Double");
-        columnJavaTypeMapping.put("numeric(\\(\\d+\\))?", "java.lang.Integer");
+        columnJavaTypeMapping.put("numeric(\\(\\d+\\))?", "java.lang.Double");
         columnJavaTypeMapping.put("decimal(\\(\\d+,\\d+\\))?", "java.lang.Double");
         columnJavaTypeMapping.put("bigint(\\(\\d+\\))?", "java.lang.Long");
         columnJavaTypeMapping.put("(tiny|small|medium)*int(\\(\\d+\\))?", "java.lang.Integer");

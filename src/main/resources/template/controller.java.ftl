@@ -7,6 +7,7 @@ import ${table.entityPackagePath}.${table.entityClassName};
 import ${table.mapstructPackagePath}.${table.mapstructClassName};
 import ${table.servicePackagePath}.${table.serviceClassName};
 import com.guanwei.core.utils.result.R;
+import com.guanwei.mybatis.model.PageList;
 import com.guanwei.mybatis.util.PageHelpUtil;
 
 import lombok.RequiredArgsConstructor;

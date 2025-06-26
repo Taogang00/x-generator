@@ -6,9 +6,9 @@ import ${table.queryPackagePath}.${table.queryClassName};
 import ${table.entityPackagePath}.${table.entityClassName};
 import ${table.mapstructPackagePath}.${table.mapstructClassName};
 import ${table.servicePackagePath}.${table.serviceClassName};
+
+import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.guanwei.core.utils.result.R;
-import com.guanwei.mybatis.model.PageList;
-import com.guanwei.mybatis.util.PageHelpUtil;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.util.Assert;
@@ -54,7 +54,8 @@ public class ${table.controllerClassName} {
 	 */
 	@GetMapping("/list")
 	public R<?> list(@Validated ${table.queryClassName} query) {
-        LambdaQueryWrapper<${table.entityClassName}> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        MPJLambdaWrapper<${table.entityClassName}> lambdaQueryWrapper = new MPJLambdaWrapper<>();
+        lambdaQueryWrapper.selectAll(${table.entityClassName}.class);
         <#list table.tableFields?sort_by("propertyType") as field>
         <#if field.propertyType == "String">
         lambdaQueryWrapper.like(isNotEmpty(query.get${field.propertyName?cap_first}()), ${table.entityClassName}::get${field.propertyName?cap_first}, query.get${field.propertyName?cap_first}());
@@ -62,12 +63,8 @@ public class ${table.controllerClassName} {
         lambdaQueryWrapper.eq(isNotEmpty(query.get${field.propertyName?cap_first}()), ${table.entityClassName}::get${field.propertyName?cap_first}, query.get${field.propertyName?cap_first}());
         </#if>
         </#list>
-        List<${table.entityClassName}> list = ${table.serviceClassName?uncap_first}.selectList(query, lambdaQueryWrapper);
-
-        //转dto
-        PageList<${table.entityClassName}> pageList = PageHelpUtil.of(list);
-        PageResult<${table.dtoClassName}> pageResult = ${table.mapstructClassName?uncap_first}.toPageResult(pageList);
-        return R.OK(pageResult);
+        List<${table.dtoClassName}> list = ${table.serviceClassName?uncap_first}.selectJoinPage(query, ${table.dtoClassName}.class, lambdaQueryWrapper);
+        return R.OK(list);
 	}
 
     /**

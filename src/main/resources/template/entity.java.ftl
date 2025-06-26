@@ -2,9 +2,7 @@ package ${global.entityPackagePath};
 
 import java.util.Date;
 import java.lang.*;
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 
 /**
@@ -39,6 +37,12 @@ public class ${table.entityClassName} {
     /**
     * ${field.comment}
     */
+    </#if>
+    <#if field.propertyName == "creator">
+    @TableField(updateStrategy = FieldStrategy.NEVER)
+    </#if>
+    <#if field.propertyName == "createTime">
+    @TableField(updateStrategy = FieldStrategy.NEVER)
     </#if>
     private ${field.propertyType} ${field.propertyName};
 

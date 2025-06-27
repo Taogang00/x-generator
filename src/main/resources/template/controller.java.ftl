@@ -1,6 +1,5 @@
 package ${global.controllerPackagePath};
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import ${table.dtoPackagePath}.${table.dtoClassName};
 import ${table.queryPackagePath}.${table.queryClassName};
 import ${table.entityPackagePath}.${table.entityClassName};

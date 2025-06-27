@@ -1,9 +1,10 @@
 package ${global.entityPackagePath};
 
-import java.util.Date;
 import java.lang.*;
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
+
+import java.util.Date;
 
 /**
 * ${table.tableComment}
@@ -39,10 +40,13 @@ public class ${table.entityClassName} {
     */
     </#if>
     <#if field.propertyName == "creator">
-    @TableField(updateStrategy = FieldStrategy.NEVER)
-    </#if>
-    <#if field.propertyName == "createTime">
-    @TableField(updateStrategy = FieldStrategy.NEVER)
+    @TableField(updateStrategy = FieldStrategy.NEVER, select = false)
+    <#elseif field.propertyName == "createTime">
+    @TableField(updateStrategy = FieldStrategy.NEVER, select = false)
+    <#elseif field.propertyName == "modifier">
+    @TableField(select = false)
+    <#elseif field.propertyName == "modifyTime">
+    @TableField(select = false)
     </#if>
     private ${field.propertyType} ${field.propertyName};
 

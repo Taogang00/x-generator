@@ -39,14 +39,8 @@ public class ${table.entityClassName} {
     * ${field.comment}
     */
     </#if>
-    <#if field.propertyName == "creator">
-    @TableField(updateStrategy = FieldStrategy.NEVER, select = false)
-    <#elseif field.propertyName == "createTime">
-    @TableField(updateStrategy = FieldStrategy.NEVER, select = false)
-    <#elseif field.propertyName == "modifier">
-    @TableField(select = false)
-    <#elseif field.propertyName == "modifyTime">
-    @TableField(select = false)
+    <#if (field.propertyName == "creator" || field.propertyName == "createTime")>
+    @TableField(updateStrategy = FieldStrategy.NEVER)
     </#if>
     private ${field.propertyType} ${field.propertyName};
 

@@ -42,6 +42,7 @@ tasks {
     patchPluginXml {
         //最低版本 idea2022.2 开始基于jdk17编译
         sinceBuild.set("222")
+        untilBuild.set("251.*")
     }
 
     signPlugin {

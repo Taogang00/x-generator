@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.taogang"
-version = "0.1.4"
+version = "0.1.5"
 
 repositories {
     // 阿里云公共仓库
@@ -42,7 +42,6 @@ tasks {
     patchPluginXml {
         //最低版本 idea2022.2 开始基于jdk17编译
         sinceBuild.set("222")
-        untilBuild.set("251.*")
     }
 
     signPlugin {

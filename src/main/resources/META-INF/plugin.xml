@@ -38,6 +38,10 @@
     <change-notes><![CDATA[
         <h3>New:</h3>
 
+        <h3>0.1.6</h3>
+        <ul>
+           <li>1.分页查询对向XxxQuery调整为XxxPageQuery</li>
+        </ul>
         <h3>0.1.5</h3>
         <ul>
            <li>1.支持2025.2版本</li>

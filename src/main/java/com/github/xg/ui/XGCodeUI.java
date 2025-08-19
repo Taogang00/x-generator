@@ -497,7 +497,7 @@ public class XGCodeUI {
             xgTableObj.setDtoPackagePath(xgGlobalObj.getDtoPackagePath());
             xgTableObj.setDtoAbsolutePath(xgGlobalObj.getOutputDTOPath() + File.separator + xgTableObj.getDtoClassName() + ".java");
             //query
-            xgTableObj.setQueryClassName(elementTableName + "Query");
+            xgTableObj.setQueryClassName(elementTableName + "PageQuery");
             xgTableObj.setQueryPackagePath(xgGlobalObj.getQueryPackagePath());
             xgTableObj.setQueryAbsolutePath(xgGlobalObj.getOutputQueryPath() + File.separator + xgTableObj.getQueryClassName() + ".java");
             //controller

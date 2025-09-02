@@ -36,8 +36,8 @@ public class ${table.entityClassName} {
     <#if !field.primaryKey>
     <#if field.comment!?length gt 0>
     /**
-    * ${field.comment}
-    */
+     * ${field.comment}
+     */
     </#if>
     <#if (field.propertyName == "creator" || field.propertyName == "createTime")>
     @TableField(updateStrategy = FieldStrategy.NEVER)
